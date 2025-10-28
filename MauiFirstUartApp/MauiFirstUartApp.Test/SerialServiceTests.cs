@@ -94,6 +94,17 @@ public class SerialServiceTests
         Assert.IsTrue(result);
     }
 
+[TestMethod]
+
+public Task IsModbus_Return_True()
+    {
+        var mock = new Mock<ISerialService>();
+
+        mock.Setup(s => s.ModbusReadHoldingRegistersAsync(1, 0, 2))
+            .ReturnsAsync(new ushort[] { 100, 200 });
+        return Task.CompletedTask;
+    }
+
 
 
 }

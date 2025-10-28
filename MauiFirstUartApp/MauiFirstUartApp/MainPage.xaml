@@ -8,6 +8,7 @@
 
             <!--  포트, Baud  -->
             <HorizontalStackLayout Spacing="10">
+
                 <Label Text="포트:" VerticalOptions="Center" />
                 <Picker
                     ItemsSource="{Binding PortNames}"
@@ -42,6 +43,8 @@
 
             <!--  연결/해제 버튼  -->
             <HorizontalStackLayout Spacing="10">
+                <RadioButton Content="IsModbus" IsChecked="{Binding IsUtf8, Mode=TwoWay}" />
+
                 <Button
                     Command="{Binding ConnectCommand}"
                     IsEnabled="{Binding CanConnect}"

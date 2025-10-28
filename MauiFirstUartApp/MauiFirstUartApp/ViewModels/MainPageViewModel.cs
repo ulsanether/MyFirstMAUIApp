@@ -1,4 +1,6 @@
-﻿using MauiFirstUartApp.Core.Abstractions;
+﻿//using AuthenticationServices;
+
+using MauiFirstUartApp.Core.Abstractions;
 
 using System.Collections.ObjectModel;
 using System.Text;
@@ -10,7 +12,7 @@ public class MainPageViewModel : BindableObject
 {
     private readonly ISerialService _serialService;
     private CancellationTokenSource? _readCts;
-
+    
     public ObservableCollection<string> PortNames { get; } = new();
     public ObservableCollection<string> ParityOptions { get; } = new(Enum.GetNames(typeof(SerialParity)));
     public ObservableCollection<string> StopBitsOptions { get; } = new(Enum.GetNames(typeof(SerialStopBits)));
@@ -160,4 +162,13 @@ public class MainPageViewModel : BindableObject
             await Task.Delay(100, ct);
         }
     }
+    
+    public async Task ReadModbusAsync(byte slaveId, ushort startAddress, ushort numberOfPoints) {
+        //테스트 코드 
+        var result = await _serialService.ModbusReadHoldingRegistersAsync(1, 0, 10);
+
+
+    } 
+
+    
 }
