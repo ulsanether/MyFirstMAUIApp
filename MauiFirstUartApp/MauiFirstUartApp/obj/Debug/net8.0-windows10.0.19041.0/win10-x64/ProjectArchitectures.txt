@@ -1,1 +1,0 @@
-D:\GIT\TheSystem\APP\MauiFirstUartApp\MauiFirstUartApp\MauiFirstUartApp.csproj;x64
