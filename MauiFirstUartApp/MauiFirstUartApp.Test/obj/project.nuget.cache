@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7jLHgNRx1OQ=",
+  "dgSpecHash": "DJ3cPD5e/sk=",
   "success": true,
-  "projectFilePath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Test\\MauiFirstUartApp.Test.csproj",
+  "projectFilePath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Test\\MauiFirstUartApp.Test.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hangm\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\hangm\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj": {}
+    "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj": {}
   },
   "projects": {
-    "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
+    "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj",
+        "projectUniqueName": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj",
         "projectName": "MauiFirstUartApp.Core",
-        "projectPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj",
+        "projectPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj",
         "packagesPath": "C:\\Users\\hangm\\.nuget\\packages\\",
-        "outputPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\obj\\",
+        "outputPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -76,14 +76,14 @@
         }
       }
     },
-    "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj": {
+    "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj",
+        "projectUniqueName": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj",
         "projectName": "MauiFirstUartApp",
-        "projectPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj",
+        "projectPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj",
         "packagesPath": "C:\\Users\\hangm\\.nuget\\packages\\",
-        "outputPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp\\obj\\",
+        "outputPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
@@ -109,32 +109,32 @@
           "net8.0-android34.0": {
             "targetAlias": "net8.0-android",
             "projectReferences": {
-              "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
-                "projectPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
+              "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
+                "projectPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
               }
             }
           },
           "net8.0-ios18.0": {
             "targetAlias": "net8.0-ios",
             "projectReferences": {
-              "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
-                "projectPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
+              "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
+                "projectPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
               }
             }
           },
           "net8.0-maccatalyst18.0": {
             "targetAlias": "net8.0-maccatalyst",
             "projectReferences": {
-              "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
-                "projectPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
+              "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
+                "projectPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
               }
             }
           },
           "net8.0-windows10.0.19041": {
             "targetAlias": "net8.0-windows10.0.19041.0",
             "projectReferences": {
-              "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
-                "projectPath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
+              "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj": {
+                "projectPath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp.Core\\MauiFirstUartApp.Core.csproj"
               }
             }
           }

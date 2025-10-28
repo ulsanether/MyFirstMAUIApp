@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "lwEgS0azMOk=",
+  "dgSpecHash": "hc4AhdNe0dQ=",
   "success": true,
-  "projectFilePath": "D:\\GIT\\TheSystem\\APP\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj",
+  "projectFilePath": "D:\\GIT\\MyFirstMAUIApp\\MauiFirstUartApp\\MauiFirstUartApp\\MauiFirstUartApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\hangm\\.nuget\\packages\\communitytoolkit.mvvm\\8.4.0\\communitytoolkit.mvvm.8.4.0.nupkg.sha512",
     "C:\\Users\\hangm\\.nuget\\packages\\googlegson\\2.10.1.4\\googlegson.2.10.1.4.nupkg.sha512",
