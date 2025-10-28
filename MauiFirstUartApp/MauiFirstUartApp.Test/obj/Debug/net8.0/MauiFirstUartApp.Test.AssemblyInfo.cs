@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MauiFirstUartApp.Test")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e6d87208f79fdcf8c1594d766c0d985aa53b5027")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c342e5d49b40d41e5fd7ea0b157d5432beb1dfc0")]
 [assembly: System.Reflection.AssemblyProductAttribute("MauiFirstUartApp.Test")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MauiFirstUartApp.Test")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

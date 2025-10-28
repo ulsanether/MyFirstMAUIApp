@@ -27,5 +27,5 @@ androidpackagenamingpolicy=lowercasecrc64
 _nugetassetsfilehash=eaf41277a0dc27859cf28a601ac3c42151d3a8dfdb94e6811fc25c58419b42ef
 typemapkind=strings-asm
 androidmanifestplaceholders=
-projectfullpath=d:\git\thesystem\app\mauifirstuartapp\mauifirstuartapp\mauifirstuartapp.csproj
+projectfullpath=d:\git\myfirstmauiapp\mauifirstuartapp\mauifirstuartapp\mauifirstuartapp.csproj
 androidusedesignerassembly=true
