@@ -1,0 +1,167 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiDemo.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:cov="clr-namespace:MauiDemo.Converters"
+    xmlns:enums="clr-namespace:MauiDemo.Enums"
+    xmlns:model="clr-namespace:MauiDemo.Models"
+    xmlns:vm="clr-namespace:MauiDemo.ViewModels"
+    xmlns:rf="clr-namespace:UsbSerialForAndroid.Resources;assembly=UsbSerialForAndroid.Resources"
+    x:DataType="vm:MainViewModel">
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <cov:MultiValueConverter x:Key="mvc" />
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="10,0" Spacing="25">
+
+            <Grid ColumnDefinitions="auto,*,auto">
+                <Label Text="{x:Static rf:AppResources.UsbId}" VerticalOptions="Center" />
+                <Picker
+                    x:Name="devicePicker"
+                    Grid.Column="1"
+                    Margin="5,0"
+                    ItemDisplayBinding="{Binding Path=DeviceId, x:DataType = model:UsbDeviceInfo}"
+                    ItemsSource="{Binding UsbDeviceInfos}"
+                    SelectedItem="{Binding SelectedDeviceInfo}"
+                    VerticalOptions="Fill" />
+                <Button
+                    Grid.Column="2"
+                    Command="{Binding GetAllCommand}"
+                    Text="{x:Static rf:AppResources.GetAllDevices}" />
+            </Grid>
+
+            <Grid
+                ColumnDefinitions="*,*,*,*"
+                ColumnSpacing="5"
+                RowDefinitions="auto,auto">
+
+                <StackLayout Grid.Column="0">
+                    <Label Text="{x:Static rf:AppResources.BaudRate}" />
+                    <Picker x:Name="baudRatePicker">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:Int32}">
+                                <x:Int32>9600</x:Int32>
+                                <x:Int32>14400</x:Int32>
+                                <x:Int32>19200</x:Int32>
+                                <x:Int32>38400</x:Int32>
+                                <x:Int32>56000</x:Int32>
+                                <x:Int32>57600</x:Int32>
+                                <x:Int32>115200</x:Int32>
+                                <x:Int32>194000</x:Int32>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </StackLayout>
+
+                <StackLayout Grid.Column="1">
+                    <Label Text="{x:Static rf:AppResources.DataBits}" />
+                    <Picker x:Name="dataBitsPicker" SelectedIndex="3">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:Byte}">
+                                <x:Byte>5</x:Byte>
+                                <x:Byte>6</x:Byte>
+                                <x:Byte>7</x:Byte>
+                                <x:Byte>8</x:Byte>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </StackLayout>
+
+                <StackLayout Grid.Column="2">
+                    <Label Text="{x:Static rf:AppResources.StopBits}" />
+                    <Picker x:Name="stopBitsPicker" SelectedIndex="0">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type x:Byte}">
+                                <x:Byte>1</x:Byte>
+                                <x:Byte>2</x:Byte>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </StackLayout>
+
+                <StackLayout Grid.Column="3">
+                    <Label Text="{x:Static rf:AppResources.Parity}" />
+                    <Picker x:Name="parityPicker" SelectedIndex="0">
+                        <Picker.ItemsSource>
+                            <x:Array Type="{x:Type enums:Parity}">
+                                <enums:Parity>None</enums:Parity>
+                                <enums:Parity>Odd</enums:Parity>
+                                <enums:Parity>Even</enums:Parity>
+                            </x:Array>
+                        </Picker.ItemsSource>
+                    </Picker>
+                </StackLayout>
+
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Command="{Binding ConnectDeviceCommand}"
+                    Text="{x:Static rf:AppResources.Connect}">
+                    <Button.CommandParameter>
+                        <MultiBinding Converter="{StaticResource mvc}">
+                            <Binding Source="{x:Reference devicePicker}" Path="SelectedItem"  x:DataType = "Picker"/>   
+                            <Binding Source="{x:Reference baudRatePicker}" Path="SelectedItem"  x:DataType = "Picker "/>
+                            <Binding Source="{x:Reference dataBitsPicker }" Path="SelectedItem"  x:DataType = "Picker"/>
+                            <Binding Source="{x:Reference stopBitsPicker}" Path="SelectedItem"  x:DataType = "Picker"/>
+                            <Binding Source="{x:Reference parityPicker}" Path="SelectedItem"  x:DataType = "Picker"/>
+                        </MultiBinding>
+                    </Button.CommandParameter>
+                </Button>
+
+                <Button
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Grid.ColumnSpan="2"
+                    Command="{Binding TestConnectCommand}"
+                    Text="{x:Static rf:AppResources.TestConnection}" />
+
+            </Grid>
+
+            <StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Button
+                        Command="{Binding SendCommand}"
+                        Text="{x:Static rf:AppResources.SendCommand}">
+                        <Button.CommandParameter>
+                          <Binding Source="{x:Reference sendEditor}" Path="Text" x:DataType="Editor"/>
+                        </Button.CommandParameter>
+                    </Button>
+                    <CheckBox IsChecked="{Binding SendHexIsChecked}" />
+                    <Label Text="HEX" VerticalTextAlignment="Center" />
+                </StackLayout>
+                <Editor x:Name="sendEditor" Text="01 01 00 00 00 08 3D CC" />
+            </StackLayout>
+
+            <StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Button Command="{Binding ReceiveCommand}" Text="{x:Static rf:AppResources.Receive}" />
+                    <CheckBox IsChecked="{Binding ReceivedHexIsChecked}" />
+                    <Label Text="HEX" VerticalTextAlignment="Center" />
+                </StackLayout>
+                <Editor Text="{Binding ReceivedText}" />
+            </StackLayout>
+
+            <StackLayout>
+                <Label Text="{Binding SelectedDeviceInfo.DeviceName, StringFormat='DeviceName:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.ProductName, StringFormat='ProductName:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.ManufacturerName, StringFormat='ManufacturerName:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.SerialNumber, StringFormat='SerialNumber:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.DeviceId, StringFormat='DeviceId:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.VendorId, StringFormat='VendorId:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.ProductId, StringFormat='ProductId:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.ConfigurationCount, StringFormat='ConfigurationCount:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.Version, StringFormat='Version:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.DeviceProtocol, StringFormat='DeviceProtocol:{0}'}" />
+                <Label Text="{Binding SelectedDeviceInfo.InterfaceCount, StringFormat='InterfaceCount:{0}'}" />
+            </StackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

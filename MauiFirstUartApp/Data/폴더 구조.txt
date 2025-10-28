@@ -1,0 +1,38 @@
+폴더 구조. 
+
+
+UartApp
+├─ Views/
+│   ├─ MainPage.xaml
+│   └─ MonitorPage.xaml
+├─ ViewModels/
+│   ├─ MainViewModel.cs        # 포트 스캔/연결/송수신/로그 바인딩
+│   └─ MonitorViewModel.cs     # 실시간 상태/그래프(옵션)
+├─ Services/
+│   ├─ ConnectionManager.cs    # 상태머신(Disconnected↔Connecting↔Connected)
+│   └─ DiagnosticsLogger.cs    # 파일/콘솔/디버그 로그
+├─ Platforms/
+│   ├─ Android/
+│   │   ├─ SerialService.Android.cs    # UsbManager + usb-serial-for-android 바인딩
+│   │   ├─ UsbPermissionReceiver.cs
+│   │   └─ AndroidManifest.xml (권한/receiver)
+│   └─ Windows/
+│       └─ SerialService.Windows.cs    # System.IO.Ports
+└─ MauiProgram.cs                      # DI 등록
+
+
+
+//공용은 앱단으로 다 바진다. 
+UartApp.Core
+├─ Abstractions/
+│   ├─ ISerialService.cs         # 포트 열기/읽기/쓰기/닫기(플랫폼 중립)
+│   ├─ SerialTypes.cs            # SerialParity / SerialStopBits enum
+│   ├─ IConnectionManager.cs     # 연결/재연결/타임아웃/상태 이벤트
+│   ├─ IPacketFramer.cs          # STX/ETX, 길이, 이스케이프 등
+│   └─ ICrcService.cs            # CRC-16/32 등
+├─ Protocol/
+│   ├─ Commands.cs               # 도메인 명령 모음 (예: ReadReg, WriteReg)
+│   ├─ Encoder.cs                # 도메인→바이트 배열
+│   └─ Decoder.cs                # 바이트 배열→도메인
+└─ Common/
+    └─ Result.cs                 # 성공/실패 래퍼(메시지, 코드)

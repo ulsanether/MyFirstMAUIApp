@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiFirstUartApp.MainPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="30,0" Spacing="20">
+
+            <!--  포트 선택 및 설정  -->
+            <HorizontalStackLayout Spacing="10">
+                <Label Text="포트:" VerticalOptions="Center" />
+                <Picker x:Name="PortPicker" WidthRequest="120" />
+                <Label Text="Baud:" VerticalOptions="Center" />
+                <Entry x:Name="BaudEntry" Keyboard="Numeric" Text="115200" WidthRequest="80" />
+                <Label Text="DataBits:" VerticalOptions="Center" />
+                <Entry x:Name="DataBitsEntry" Keyboard="Numeric" Text="8" WidthRequest="50" />
+                <Label Text="Parity:" VerticalOptions="Center" />
+                <Picker x:Name="ParityPicker" WidthRequest="80">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>None</x:String>
+                            <x:String>Odd</x:String>
+                            <x:String>Even</x:String>
+                            <x:String>Mark</x:String>
+                            <x:String>Space</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+                <Label Text="StopBits:" VerticalOptions="Center" />
+                <Picker x:Name="StopBitsPicker" WidthRequest="80">
+                    <Picker.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>One</x:String>
+                            <x:String>OnePointFive</x:String>
+                            <x:String>Two</x:String>
+                        </x:Array>
+                    </Picker.ItemsSource>
+                </Picker>
+            </HorizontalStackLayout>
+
+            <!--  연결/해제 버튼  -->
+            <HorizontalStackLayout Spacing="10">
+                <Button x:Name="ConnectBtn" Clicked="OnConnectClicked" Text="연결" />
+                <Button x:Name="DisconnectBtn" Clicked="OnDisconnectClicked" IsEnabled="False" Text="해제" />
+                <Label x:Name="StatusLabel" Text="상태: 연결 안됨" VerticalOptions="Center" />
+            </HorizontalStackLayout>
+
+            <!--  송신 영역  -->
+            <Label Text="송신 데이터:" />
+            <HorizontalStackLayout Spacing="10">
+                <Entry x:Name="SendEntry" Placeholder="데이터 입력" WidthRequest="250" />
+                <Button x:Name="SendBtn" Clicked="OnSendClicked" IsEnabled="False" Text="전송" />
+            </HorizontalStackLayout>
+
+            <!--  수신 영역  -->
+            <Label Text="수신 데이터:" />
+            <Editor x:Name="ReceiveEditor" HeightRequest="120" IsReadOnly="True" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
