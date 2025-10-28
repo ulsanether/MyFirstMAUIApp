@@ -1,2 +1,15 @@
 # Auto detect text files and perform LF normalization
 * text=auto
+
+# Visual Studio 임시 파일 제외
+.vs/
+
+# 빌드 결과물 제외
+bin/
+obj/
+
+# 기타 사용자별 설정 파일 (옵션)
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
