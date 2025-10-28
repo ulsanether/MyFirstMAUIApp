@@ -3,62 +3,77 @@
     x:Class="MauiFirstUartApp.MainPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
-
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="20">
 
-            <!--  포트 선택 및 설정  -->
+            <!--  포트, Baud  -->
             <HorizontalStackLayout Spacing="10">
                 <Label Text="포트:" VerticalOptions="Center" />
-                <Picker WidthRequest="120"
-                        ItemsSource="{Binding PortNames}"
-                        SelectedItem="{Binding SelectedPort, Mode=TwoWay}" />
+                <Picker
+                    ItemsSource="{Binding PortNames}"
+                    SelectedItem="{Binding SelectedPort, Mode=TwoWay}"
+                    WidthRequest="120" />
                 <Label Text="Baud:" VerticalOptions="Center" />
-                <Entry Keyboard="Numeric"
-                       Text="{Binding BaudRate, Mode=TwoWay}"
-                       WidthRequest="80" />
+                <Entry
+                    Keyboard="Numeric"
+                    Text="{Binding BaudRate, Mode=TwoWay}"
+                    WidthRequest="80" />
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10" />
+
+            <!--  DataBits, Parity, StopBits  -->
+            <HorizontalStackLayout Spacing="10">
                 <Label Text="DataBits:" VerticalOptions="Center" />
-                <Entry Keyboard="Numeric"
-                       Text="{Binding DataBits, Mode=TwoWay}"
-                       WidthRequest="50" />
+                <Entry
+                    Keyboard="Numeric"
+                    Text="{Binding DataBits, Mode=TwoWay}"
+                    WidthRequest="50" />
                 <Label Text="Parity:" VerticalOptions="Center" />
-                <Picker WidthRequest="80"
-                        ItemsSource="{Binding ParityOptions}"
-                        SelectedItem="{Binding SelectedParity, Mode=TwoWay}" />
+                <Picker
+                    ItemsSource="{Binding ParityOptions}"
+                    SelectedItem="{Binding SelectedParity, Mode=TwoWay}"
+                    WidthRequest="80" />
                 <Label Text="StopBits:" VerticalOptions="Center" />
-                <Picker WidthRequest="80"
-                        ItemsSource="{Binding StopBitsOptions}"
-                        SelectedItem="{Binding SelectedStopBits, Mode=TwoWay}" />
+                <Picker
+                    ItemsSource="{Binding StopBitsOptions}"
+                    SelectedItem="{Binding SelectedStopBits, Mode=TwoWay}"
+                    WidthRequest="80" />
             </HorizontalStackLayout>
 
             <!--  연결/해제 버튼  -->
             <HorizontalStackLayout Spacing="10">
-                <Button Text="연결"
-                        Command="{Binding ConnectCommand}"
-                        IsEnabled="{Binding CanConnect}" />
-                <Button Text="해제"
-                        Command="{Binding DisconnectCommand}"
-                        IsEnabled="{Binding CanDisconnect}" />
+                <Button
+                    Command="{Binding ConnectCommand}"
+                    IsEnabled="{Binding CanConnect}"
+                    Text="연결" />
+                <Button
+                    Command="{Binding DisconnectCommand}"
+                    IsEnabled="{Binding CanDisconnect}"
+                    Text="해제" />
                 <Label Text="{Binding StatusText}" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
             <!--  송신 영역  -->
             <Label Text="송신 데이터:" />
             <HorizontalStackLayout Spacing="10">
-                <Entry Placeholder="데이터 입력"
-                       WidthRequest="250"
-                       Text="{Binding SendText, Mode=TwoWay}" />
-                <Button Text="전송"
-                        Command="{Binding SendCommand}"
-                        IsEnabled="{Binding CanSend}" />
+                <Entry
+                    Placeholder="데이터 입력"
+                    Text="{Binding SendText, Mode=TwoWay}"
+                    WidthRequest="250" />
+                <Button
+                    Command="{Binding SendCommand}"
+                    IsEnabled="{Binding CanSend}"
+                    Text="전송" />
             </HorizontalStackLayout>
 
             <!--  수신 영역  -->
             <Label Text="수신 데이터:" />
-            <Editor HeightRequest="120"
-                    IsReadOnly="True"
-                    Text="{Binding ReceivedText}" />
+            <Editor
+                HeightRequest="80"
+                IsReadOnly="True"
+                Text="{Binding ReceivedText}" />
 
         </VerticalStackLayout>
     </ScrollView>
+
 </ContentPage>
