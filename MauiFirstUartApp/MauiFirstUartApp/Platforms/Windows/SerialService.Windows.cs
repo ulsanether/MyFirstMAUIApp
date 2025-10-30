@@ -14,7 +14,11 @@ namespace MauiFirstUartApp.Platforms.Windows
         private IModbusSerialMaster? _modbusMaster;
         private CancellationTokenSource? _modbusPollingCts;
 
+<<<<<<< HEAD
 
+=======
+        // 폴링 결과를 알리기 위한 이벤트(옵션)
+>>>>>>> 8fd13cddfc6e3a0830016bc5bb572a44b7459125
         public event Action<ushort[]>? ModbusPolled;
 
         public Task<IReadOnlyList<string>> GetDeviceNamesAsync()
