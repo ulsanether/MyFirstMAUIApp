@@ -6,6 +6,56 @@
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="20">
 
+
+            <!--  시리얼 타입 선택 라디오 버튼 그룹  -->
+            <HorizontalStackLayout Spacing="20">
+                <Label Text="시리얼 타입:" VerticalOptions="Center" />
+                <RadioButton
+                    Content="일반 시리얼"
+                    GroupName="SerialType"
+                    IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Normal, Mode=TwoWay}" />
+                <RadioButton
+                    Content="모드버스"
+                    GroupName="SerialType"
+                    IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus, Mode=TwoWay}" />
+            </HorizontalStackLayout>
+
+            <VerticalStackLayout IsVisible="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus}" Spacing="10">
+                <Label FontAttributes="Bold" Text="모드버스 설정" />
+                <HorizontalStackLayout Spacing="10">
+                    <Label Text="슬레이브 ID:" VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding ModbusSlaveId, Mode=TwoWay}"
+                        WidthRequest="60" />
+                    <Label Text="어드레스:" VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding ModbusAddress, Mode=TwoWay}"
+                        WidthRequest="80" />
+                    <Label Text="개수:" VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding ModbusQuantity, Mode=TwoWay}"
+                        WidthRequest="60" />
+                </HorizontalStackLayout>
+                <Button
+                    Command="{Binding ModbusReadCommand}"
+                    IsEnabled="{Binding IsConnected}"
+                    Text="모드버스 읽기" />
+                <Button
+           Command="{Binding ModbusReadInputCommand}"
+           IsEnabled="{Binding IsConnected}"
+           Text="모드버스 인풋 읽기" />
+
+                <Button
+                    Command="{Binding ModbusWriteCommand}"
+                    IsEnabled="{Binding IsConnected}"
+                    Text="모드버스 쓰기" />
+            </VerticalStackLayout>
+
+
+
             <!--  포트, Baud  -->
             <HorizontalStackLayout Spacing="10">
 
@@ -43,7 +93,7 @@
 
             <!--  연결/해제 버튼  -->
             <HorizontalStackLayout Spacing="10">
-                <RadioButton Content="IsModbus" IsChecked="{Binding IsUtf8, Mode=TwoWay}" />
+
 
                 <Button
                     Command="{Binding ConnectCommand}"

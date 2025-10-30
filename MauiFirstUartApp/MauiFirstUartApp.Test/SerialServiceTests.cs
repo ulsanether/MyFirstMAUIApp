@@ -1,4 +1,4 @@
-using MauiFirstUartApp.Core.Abstractions;
+﻿using MauiFirstUartApp.Core.Abstractions;
 using Moq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading;
@@ -27,13 +27,13 @@ public class SerialServiceTests
     {
         // Arrange
         var mock = new Mock<ISerialService>();
-        mock.Setup(s => s.OpenAsync("COM1", 9600, 8, 0, 0)).Returns(Task.CompletedTask);
+        mock.Setup(s => s.OpenAsync("COM1", 9600, 8, 0, 0, SerialType.Normal)).Returns(Task.CompletedTask);
 
         // Act
-        await mock.Object.OpenAsync("COM1", 9600, 8, 0, 0);
+        await mock.Object.OpenAsync("COM1", 9600, 8, 0, 0, SerialType.Normal);
 
         // Assert
-        mock.Verify(s => s.OpenAsync("COM1", 9600, 8, 0, 0), Times.Once);
+        mock.Verify(s => s.OpenAsync("COM1", 9600, 8, 0, 0, SerialType.Normal), Times.Once);
     }
 
     [TestMethod]

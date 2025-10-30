@@ -17,6 +17,54 @@ public class MainPageViewModel : BindableObject
     public ObservableCollection<string> ParityOptions { get; } = new(Enum.GetNames(typeof(SerialParity)));
     public ObservableCollection<string> StopBitsOptions { get; } = new(Enum.GetNames(typeof(SerialStopBits)));
 
+
+    private byte _modbusSlaveId;
+    public byte ModbusSlaveId
+    {
+        get => _modbusSlaveId;
+        set { _modbusSlaveId = value; OnPropertyChanged(); }
+    }
+
+    private ushort _modbusAddress;
+    public ushort ModbusAddress
+    {
+        get => _modbusAddress;
+        set { _modbusAddress = value; OnPropertyChanged(); }
+    }
+
+    private ushort _modbusQuantity;
+    public ushort ModbusQuantity
+    {
+        get => _modbusQuantity;
+        set { _modbusQuantity = value; OnPropertyChanged(); }
+    }
+
+
+
+
+
+
+    private SerialType _selectedSerialType = SerialType.Normal;
+    public SerialType SelectedSerialType
+    {
+        get => _selectedSerialType;
+        set
+        {
+            if (_selectedSerialType != value)
+            {
+                _selectedSerialType = value;
+                OnPropertyChanged();
+
+            
+                ((Command)ModbusReadCommand).ChangeCanExecute();
+                ((Command)ModbusWriteCommand).ChangeCanExecute();
+                ((Command)ModbusReadInputCommand).ChangeCanExecute();
+
+
+}
+        }
+    }
+
     private string? _selectedPort;
     public string? SelectedPort
     {
@@ -72,6 +120,12 @@ public class MainPageViewModel : BindableObject
         get => _statusText;
         set { _statusText = value; OnPropertyChanged(); }
     }
+    public ICommand ModbusReadCommand { get; }
+    public ICommand ModbusWriteCommand { get; }
+
+
+    public ICommand ModbusReadInputCommand { get; }
+
 
     public ICommand ConnectCommand { get; }
     public ICommand DisconnectCommand { get; }
@@ -88,9 +142,14 @@ public class MainPageViewModel : BindableObject
         set
         {
             _isConnected = value;
+            OnPropertyChanged();
             OnPropertyChanged(nameof(CanConnect));
             OnPropertyChanged(nameof(CanDisconnect));
             OnPropertyChanged(nameof(CanSend));
+
+           
+            ((Command)ModbusReadCommand).ChangeCanExecute();
+            ((Command)ModbusWriteCommand).ChangeCanExecute();
         }
     }
 
@@ -100,6 +159,10 @@ public class MainPageViewModel : BindableObject
         ConnectCommand = new Command(async () => await ConnectAsync());
         DisconnectCommand = new Command(async () => await DisconnectAsync());
         SendCommand = new Command(async () => await SendAsync());
+
+        ModbusReadCommand = new Command(async () => await ModbusReadAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
+        ModbusWriteCommand = new Command(async () => await ModbusWriteAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
+        ModbusReadInputCommand = new Command(async () => await ModbusReadInputAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
 
         _ = InitializeAsync();
     }
@@ -122,7 +185,7 @@ public class MainPageViewModel : BindableObject
         int stopBitsVal = StopBitsOptions.IndexOf(SelectedStopBits ?? "One");
         try
         {
-            await _serialService.OpenAsync(SelectedPort, BaudRate, DataBits, stopBitsVal, parityVal);
+            await _serialService.OpenAsync(SelectedPort, BaudRate, DataBits, stopBitsVal, parityVal, SelectedSerialType);
             IsConnected = true;
             StatusText = "상태: 연결됨";
             _readCts = new CancellationTokenSource();
@@ -162,13 +225,47 @@ public class MainPageViewModel : BindableObject
             await Task.Delay(100, ct);
         }
     }
-    
-    public async Task ReadModbusAsync(byte slaveId, ushort startAddress, ushort numberOfPoints) {
-        //테스트 코드 
-        var result = await _serialService.ModbusReadHoldingRegistersAsync(1, 0, 10);
 
+    private async Task ModbusReadInputAsync()
+    {
+        if (SelectedSerialType != SerialType.Modbus) return;
+        try
+        {
+            var result = await _serialService.ModbusReadInputRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+            ReceivedText += $"[Modbus Read Input] {string.Join(", ", result)}\n";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Modbus 읽기 오류: {ex.Message}";
+        }
+    }
+    private async Task ModbusReadAsync()
+    {
+        if (SelectedSerialType != SerialType.Modbus) return;
+        try
+        {
+            var result = await _serialService.ModbusReadHoldingRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+            ReceivedText += $"[Modbus Read] {string.Join(", ", result)}\n";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Modbus 읽기 오류: {ex.Message}";
+        }
+    }
 
-    } 
+    private async Task ModbusWriteAsync()
+    {
+        if (SelectedSerialType != SerialType.Modbus) return;
+        try
+        {
+            
+            await _serialService.ModbusWriteSingleRegisterAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+            StatusText = "Modbus 쓰기 완료";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"Modbus 쓰기 오류: {ex.Message}";
+        }
+    }
 
-    
 }
