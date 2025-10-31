@@ -6,6 +6,9 @@ using NModbus.Serial;
 using System.IO.Ports;
 using System.Threading;
 
+using Windows.ApplicationModel.Email;
+using Windows.UI.Popups;
+
 namespace MauiFirstUartApp.Platforms.Windows
 {
     public class SerialService : ISerialService
@@ -50,23 +53,23 @@ namespace MauiFirstUartApp.Platforms.Windows
 
             _port = new SerialPort(portName, baudRate, netParity, dataBits, netStopBits)
             {
-                ReadTimeout = 1000,  // 타임아웃 증가
-                WriteTimeout = 1000
+                ReadTimeout = 3000,
+                WriteTimeout = 3000,
+                Handshake = Handshake.None,
+                RtsEnable = true,
+                DtrEnable = true
             };
             _port.Open();
 
             if (serialType == SerialType.Modbus)
             {
                 var factory = new ModbusFactory();
-                _modbusMaster = factory.CreateRtuMaster(_port);
-                _modbusMaster.Transport.Retries = 3;  // 재시도 횟수 증가
-                _modbusMaster.Transport.ReadTimeout = 1000;  // 읽기 타임아웃 설정
-                _modbusMaster.Transport.WriteTimeout = 1000; // 쓰기 타임아웃 설정
-
-                // 폴링은 실제 디바이스가 연결되었을 때만 시작하도록 주석 처리
-                // _modbusPollingCts?.Cancel();
-                // _modbusPollingCts = new CancellationTokenSource();
-                // StartModbusPolling(_modbusPollingCts.Token);
+                var adapter = new SerialPortAdapter(_port); // 수정된 부분
+                _modbusMaster = factory.CreateRtuMaster(adapter);
+       
+                // 기존 폴링이 있다면 중지
+                _modbusPollingCts?.Cancel();
+                _modbusPollingCts = null;
             }
             else
             {
@@ -78,14 +81,35 @@ namespace MauiFirstUartApp.Platforms.Windows
             return Task.CompletedTask;
         }
 
-        private void StartModbusPolling(CancellationToken token)
+        // 누락된 StartModbusPollingAsync 메서드 추가
+        public Task StartModbusPollingAsync(byte slaveId, ushort startAddress, ushort numberOfPoints, int intervalMs = 1000)
         {
-            // 폴링 파라미터 예시
-            byte slaveId = 1;
-            ushort startAddress = 0;
-            ushort numberOfPoints = 10;
-            int pollingIntervalMs = 1000;
+            if (_modbusMaster == null)
+                throw new InvalidOperationException("Modbus master not initialized");
 
+            // 기존 폴링 중지
+            _modbusPollingCts?.Cancel();
+            _modbusPollingCts = new CancellationTokenSource();
+
+            StartModbusPolling(slaveId, startAddress, numberOfPoints, intervalMs, _modbusPollingCts.Token);
+            return Task.CompletedTask;
+        }
+
+        public Task StopModbusPollingAsync()
+        {
+            _modbusPollingCts?.Cancel();
+            _modbusPollingCts = null;
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> IsModbusPollingActiveAsync()
+        {
+            return Task.FromResult(_modbusPollingCts != null && !_modbusPollingCts.Token.IsCancellationRequested);
+        }
+
+        // 중복 제거: 하나의 StartModbusPolling 메서드만 유지
+        private void StartModbusPolling(byte slaveId, ushort startAddress, ushort numberOfPoints, int pollingIntervalMs, CancellationToken token)
+        {
             Task.Run(async () =>
             {
                 while (!token.IsCancellationRequested)
@@ -94,16 +118,29 @@ namespace MauiFirstUartApp.Platforms.Windows
                     {
                         if (_modbusMaster != null)
                         {
-                            var result = _modbusMaster.ReadHoldingRegisters(slaveId, startAddress, numberOfPoints);
-                            ModbusPolled?.Invoke(result); // 이벤트로 결과 전달(옵션)
+                            var result = await ModbusReadHoldingRegistersAsync(slaveId, startAddress, numberOfPoints);
+                            ModbusPolled?.Invoke(result);
                         }
+                    }
+                    catch (InvalidOperationException ex) when (ex.Message.Contains("Modbus timeout"))
+                    {
+                        // 타임아웃은 일시적 오류로 간주하고 계속 진행
+                        System.Diagnostics.Debug.WriteLine($"Modbus polling timeout: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
-                        // Modbus 통신 오류 로깅
+                        // 기타 오류 로깅
                         System.Diagnostics.Debug.WriteLine($"Modbus polling error: {ex.Message}");
                     }
-                    await Task.Delay(pollingIntervalMs, token);
+
+                    try
+                    {
+                        await Task.Delay(pollingIntervalMs, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        break;
+                    }
                 }
             }, token);
         }
@@ -141,13 +178,15 @@ namespace MauiFirstUartApp.Platforms.Windows
             if (_modbusMaster == null)
                 throw new InvalidOperationException("Modbus master not initialized");
 
-            // 입력 값 검증
+
             if (numberOfPoints == 0 || numberOfPoints > 125)
                 throw new ArgumentException("Number of points must be between 1 and 125");
 
             try
             {
-                return await Task.Run(() => _modbusMaster.ReadHoldingRegisters(slaveId, startAddress, numberOfPoints));
+                var values = await Task.Run(() => _modbusMaster.ReadHoldingRegisters(slaveId, startAddress, numberOfPoints));
+                return values;
+
             }
             catch (NModbus.SlaveException ex)
             {
@@ -167,7 +206,7 @@ namespace MauiFirstUartApp.Platforms.Windows
         {
             if (_modbusMaster == null)
                 throw new InvalidOperationException("Modbus master not initialized");
-            // 입력 값 검증
+            
             if (numberOfPoints == 0 || numberOfPoints > 125)
                 throw new ArgumentException("Number of points must be between 1 and 125");
             try
@@ -229,7 +268,7 @@ namespace MauiFirstUartApp.Platforms.Windows
         public ValueTask DisposeAsync()
         {
             _modbusPollingCts?.Cancel();
-            _modbusPollingCts = null;
+            _modbusPollingCts = null;   
             _port?.Dispose();
             _port = null;
             _modbusMaster = null;
@@ -237,4 +276,3 @@ namespace MauiFirstUartApp.Platforms.Windows
         }
     }
 }
-

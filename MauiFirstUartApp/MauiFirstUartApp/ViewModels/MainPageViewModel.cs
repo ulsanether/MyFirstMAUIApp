@@ -1,7 +1,6 @@
 ﻿//using AuthenticationServices;
 
 using MauiFirstUartApp.Core.Abstractions;
-
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows.Input;
@@ -149,6 +148,7 @@ public class MainPageViewModel : BindableObject
 
            
             ((Command)ModbusReadCommand).ChangeCanExecute();
+            ((Command)ModbusReadInputCommand).ChangeCanExecute();
             ((Command)ModbusWriteCommand).ChangeCanExecute();
         }
     }
@@ -190,7 +190,12 @@ public class MainPageViewModel : BindableObject
             StatusText = "상태: 연결됨";
             _readCts = new CancellationTokenSource();
             ReceivedText = "";
-            _ = ReadLoopAsync(_readCts.Token);
+
+            if (SelectedSerialType != SerialType.Modbus)
+            {
+                _ = ReadLoopAsync(_readCts.Token);
+            }
+
         }
         catch (Exception ex)
         {
@@ -221,8 +226,8 @@ public class MainPageViewModel : BindableObject
             if (data != null && data.Length > 0)
             {
                 ReceivedText += Encoding.UTF8.GetString(data);
+                await Task.Delay(100, ct);
             }
-            await Task.Delay(100, ct);
         }
     }
 

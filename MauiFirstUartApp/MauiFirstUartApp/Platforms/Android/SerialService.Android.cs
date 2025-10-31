@@ -63,9 +63,9 @@ namespace MauiFirstUartApp.Platforms.Android
 
             if (serialType == SerialType.Modbus)
             {
+                // 기존 폴링이 있다면 중지
                 _modbusPollingCts?.Cancel();
-                _modbusPollingCts = new CancellationTokenSource();
-                StartModbusPolling(_modbusPollingCts.Token);
+                _modbusPollingCts = null;
             }
             else
             {
@@ -74,6 +74,63 @@ namespace MauiFirstUartApp.Platforms.Android
             }
 
             return Task.CompletedTask;
+        }
+
+        public Task StartModbusPollingAsync(byte slaveId, ushort startAddress, ushort numberOfPoints, int intervalMs = 1000)
+        {
+            if (_usbDriver == null)
+                throw new InvalidOperationException("USB driver not initialized");
+
+            // 기존 폴링 중지
+            _modbusPollingCts?.Cancel();
+            _modbusPollingCts = new CancellationTokenSource();
+
+            StartModbusPolling(slaveId, startAddress, numberOfPoints, intervalMs, _modbusPollingCts.Token);
+            return Task.CompletedTask;
+        }
+
+        public Task StopModbusPollingAsync()
+        {
+            _modbusPollingCts?.Cancel();
+            _modbusPollingCts = null;
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> IsModbusPollingActiveAsync()
+        {
+            return Task.FromResult(_modbusPollingCts != null && !_modbusPollingCts.Token.IsCancellationRequested);
+        }
+
+        private void StartModbusPolling(byte slaveId, ushort startAddress, ushort numberOfPoints, int pollingIntervalMs, CancellationToken token)
+        {
+            Task.Run(async () =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    try
+                    {
+                        if (_usbDriver != null)
+                        {
+                            var result = await ModbusReadHoldingRegistersAsync(slaveId, startAddress, numberOfPoints);
+                            ModbusPolled?.Invoke(result);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Modbus 통신 오류 로깅
+                        System.Diagnostics.Debug.WriteLine($"Modbus polling error: {ex.Message}");
+                    }
+
+                    try
+                    {
+                        await Task.Delay(pollingIntervalMs, token);
+                    }
+                    catch (TaskCanceledException)
+                    {
+                        break;
+                    }
+                }
+            }, token);
         }
 
         private void StartModbusPolling(CancellationToken token)
