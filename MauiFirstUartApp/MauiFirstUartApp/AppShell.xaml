@@ -4,20 +4,23 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:MauiFirstUartApp"
+    xmlns:views="clr-namespace:MauiFirstUartApp.Views"
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-            <ShellContent
+        <ShellContent
             Title="홈 홈홈"
             ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="home.png" />
+            Icon="appicon.png" />
         <ShellContent
             Title="Empty"
             ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="home.png" />
+            Icon="dotnet_bot.png" />
         <ShellContent
-            Title="햄햄샘ㅎ매"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="home.png" />
+            Title="설정"
+            ContentTemplate="{DataTemplate views:SettingPage}"
+            Icon="appicon.png" />
+        
+        
     </TabBar>
 </Shell>

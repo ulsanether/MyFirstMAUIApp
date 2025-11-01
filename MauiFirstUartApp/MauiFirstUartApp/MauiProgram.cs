@@ -52,5 +52,10 @@ public static class MauiProgram
 
         // Pages
         services.AddTransient<MainPage>();
+
+
+        //설정 페이지
+     //   services.AddTransient<SettingsPage>();
+
     }
 }
