@@ -16,15 +16,15 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 
 # 그냥 참고 디자인 대략 저런 형식
 
-![앱 스크린샷](Etc/img01.png)
+![앱 스크린샷](Etc/img01.png){: width="50%"}
 
-![앱 스크린샷](Etc/img02.png)
+![앱 스크린샷](Etc/img02.png){: width="50%"}
 
-![앱 스크린샷](Etc/img03.png)
+![앱 스크린샷](Etc/img03.png){: width="50%"}
 
-![앱 스크린샷](Etc/img04.png)
+![앱 스크린샷](Etc/img04.png){: width="50%"}
 
-![앱 스크린샷](Etc/img05.png)
+![앱 스크린샷](Etc/img05.png){: width="50%"}
 
 ## 현재 상태
 - 프로젝트 초기 단계
