@@ -4,10 +4,525 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     Title="SettingPage">
-    <VerticalStackLayout>
-        <Label
-            HorizontalOptions="Center"
-            Text="설정 페이지"
-            VerticalOptions="Center" />
-    </VerticalStackLayout>
+
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="16"
+            MaximumWidthRequest="800"
+            Spacing="16">
+
+            <!--  Header  -->
+            <HorizontalStackLayout Spacing="8">
+                <Image
+                    HeightRequest="24"
+                    Source="settings_icon.png"
+                    WidthRequest="24" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    Text="설정" />
+            </HorizontalStackLayout>
+
+            <!--  Serial Port Settings  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="16">
+                    <HorizontalStackLayout Spacing="8">
+                        <Image
+                            HeightRequest="20"
+                            Source="cable_icon.png"
+                            WidthRequest="20" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="시리얼 포트 설정" />
+                    </HorizontalStackLayout>
+                    <Label
+                        FontSize="12"
+                        Text="일반 시리얼 통신 및 모드버스 RTU/ASCII에 공통으로 사용됩니다."
+                        TextColor="{StaticResource Gray600}" />
+
+                    <!--  Port Selection  -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="포트" />
+                        <Picker x:Name="PortPicker">
+                            <Picker.Items>
+                                <x:String>COM1</x:String>
+                                <x:String>COM2</x:String>
+                                <x:String>COM3</x:String>
+                                <x:String>COM4</x:String>
+                                <x:String>COM5</x:String>
+                                <x:String>COM6</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Baud Rate  -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="Baud Rate" />
+                        <Picker x:Name="BaudRatePicker">
+                            <Picker.Items>
+                                <x:String>4800</x:String>
+                                <x:String>9600</x:String>
+                                <x:String>19200</x:String>
+                                <x:String>38400</x:String>
+                                <x:String>57600</x:String>
+                                <x:String>115200</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Data Bits & Stop Bits  -->
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <VerticalStackLayout Spacing="8">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="Data Bits" />
+                            <Picker x:Name="DataBitsPicker">
+                                <Picker.Items>
+                                    <x:String>7</x:String>
+                                    <x:String>8</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+                        <VerticalStackLayout Grid.Column="1" Spacing="8">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="Stop Bits" />
+                            <Picker x:Name="StopBitsPicker">
+                                <Picker.Items>
+                                    <x:String>1</x:String>
+                                    <x:String>1.5</x:String>
+                                    <x:String>2</x:String>
+                                </Picker.Items>
+                            </Picker>
+                        </VerticalStackLayout>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Parity  -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="Parity" />
+                        <Picker x:Name="ParityPicker">
+                            <Picker.Items>
+                                <x:String>None</x:String>
+                                <x:String>Even</x:String>
+                                <x:String>Odd</x:String>
+                                <x:String>Mark</x:String>
+                                <x:String>Space</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  RTS Enable  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="RTS 활성화" />
+                            <Label
+                                FontSize="11"
+                                Text="Request To Send"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  DTR Enable  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="DTR 활성화" />
+                            <Label
+                                FontSize="11"
+                                Text="Data Terminal Ready"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Modbus Settings  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="16">
+                    <HorizontalStackLayout Spacing="8">
+                        <Image
+                            HeightRequest="20"
+                            Source="network_icon.png"
+                            WidthRequest="20" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="모드버스 설정" />
+                    </HorizontalStackLayout>
+
+                    <!--  Protocol  -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="프로토콜" />
+                        <Picker x:Name="ModbusProtocolPicker" SelectedIndexChanged="OnModbusProtocolChanged">
+                            <Picker.Items>
+                                <x:String>Modbus RTU</x:String>
+                                <x:String>Modbus ASCII</x:String>
+                            </Picker.Items>
+                        </Picker>
+                        <Label
+                            FontSize="10"
+                            Text="시리얼 포트를 통한 통신 (위의 시리얼 포트 설정 사용)"
+                            TextColor="{StaticResource Gray600}" />
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Slave ID  -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="슬레이브 ID" />
+                        <Entry
+                            x:Name="SlaveIdEntry"
+                            Keyboard="Numeric"
+                            Text="1" />
+                        <Label
+                            FontSize="10"
+                            Text="통신할 장치의 주소 (1-247)"
+                            TextColor="{StaticResource Gray600}" />
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Timeout  -->
+                    <VerticalStackLayout Spacing="8">
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="12"
+                            Text="타임아웃 (ms)" />
+                        <Entry
+                            x:Name="TimeoutEntry"
+                            Keyboard="Numeric"
+                            Text="1000" />
+                        <Label
+                            FontSize="10"
+                            Text="응답 대기 시간"
+                            TextColor="{StaticResource Gray600}" />
+                    </VerticalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Auto Reconnect  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="자동 재연결" />
+                            <Label
+                                FontSize="11"
+                                Text="연결 끊김 시 자동 재연결"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="True"
+                            OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  CRC Verification  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="CRC 검증" />
+                            <Label
+                                FontSize="11"
+                                Text="데이터 무결성 검증 (RTU only)"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            x:Name="CrcSwitch"
+                            Grid.Column="1"
+                            IsToggled="True"
+                            OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  General Settings  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="16">
+                    <HorizontalStackLayout Spacing="8">
+                        <Image
+                            HeightRequest="20"
+                            Source="globe_icon.png"
+                            WidthRequest="20" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="일반" />
+                    </HorizontalStackLayout>
+
+                    <!--  Language  -->
+                    <Grid ColumnDefinitions="*,140">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="언어" />
+                            <Label
+                                FontSize="11"
+                                Text="앱 표시 언어"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Picker x:Name="LanguagePicker" Grid.Column="1">
+                            <Picker.Items>
+                                <x:String>한국어</x:String>
+                                <x:String>English</x:String>
+                                <x:String>日本語</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Dark Mode  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="다크 모드" />
+                            <Label
+                                FontSize="11"
+                                Text="어두운 테마 사용"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Notification Settings  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="16">
+                    <HorizontalStackLayout Spacing="8">
+                        <Image
+                            HeightRequest="20"
+                            Source="bell_icon.png"
+                            WidthRequest="20" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="알림" />
+                    </HorizontalStackLayout>
+
+                    <!--  Connection Notification  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="연결 알림" />
+                            <Label
+                                FontSize="11"
+                                Text="연결 상태 변경 시 알림"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="True"
+                            OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Error Notification  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="오류 알림" />
+                            <Label
+                                FontSize="11"
+                                Text="통신 오류 발생 시 알림"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="True"
+                            OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Sound Notification  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="소리 알림" />
+                            <Label
+                                FontSize="11"
+                                Text="알림 소리 재생"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Data Settings  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="16">
+                    <HorizontalStackLayout Spacing="8">
+                        <Image
+                            HeightRequest="20"
+                            Source="database_icon.png"
+                            WidthRequest="20" />
+                        <Label
+                            FontAttributes="Bold"
+                            FontSize="16"
+                            Text="데이터" />
+                    </HorizontalStackLayout>
+
+                    <!--  Auto Save Logs  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="로그 자동 저장" />
+                            <Label
+                                FontSize="11"
+                                Text="통신 로그 자동으로 저장"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="True"
+                            OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Log Retention  -->
+                    <Grid ColumnDefinitions="*,140">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="로그 보관 기간" />
+                            <Label
+                                FontSize="11"
+                                Text="로그 파일 보관 기간"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Picker x:Name="LogRetentionPicker" Grid.Column="1">
+                            <Picker.Items>
+                                <x:String>1일</x:String>
+                                <x:String>7일</x:String>
+                                <x:String>30일</x:String>
+                                <x:String>90일</x:String>
+                            </Picker.Items>
+                        </Picker>
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  Timestamp Display  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="타임스탬프 표시" />
+                            <Label
+                                FontSize="11"
+                                Text="로그에 시간 정보 표시"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="True"
+                            OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <!--  HEX Format  -->
+                    <Grid ColumnDefinitions="*,Auto">
+                        <VerticalStackLayout Spacing="4">
+                            <Label
+                                FontAttributes="Bold"
+                                FontSize="12"
+                                Text="HEX 형식 표시" />
+                            <Label
+                                FontSize="11"
+                                Text="데이터를 16진수로 표시"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+
 </ContentPage>

@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiFirstUartApp.Views.InfoPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="InfoPage">
+    <ScrollView>
+        <VerticalStackLayout
+            Padding="16"
+            MaximumWidthRequest="800"
+            Spacing="16">
+
+            <!--  Header  -->
+            <HorizontalStackLayout Spacing="8">
+                <Image
+                    HeightRequest="24"
+                    Source="info_icon.png"
+                    WidthRequest="24" />
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="24"
+                    Text="정보" />
+            </HorizontalStackLayout>
+
+            <!--  App Info Card  -->
+            <Frame
+                Padding="24"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout HorizontalOptions="Center" Spacing="16">
+                    <Frame
+                        Padding="0"
+                        BackgroundColor="{StaticResource YellowPrimary}"
+                        CornerRadius="16"
+                        HasShadow="False"
+                        HeightRequest="64"
+                        WidthRequest="64">
+                        <Image
+                            HeightRequest="32"
+                            Source="smartphone_icon.png"
+                            WidthRequest="32" />
+                    </Frame>
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="20"
+                        HorizontalTextAlignment="Center"
+                        Text="통신 앱" />
+                    <Label
+                        FontSize="14"
+                        HorizontalTextAlignment="Center"
+                        Text="Serial &amp; Modbus Communication"
+                        TextColor="{StaticResource Gray600}" />
+                    <Frame
+                        Padding="12,6"
+                        BackgroundColor="{StaticResource YellowLight}"
+                        CornerRadius="16"
+                        HasShadow="False">
+                        <Label
+                            FontSize="12"
+                            Text="버전 1.0.0"
+                            TextColor="{StaticResource YellowDark}" />
+                    </Frame>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Features Card  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="주요 기능" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <BoxView
+                            Margin="0,6,0,0"
+                            CornerRadius="4"
+                            HeightRequest="8"
+                            VerticalOptions="Start"
+                            WidthRequest="8"
+                            Color="{StaticResource YellowPrimary}" />
+                        <VerticalStackLayout HorizontalOptions="FillAndExpand" Spacing="4">
+                            <Label FontSize="13" Text="일반 시리얼 통신 (RS-232, RS-485)" />
+                            <Label
+                                FontSize="11"
+                                Text="다양한 Baud Rate 및 파라미터 지원"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <BoxView
+                            Margin="0,6,0,0"
+                            CornerRadius="4"
+                            HeightRequest="8"
+                            VerticalOptions="Start"
+                            WidthRequest="8"
+                            Color="{StaticResource YellowPrimary}" />
+                        <VerticalStackLayout HorizontalOptions="FillAndExpand" Spacing="4">
+                            <Label FontSize="13" Text="모드버스 프로토콜" />
+                            <Label
+                                FontSize="11"
+                                Text="RTU, TCP, ASCII 모드 지원"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <HorizontalStackLayout Spacing="12">
+                        <BoxView
+                            Margin="0,6,0,0"
+                            CornerRadius="4"
+                            HeightRequest="8"
+                            VerticalOptions="Start"
+                            WidthRequest="8"
+                            Color="{StaticResource YellowPrimary}" />
+                        <VerticalStackLayout HorizontalOptions="FillAndExpand" Spacing="4">
+                            <Label FontSize="13" Text="실시간 로그 모니터링" />
+                            <Label
+                                FontSize="11"
+                                Text="송수신 데이터 실시간 확인"
+                                TextColor="{StaticResource Gray600}" />
+                        </VerticalStackLayout>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Platform Card  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="플랫폼" />
+
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Frame
+                            Grid.Column="0"
+                            Padding="16"
+                            BackgroundColor="{StaticResource Gray50}"
+                            CornerRadius="8"
+                            HasShadow="False">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
+                                <Image
+                                    HeightRequest="24"
+                                    Source="smartphone_icon.png"
+                                    WidthRequest="24" />
+                                <Label
+                                    FontSize="13"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Android" />
+                            </VerticalStackLayout>
+                        </Frame>
+                        <Frame
+                            Grid.Column="1"
+                            Padding="16"
+                            BackgroundColor="{StaticResource Gray50}"
+                            CornerRadius="8"
+                            HasShadow="False">
+                            <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
+                                <Image
+                                    HeightRequest="24"
+                                    Source="code_icon.png"
+                                    WidthRequest="24" />
+                                <Label
+                                    FontSize="13"
+                                    HorizontalTextAlignment="Center"
+                                    Text="Windows" />
+                            </VerticalStackLayout>
+                        </Frame>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Technology Stack Card  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="기술 스택" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            FontSize="12"
+                            Text="프레임워크"
+                            TextColor="{StaticResource Gray600}" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="12"
+                            Text=".NET MAUI" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            FontSize="12"
+                            Text="언어"
+                            TextColor="{StaticResource Gray600}" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="12"
+                            Text="C#" />
+                    </Grid>
+
+                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label
+                            FontSize="12"
+                            Text="라이선스"
+                            TextColor="{StaticResource Gray600}" />
+                        <Label
+                            Grid.Column="1"
+                            FontSize="12"
+                            Text="MIT" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Contact Card  -->
+            <Frame
+                Padding="16"
+                BackgroundColor="White"
+                BorderColor="{StaticResource Gray200}"
+                CornerRadius="12"
+                HasShadow="False">
+                <VerticalStackLayout Spacing="12">
+                    <Label
+                        FontAttributes="Bold"
+                        FontSize="16"
+                        Text="문의" />
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource Gray200}"
+                        BorderWidth="1"
+                        HorizontalOptions="FillAndExpand"
+                        Text="📧 이메일 보내기"
+                        TextColor="{StaticResource Gray900}" />
+
+                    <Button
+                        BackgroundColor="Transparent"
+                        BorderColor="{StaticResource Gray200}"
+                        BorderWidth="1"
+                        HorizontalOptions="FillAndExpand"
+                        Text="🔗 GitHub 저장소"
+                        TextColor="{StaticResource Gray900}" />
+                </VerticalStackLayout>
+            </Frame>
+
+            <!--  Footer  -->
+            <VerticalStackLayout
+                Padding="0,16"
+                HorizontalOptions="Center"
+                Spacing="8">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+                    <Label
+                        FontSize="12"
+                        Text="Made with"
+                        TextColor="{StaticResource Gray600}" />
+                    <Label FontSize="12" Text="❤️" />
+                    <Label
+                        FontSize="12"
+                        Text="using .NET MAUI"
+                        TextColor="{StaticResource Gray600}" />
+                </HorizontalStackLayout>
+                <Label
+                    FontSize="10"
+                    HorizontalTextAlignment="Center"
+                    Text="© 2025 All rights reserved"
+                    TextColor="{StaticResource Gray600}" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

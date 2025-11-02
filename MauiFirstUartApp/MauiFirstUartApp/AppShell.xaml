@@ -8,19 +8,59 @@
     Shell.FlyoutBehavior="Disabled">
 
     <TabBar>
-        <ShellContent
-            Title="홈 홈홈"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="appicon.png" />
-        <ShellContent
-            Title="Empty"
-            ContentTemplate="{DataTemplate local:MainPage}"
-            Icon="dotnet_bot.png" />
-        <ShellContent
-            Title="설정"
-            ContentTemplate="{DataTemplate views:SettingPage}"
-            Icon="appicon.png" />
-        
-        
+        <!--  홈 탭  -->
+        <ShellContent Title="홈" ContentTemplate="{DataTemplate local:MainPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe88a;"
+                    Size="24"
+                    Color="{StaticResource Gray600}" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <!--  시리얼 탭  -->
+        <ShellContent Title="시리얼" ContentTemplate="{DataTemplate views:SerialTerminalPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe1c0;"
+                    Size="24"
+                    Color="{StaticResource Gray600}" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <!--  모드버스 탭  -->
+        <ShellContent Title="모드버스" ContentTemplate="{DataTemplate views:ModbusPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe328;"
+                    Size="24"
+                    Color="{StaticResource Gray600}" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <!--  설정 탭  -->
+        <ShellContent Title="설정" ContentTemplate="{DataTemplate views:SettingPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe8b8;"
+                    Size="24"
+                    Color="{StaticResource Gray600}" />
+            </ShellContent.Icon>
+        </ShellContent>
+
+        <!--  정보 탭  -->
+        <ShellContent Title="정보" ContentTemplate="{DataTemplate views:InfoPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="MaterialIcons"
+                    Glyph="&#xe88e;"
+                    Size="24"
+                    Color="{StaticResource Gray600}" />
+            </ShellContent.Icon>
+        </ShellContent>
     </TabBar>
 </Shell>

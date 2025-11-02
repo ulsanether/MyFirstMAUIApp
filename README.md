@@ -18,6 +18,14 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 
 ![앱 스크린샷](Etc/img01.png)
 
+![앱 스크린샷](Etc/img02.png)
+
+![앱 스크린샷](Etc/img03.png)
+
+![앱 스크린샷](Etc/img04.png)
+
+![앱 스크린샷](Etc/img05.png)
+
 ## 현재 상태
 - 프로젝트 초기 단계
 - Modbus 기능 추가 중 (코어 로직 일부 구현 modbus func 03,04,06 구현)   

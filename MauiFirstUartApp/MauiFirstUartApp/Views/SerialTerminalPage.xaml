@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiFirstUartApp.Views.SerialTerminalPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    Title="SerialTerminalPage">
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="16" MaximumWidthRequest="800">
+
+            <!-- Header -->
+            <HorizontalStackLayout Spacing="8">
+                <Image Source="cable_icon.png" WidthRequest="24" HeightRequest="24"/>
+                <Label Text="시리얼 통신" FontSize="24" FontAttributes="Bold"/>
+            </HorizontalStackLayout>
+
+            <!-- Connection Status -->
+            <Frame BorderColor="{StaticResource YellowPrimary}" CornerRadius="12" Padding="16" HasShadow="False" 
+                   BackgroundColor="{StaticResource YellowLight}">
+                <HorizontalStackLayout Spacing="8">
+                    <BoxView WidthRequest="8" HeightRequest="8" CornerRadius="4" Color="{StaticResource Green500}"/>
+                    <Label Text="COM3 (9600, 8N1) - 연결됨" FontSize="12"/>
+                </HorizontalStackLayout>
+            </Frame>
+
+            <!-- Send Data Card -->
+            <Frame BorderColor="{StaticResource Gray200}" CornerRadius="12" Padding="16" HasShadow="False" BackgroundColor="White">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="데이터 전송" FontSize="16" FontAttributes="Bold"/>
+
+                    <Editor x:Name="MessageEditor" 
+                            Placeholder="전송할 데이터를 입력하세요..." 
+                            HeightRequest="100"
+                            BackgroundColor="{StaticResource Gray50}"/>
+
+                    <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                        <Button Grid.Column="0" 
+                                Text="전송" 
+                                BackgroundColor="{StaticResource YellowPrimary}" 
+                                TextColor="{StaticResource Gray900}"
+                                Clicked="OnSendClicked"/>
+                        <Button Grid.Column="1" 
+                                Text="지우기" 
+                                BackgroundColor="Transparent"
+                                BorderColor="{StaticResource Gray200}"
+                                BorderWidth="1"
+                                TextColor="{StaticResource Gray900}"
+                                Clicked="OnClearMessageClicked"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Quick Send Buttons -->
+            <Frame BorderColor="{StaticResource Gray200}" CornerRadius="12" Padding="16" HasShadow="False" BackgroundColor="White">
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="빠른 전송" FontSize="16" FontAttributes="Bold"/>
+                    <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="*,*" RowSpacing="8" ColumnSpacing="8">
+                        <Button Grid.Row="0" Grid.Column="0" Text="AT" BackgroundColor="Transparent" 
+                                BorderColor="{StaticResource Gray200}" BorderWidth="1" TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Row="0" Grid.Column="1" Text="AT+RST" BackgroundColor="Transparent" 
+                                BorderColor="{StaticResource Gray200}" BorderWidth="1" TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Row="1" Grid.Column="0" Text="STATUS?" BackgroundColor="Transparent" 
+                                BorderColor="{StaticResource Gray200}" BorderWidth="1" TextColor="{StaticResource Gray900}"/>
+                        <Button Grid.Row="1" Grid.Column="1" Text="VERSION?" BackgroundColor="Transparent" 
+                                BorderColor="{StaticResource Gray200}" BorderWidth="1" TextColor="{StaticResource Gray900}"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Communication Log -->
+            <Frame BorderColor="{StaticResource Gray200}" CornerRadius="12" Padding="16" HasShadow="False" BackgroundColor="White">
+                <VerticalStackLayout Spacing="12">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <Label Text="통신 로그" FontSize="16" FontAttributes="Bold"/>
+                        <Button Grid.Column="1" Text="🗑️" BackgroundColor="Transparent" 
+                                WidthRequest="40" Clicked="OnClearLogsClicked"/>
+                    </Grid>
+
+                    <Frame BackgroundColor="{StaticResource Gray50}" CornerRadius="8" Padding="12" HasShadow="False" HeightRequest="300">
+                        <ScrollView>
+                            <CollectionView x:Name="LogsCollection">
+                                <CollectionView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Frame BackgroundColor="White" CornerRadius="4" Padding="8" Margin="0,4" HasShadow="False">
+                                            <HorizontalStackLayout Spacing="12">
+                                                <Label Text="{Binding Timestamp}" FontSize="10" TextColor="{StaticResource Gray600}" WidthRequest="60"/>
+                                                <Label Text="{Binding TypeLabel}" FontSize="12" TextColor="{Binding TypeColor}"/>
+                                                <Label Text="{Binding Message}" FontSize="12" LineBreakMode="WordWrap"/>
+                                            </HorizontalStackLayout>
+                                        </Frame>
+                                    </DataTemplate>
+                                </CollectionView.ItemTemplate>
+                            </CollectionView>
+                        </ScrollView>
+                    </Frame>
+                </VerticalStackLayout>
+            </Frame>
+
+            <!-- Statistics -->
+            <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
+                <Frame Grid.Column="0" BorderColor="{StaticResource Gray200}" CornerRadius="12" Padding="12" HasShadow="False" BackgroundColor="White">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label x:Name="SendCountLabel" Text="0" FontSize="18" HorizontalTextAlignment="Center"/>
+                        <Label Text="송신 횟수" FontSize="10" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame Grid.Column="1" BorderColor="{StaticResource Gray200}" CornerRadius="12" Padding="12" HasShadow="False" BackgroundColor="White">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label x:Name="ReceiveCountLabel" Text="0" FontSize="18" HorizontalTextAlignment="Center"/>
+                        <Label Text="수신 횟수" FontSize="10" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+                <Frame Grid.Column="2" BorderColor="{StaticResource Gray200}" CornerRadius="12" Padding="12" HasShadow="False" BackgroundColor="White">
+                    <VerticalStackLayout Spacing="4" HorizontalOptions="Center">
+                        <Label x:Name="TotalCountLabel" Text="0" FontSize="18" HorizontalTextAlignment="Center"/>
+                        <Label Text="전체 로그" FontSize="10" TextColor="{StaticResource Gray600}" HorizontalTextAlignment="Center"/>
+                    </VerticalStackLayout>
+                </Frame>
+            </Grid>
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
