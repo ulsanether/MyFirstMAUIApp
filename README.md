@@ -17,11 +17,11 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 # 그냥 참고 디자인 대략 저런 형식
 
 <p align="center">
-  <img src="Etc/img01.png" width="50%">
-  <img src="Etc/img02.png" width="50%">
-  <img src="Etc/img03.png" width="50%">
-  <img src="Etc/img04.png" width="50%">
-  <img src="Etc/img05.png" width="50%">
+  <img src="Etc/img01.png" width="30%">
+  <img src="Etc/img02.png" width="30%"><br>
+  <img src="Etc/img03.png" width="30%">
+  <img src="Etc/img04.png" width="30%"><br>
+  <img src="Etc/img05.png" width="30%">
 </p>
 
 
