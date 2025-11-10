@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="MauiFirstUartApp.Views.InfoPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -19,14 +19,18 @@
                 <Label
                     FontAttributes="Bold"
                     FontSize="24"
-                    Text="정보" />
+                    Text="정보"
+                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                Dark={StaticResource Gray50}}" />
             </HorizontalStackLayout>
 
             <!--  App Info Card  -->
             <Frame
                 Padding="24"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark={StaticResource Gray900}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                              Dark={StaticResource Gray700}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout HorizontalOptions="Center" Spacing="16">
@@ -46,12 +50,15 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalTextAlignment="Center"
-                        Text="통신 앱" />
+                        Text="통신 앱"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
                     <Label
                         FontSize="14"
                         HorizontalTextAlignment="Center"
                         Text="Serial &amp; Modbus Communication"
-                        TextColor="{StaticResource Gray600}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                    Dark={StaticResource Gray300}}" />
                     <Frame
                         Padding="12,6"
                         BackgroundColor="{StaticResource YellowLight}"
@@ -68,15 +75,19 @@
             <!--  Features Card  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark={StaticResource Gray900}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                              Dark={StaticResource Gray700}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="12">
                     <Label
                         FontAttributes="Bold"
                         FontSize="16"
-                        Text="주요 기능" />
+                        Text="주요 기능"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
 
                     <HorizontalStackLayout Spacing="12">
                         <BoxView
@@ -87,15 +98,20 @@
                             WidthRequest="8"
                             Color="{StaticResource YellowPrimary}" />
                         <VerticalStackLayout HorizontalOptions="FillAndExpand" Spacing="4">
-                            <Label FontSize="13" Text="일반 시리얼 통신 (RS-232, RS-485)" />
+                            <Label
+                                FontSize="13"
+                                Text="일반 시리얼 통신 (RS-232, RS-485)"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                            Dark={StaticResource Gray50}}" />
                             <Label
                                 FontSize="11"
                                 Text="다양한 Baud Rate 및 파라미터 지원"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                            Dark={StaticResource Gray300}}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
 
                     <HorizontalStackLayout Spacing="12">
                         <BoxView
@@ -106,15 +122,20 @@
                             WidthRequest="8"
                             Color="{StaticResource YellowPrimary}" />
                         <VerticalStackLayout HorizontalOptions="FillAndExpand" Spacing="4">
-                            <Label FontSize="13" Text="모드버스 프로토콜" />
+                            <Label
+                                FontSize="13"
+                                Text="모드버스 프로토콜"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                            Dark={StaticResource Gray50}}" />
                             <Label
                                 FontSize="11"
                                 Text="RTU, TCP, ASCII 모드 지원"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                            Dark={StaticResource Gray300}}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
 
                     <HorizontalStackLayout Spacing="12">
                         <BoxView
@@ -125,11 +146,16 @@
                             WidthRequest="8"
                             Color="{StaticResource YellowPrimary}" />
                         <VerticalStackLayout HorizontalOptions="FillAndExpand" Spacing="4">
-                            <Label FontSize="13" Text="실시간 로그 모니터링" />
+                            <Label
+                                FontSize="13"
+                                Text="실시간 로그 모니터링"
+                                TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                            Dark={StaticResource Gray50}}" />
                             <Label
                                 FontSize="11"
                                 Text="송수신 데이터 실시간 확인"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                            Dark={StaticResource Gray300}}" />
                         </VerticalStackLayout>
                     </HorizontalStackLayout>
                 </VerticalStackLayout>
@@ -138,21 +164,26 @@
             <!--  Platform Card  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark={StaticResource Gray900}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                              Dark={StaticResource Gray700}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="12">
                     <Label
                         FontAttributes="Bold"
                         FontSize="16"
-                        Text="플랫폼" />
+                        Text="플랫폼"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
 
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
                         <Frame
                             Grid.Column="0"
                             Padding="16"
-                            BackgroundColor="{StaticResource Gray50}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray50},
+                                                              Dark={StaticResource Gray800}}"
                             CornerRadius="8"
                             HasShadow="False">
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
@@ -163,13 +194,16 @@
                                 <Label
                                     FontSize="13"
                                     HorizontalTextAlignment="Center"
-                                    Text="Android" />
+                                    Text="Android"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                Dark={StaticResource Gray50}}" />
                             </VerticalStackLayout>
                         </Frame>
                         <Frame
                             Grid.Column="1"
                             Padding="16"
-                            BackgroundColor="{StaticResource Gray50}"
+                            BackgroundColor="{AppThemeBinding Light={StaticResource Gray50},
+                                                              Dark={StaticResource Gray800}}"
                             CornerRadius="8"
                             HasShadow="False">
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
@@ -180,7 +214,9 @@
                                 <Label
                                     FontSize="13"
                                     HorizontalTextAlignment="Center"
-                                    Text="Windows" />
+                                    Text="Windows"
+                                    TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                                Dark={StaticResource Gray50}}" />
                             </VerticalStackLayout>
                         </Frame>
                     </Grid>
@@ -190,51 +226,64 @@
             <!--  Technology Stack Card  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark={StaticResource Gray900}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                              Dark={StaticResource Gray700}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="12">
                     <Label
                         FontAttributes="Bold"
                         FontSize="16"
-                        Text="기술 스택" />
+                        Text="기술 스택"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
 
                     <Grid ColumnDefinitions="*,Auto">
                         <Label
                             FontSize="12"
                             Text="프레임워크"
-                            TextColor="{StaticResource Gray600}" />
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                        Dark={StaticResource Gray300}}" />
                         <Label
                             Grid.Column="1"
                             FontSize="12"
-                            Text=".NET MAUI" />
+                            Text=".NET MAUI"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                        Dark={StaticResource Gray50}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
 
                     <Grid ColumnDefinitions="*,Auto">
                         <Label
                             FontSize="12"
                             Text="언어"
-                            TextColor="{StaticResource Gray600}" />
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                        Dark={StaticResource Gray300}}" />
                         <Label
                             Grid.Column="1"
                             FontSize="12"
-                            Text="C#" />
+                            Text="C#"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                        Dark={StaticResource Gray50}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray700}}" />
 
                     <Grid ColumnDefinitions="*,Auto">
                         <Label
                             FontSize="12"
                             Text="라이선스"
-                            TextColor="{StaticResource Gray600}" />
+                            TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                        Dark={StaticResource Gray300}}" />
                         <Label
                             Grid.Column="1"
                             FontSize="12"
-                            Text="MIT" />
+                            Text="MIT"
+                            TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                        Dark={StaticResource Gray50}}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -242,31 +291,39 @@
             <!--  Contact Card  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light=White,
+                                                  Dark={StaticResource Gray900}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                              Dark={StaticResource Gray700}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="12">
                     <Label
                         FontAttributes="Bold"
                         FontSize="16"
-                        Text="문의" />
+                        Text="문의"
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
 
                     <Button
                         BackgroundColor="Transparent"
-                        BorderColor="{StaticResource Gray200}"
+                        BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                      Dark={StaticResource Gray700}}"
                         BorderWidth="1"
                         HorizontalOptions="FillAndExpand"
                         Text="📧 이메일 보내기"
-                        TextColor="{StaticResource Gray900}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
 
                     <Button
                         BackgroundColor="Transparent"
-                        BorderColor="{StaticResource Gray200}"
+                        BorderColor="{AppThemeBinding Light={StaticResource Gray200},
+                                                      Dark={StaticResource Gray700}}"
                         BorderWidth="1"
                         HorizontalOptions="FillAndExpand"
                         Text="🔗 GitHub 저장소"
-                        TextColor="{StaticResource Gray900}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray900},
+                                                    Dark={StaticResource Gray50}}" />
                 </VerticalStackLayout>
             </Frame>
 
@@ -279,18 +336,21 @@
                     <Label
                         FontSize="12"
                         Text="Made with"
-                        TextColor="{StaticResource Gray600}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                    Dark={StaticResource Gray300}}" />
                     <Label FontSize="12" Text="❤️" />
                     <Label
                         FontSize="12"
                         Text="using .NET MAUI"
-                        TextColor="{StaticResource Gray600}" />
+                        TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                    Dark={StaticResource Gray300}}" />
                 </HorizontalStackLayout>
                 <Label
                     FontSize="10"
                     HorizontalTextAlignment="Center"
                     Text="© 2025 All rights reserved"
-                    TextColor="{StaticResource Gray600}" />
+                    TextColor="{AppThemeBinding Light={StaticResource Gray600},
+                                                Dark={StaticResource Gray300}}" />
             </VerticalStackLayout>
 
         </VerticalStackLayout>
