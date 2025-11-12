@@ -2,7 +2,7 @@
 using MauiFirstUartApp.Core.Abstractions;
 using MauiFirstUartApp.Services;
 using MauiFirstUartApp.ViewModels;
-using MauiFirstUartApp.Views; // Views 네임스페이스 추가
+using MauiFirstUartApp.Views;
 
 #if WINDOWS
 using MauiFirstUartApp.Platforms.Windows;
@@ -49,15 +49,15 @@ public static class MauiProgram
         // 비즈니스 서비스
         services.AddSingleton<UartCommunicationService>();
 
-        // ViewModels - 싱글톤으로 변경 (ViewModel 공유를 위해)
+        // ViewModels
         services.AddSingleton<MainPageViewModel>();
 
         // Pages
         services.AddTransient<MainPage>();
         services.AddTransient<SerialTerminalPage>();
-
         services.AddTransient<ModbusPage>();
-        services.AddTransient<SettingPage>(); 
+        services.AddTransient<SettingPage>();
+        services.AddTransient<InfoPage>();
+        services.AddTransient<LoadingPage>(); 
     }
 }
-

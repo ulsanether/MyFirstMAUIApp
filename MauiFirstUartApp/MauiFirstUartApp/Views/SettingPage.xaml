@@ -3,7 +3,9 @@
     x:Class="MauiFirstUartApp.Views.SettingPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    Title="SettingPage">
+    Title="SettingPage"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Background},
+                                      Dark={StaticResource DarkBackground}}">
 
     <ScrollView>
         <VerticalStackLayout
@@ -20,14 +22,18 @@
                 <Label
                     FontAttributes="Bold"
                     FontSize="24"
-                    Text="설정" />
+                    Text="설정"
+                    TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                Dark={StaticResource DarkForeground}}" />
             </HorizontalStackLayout>
 
             <!--  Serial Port Settings  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
+                                                  Dark={StaticResource DarkCard}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Border},
+                                              Dark={StaticResource DarkBorder}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="16">
@@ -39,34 +45,49 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="16"
-                            Text="시리얼 포트 설정" />
+                            Text="시리얼 포트 설정"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </HorizontalStackLayout>
                     <Label
                         FontSize="12"
                         Text="일반 시리얼 통신 및 모드버스 RTU/ASCII에 공통으로 사용됩니다."
-                        TextColor="{StaticResource Gray600}" />
+                        TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                    Dark={StaticResource DarkMutedForeground}}" />
 
                     <!--  Port Selection  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
                             FontSize="12"
-                            Text="포트" />
-                        <Picker ItemsSource="{Binding PortNames}" SelectedItem="{Binding SelectedPort}" />
+                            Text="포트"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
+                        <Picker
+                            ItemsSource="{Binding PortNames}"
+                            SelectedItem="{Binding SelectedPort}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Baud Rate  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
                             FontSize="12"
-                            Text="Baud Rate" />
-                        <Entry Keyboard="Numeric" Text="{Binding BaudRate}" />
+                            Text="Baud Rate"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
+                        <Entry
+                            Keyboard="Numeric"
+                            Text="{Binding BaudRate}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Data Bits & Stop Bits  -->
                     <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
@@ -74,30 +95,48 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="Data Bits" />
-                            <Entry Keyboard="Numeric" Text="{Binding DataBits}" />
+                                Text="Data Bits"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
+                            <Entry
+                                Keyboard="Numeric"
+                                Text="{Binding DataBits}"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="8">
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="Stop Bits" />
-                            <Picker ItemsSource="{Binding StopBitsOptions}" SelectedItem="{Binding SelectedStopBits}" />
+                                Text="Stop Bits"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
+                            <Picker
+                                ItemsSource="{Binding StopBitsOptions}"
+                                SelectedItem="{Binding SelectedStopBits}"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                         </VerticalStackLayout>
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Parity  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
                             FontSize="12"
-                            Text="Parity" />
-                        <Picker ItemsSource="{Binding ParityOptions}" SelectedItem="{Binding SelectedParity}" />
+                            Text="Parity"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
+                        <Picker
+                            ItemsSource="{Binding ParityOptions}"
+                            SelectedItem="{Binding SelectedParity}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  RTS Enable  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -105,19 +144,23 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="RTS 활성화" />
+                                Text="RTS 활성화"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="Request To Send"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsRtsEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  DTR Enable  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -125,16 +168,20 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="DTR 활성화" />
+                                Text="DTR 활성화"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="Data Terminal Ready"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsDtrEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -142,8 +189,10 @@
             <!--  Modbus Settings  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
+                                                  Dark={StaticResource DarkCard}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Border},
+                                              Dark={StaticResource DarkBorder}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="16">
@@ -155,7 +204,9 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="16"
-                            Text="모드버스 설정" />
+                            Text="모드버스 설정"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </HorizontalStackLayout>
 
                     <!--  Protocol  -->
@@ -163,48 +214,67 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="12"
-                            Text="프로토콜" />
+                            Text="프로토콜"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                         <Picker
                             ItemsSource="{Binding ModbusProtocolOptions}"
                             SelectedIndexChanged="OnModbusProtocolChanged"
-                            SelectedItem="{Binding SelectedModbusProtocol}" />
+                            SelectedItem="{Binding SelectedModbusProtocol}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                         <Label
                             FontSize="10"
                             Text="시리얼 포트를 통한 통신 (위의 시리얼 포트 설정 사용)"
-                            TextColor="{StaticResource Gray600}" />
+                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                        Dark={StaticResource DarkMutedForeground}}" />
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Slave ID  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
                             FontSize="12"
-                            Text="슬레이브 ID" />
-                        <Entry Keyboard="Numeric" Text="{Binding ModbusSlaveId}" />
+                            Text="슬레이브 ID"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
+                        <Entry
+                            Keyboard="Numeric"
+                            Text="{Binding ModbusSlaveId}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                         <Label
                             FontSize="10"
                             Text="통신할 장치의 주소 (1-247)"
-                            TextColor="{StaticResource Gray600}" />
+                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                        Dark={StaticResource DarkMutedForeground}}" />
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Timeout  -->
                     <VerticalStackLayout Spacing="8">
                         <Label
                             FontAttributes="Bold"
                             FontSize="12"
-                            Text="타임아웃 (ms)" />
-                        <Entry Keyboard="Numeric" Text="{Binding ModbusTimeout}" />
+                            Text="타임아웃 (ms)"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
+                        <Entry
+                            Keyboard="Numeric"
+                            Text="{Binding ModbusTimeout}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                         <Label
                             FontSize="10"
                             Text="응답 대기 시간"
-                            TextColor="{StaticResource Gray600}" />
+                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                        Dark={StaticResource DarkMutedForeground}}" />
                     </VerticalStackLayout>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Auto Reconnect  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -212,19 +282,23 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="자동 재연결" />
+                                Text="자동 재연결"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="연결 끊김 시 자동 재연결"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsAutoReconnectEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  CRC Verification  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -232,16 +306,20 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="CRC 검증" />
+                                Text="CRC 검증"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="데이터 무결성 검증 (RTU only)"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsCrcVerificationEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -249,8 +327,10 @@
             <!--  General Settings  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
+                                                  Dark={StaticResource DarkCard}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Border},
+                                              Dark={StaticResource DarkBorder}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="16">
@@ -262,7 +342,9 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="16"
-                            Text="일반" />
+                            Text="일반"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </HorizontalStackLayout>
 
                     <!--  Language  -->
@@ -271,19 +353,24 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="언어" />
+                                Text="언어"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="앱 표시 언어"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Picker
                             Grid.Column="1"
                             ItemsSource="{Binding LanguageOptions}"
-                            SelectedItem="{Binding SelectedLanguage}" />
+                            SelectedItem="{Binding SelectedLanguage}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Dark Mode  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -291,16 +378,20 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="다크 모드" />
+                                Text="다크 모드"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="어두운 테마 사용"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsDarkModeEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -308,8 +399,10 @@
             <!--  Notification Settings  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
+                                                  Dark={StaticResource DarkCard}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Border},
+                                              Dark={StaticResource DarkBorder}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="16">
@@ -321,7 +414,9 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="16"
-                            Text="알림" />
+                            Text="알림"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </HorizontalStackLayout>
 
                     <!--  Connection Notification  -->
@@ -330,19 +425,23 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="연결 알림" />
+                                Text="연결 알림"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="연결 상태 변경 시 알림"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsConnectionNotificationEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Error Notification  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -350,19 +449,23 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="오류 알림" />
+                                Text="오류 알림"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="통신 오류 발생 시 알림"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsErrorNotificationEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Sound Notification  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -370,16 +473,20 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="소리 알림" />
+                                Text="소리 알림"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="알림 소리 재생"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsSoundNotificationEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -387,8 +494,10 @@
             <!--  Data Settings  -->
             <Frame
                 Padding="16"
-                BackgroundColor="White"
-                BorderColor="{StaticResource Gray200}"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
+                                                  Dark={StaticResource DarkCard}}"
+                BorderColor="{AppThemeBinding Light={StaticResource Border},
+                                              Dark={StaticResource DarkBorder}}"
                 CornerRadius="12"
                 HasShadow="False">
                 <VerticalStackLayout Spacing="16">
@@ -400,7 +509,9 @@
                         <Label
                             FontAttributes="Bold"
                             FontSize="16"
-                            Text="데이터" />
+                            Text="데이터"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </HorizontalStackLayout>
 
                     <!--  Auto Save Logs  -->
@@ -409,19 +520,23 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="로그 자동 저장" />
+                                Text="로그 자동 저장"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="통신 로그 자동으로 저장"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsAutoSaveLogsEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Log Retention  -->
                     <Grid ColumnDefinitions="*,140">
@@ -429,19 +544,24 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="로그 보관 기간" />
+                                Text="로그 보관 기간"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="로그 파일 보관 기간"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Picker
                             Grid.Column="1"
                             ItemsSource="{Binding LogRetentionOptions}"
-                            SelectedItem="{Binding SelectedLogRetention}" />
+                            SelectedItem="{Binding SelectedLogRetention}"
+                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                        Dark={StaticResource DarkForeground}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  Timestamp Display  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -449,19 +569,23 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="타임스탬프 표시" />
+                                Text="타임스탬프 표시"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="로그에 시간 정보 표시"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsTimestampDisplayEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
 
-                    <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
+                    <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />
 
                     <!--  HEX Format  -->
                     <Grid ColumnDefinitions="*,Auto">
@@ -469,16 +593,20 @@
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
-                                Text="HEX 형식 표시" />
+                                Text="HEX 형식 표시"
+                                TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                            Dark={StaticResource DarkForeground}}" />
                             <Label
                                 FontSize="11"
                                 Text="데이터를 16진수로 표시"
-                                TextColor="{StaticResource Gray600}" />
+                                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                            Dark={StaticResource DarkMutedForeground}}" />
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
                             IsToggled="{Binding IsHexFormatEnabled}"
-                            OnColor="{StaticResource YellowPrimary}" />
+                            OnColor="{AppThemeBinding Light={StaticResource Primary},
+                                                      Dark={StaticResource DarkPrimary}}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>

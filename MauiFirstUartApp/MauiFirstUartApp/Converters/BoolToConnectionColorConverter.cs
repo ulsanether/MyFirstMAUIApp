@@ -1,20 +1,21 @@
 ﻿using System.Globalization;
 
-namespace MauiFirstUartApp.Converters;
-
-public class BoolToConnectionColorConverter : IValueConverter
+namespace MauiFirstUartApp.Converters
 {
-    public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+    public class BoolToConnectionColorConverter : IValueConverter
     {
-        if (value is bool isConnected)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return isConnected ? Color.FromArgb("#10B981") : Color.FromArgb("#EF4444");
+            if (value is bool isConnected)
+            {
+                return isConnected ? Colors.Green : Colors.Red;
+            }
+            return Colors.Gray;
         }
-        return Color.FromArgb("#6B7280");
-    }
 
-    public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-    {
-        throw new NotImplementedException();
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

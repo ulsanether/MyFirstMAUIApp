@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    x:Class="MauiFirstUartApp.Views.LoadingPage"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    BackgroundColor="{AppThemeBinding Light={StaticResource Background},
+                                      Dark={StaticResource DarkBackground}}"
+    NavigationPage.HasNavigationBar="False">
+
+    <Grid>
+        <VerticalStackLayout
+            HorizontalOptions="Center"
+            Spacing="32"
+            VerticalOptions="Center">
+
+            <!--  로고 영역  -->
+            <Frame
+                Padding="24"
+                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
+                                                  Dark={StaticResource DarkCard}}"
+                BorderColor="Transparent"
+                CornerRadius="24"
+                HasShadow="True"
+                HeightRequest="120"
+                WidthRequest="120">
+                <Grid>
+                    <!--  아이콘 배경  -->
+                    <Ellipse
+                        Fill="{AppThemeBinding Light={StaticResource Primary},
+                                               Dark={StaticResource DarkPrimary}}"
+                        HeightRequest="72"
+                        WidthRequest="72" />
+
+                    <!--  아이콘  -->
+                    <Label
+                        FontFamily="MaterialIcons"
+                        FontSize="36"
+                        HorizontalOptions="Center"
+                        Text="&#xe1c0;"
+                        TextColor="{AppThemeBinding Light={StaticResource PrimaryForeground},
+                                                    Dark={StaticResource DarkPrimaryForeground}}"
+                        VerticalOptions="Center" />
+                </Grid>
+            </Frame>
+
+            <!--  앱 이름 및 설명  -->
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
+                <Label
+                    FontAttributes="Bold"
+                    FontSize="32"
+                    HorizontalTextAlignment="Center"
+                    Text="씨투모통"
+                    TextColor="{AppThemeBinding Light={StaticResource Foreground},
+                                                Dark={StaticResource DarkForeground}}" />
+
+                <Label
+                    FontSize="16"
+                    HorizontalTextAlignment="Center"
+                    Text="Serial &amp; Modbus Communication"
+                    TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                Dark={StaticResource DarkMutedForeground}}" />
+            </VerticalStackLayout>
+
+            <!--  로딩 인디케이터  -->
+            <VerticalStackLayout HorizontalOptions="Center" Spacing="16">
+                <ActivityIndicator
+                    x:Name="LoadingIndicator"
+                    HeightRequest="32"
+                    IsRunning="True"
+                    WidthRequest="32"
+                    Color="{AppThemeBinding Light={StaticResource Primary},
+                                            Dark={StaticResource DarkPrimary}}" />
+
+                <Label
+                    x:Name="LoadingText"
+                    FontSize="14"
+                    HorizontalTextAlignment="Center"
+                    Text="앱을 초기화하는 중..."
+                    TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                Dark={StaticResource DarkMutedForeground}}" />
+            </VerticalStackLayout>
+
+        </VerticalStackLayout>
+
+        <!--  버전 정보 (하단)  -->
+        <VerticalStackLayout
+            Margin="0,0,0,32"
+            HorizontalOptions="Center"
+            Spacing="8"
+            VerticalOptions="End">
+
+            <Frame
+                Padding="12,6"
+                BackgroundColor="{AppThemeBinding Light={StaticResource YellowLight},
+                                                  Dark={StaticResource DarkAccent}}"
+                BorderColor="Transparent"
+                CornerRadius="16"
+                HasShadow="False">
+                <Label
+                    FontSize="12"
+                    Text="버전 1.0.0"
+                    TextColor="{AppThemeBinding Light={StaticResource YellowDark},
+                                                Dark={StaticResource DarkAccentForeground}}" />
+            </Frame>
+
+            <Label
+                FontSize="10"
+                HorizontalTextAlignment="Center"
+                Text="© 2025 All rights reserved"
+                TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                            Dark={StaticResource DarkMutedForeground}}" />
+        </VerticalStackLayout>
+
+    </Grid>
+
+</ContentPage>

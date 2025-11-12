@@ -99,6 +99,9 @@
 	  <MauiXaml Update="Views\InfoPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
+	  <MauiXaml Update="Views\LoadingPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\ModbusPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>

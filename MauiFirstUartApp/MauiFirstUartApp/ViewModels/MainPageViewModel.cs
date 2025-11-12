@@ -24,6 +24,14 @@ public enum LogType
 }
 
 
+// ActivityLog 클래스 정의
+public class ActivityLogItem
+{
+    public string Time { get; set; } = "";
+    public string Message { get; set; } = "";
+    public Color BackgroundColor { get; set; }
+    public Color MessageColor { get; set; }
+}
 
 public class ModbusDataItem
 {
@@ -39,6 +47,49 @@ public class ModbusDataItem
 
 public class MainPageViewModel : BindableObject
 {
+
+
+
+    // ActivityLog 컬렉션
+    public ObservableCollection<ActivityLogItem> ActivityLog { get; } = new();
+
+    // 대시보드용 통계 속성들
+    public int SentCount => SendCount;
+    public int ReceivedCount => ReceiveCount;
+
+    private int _errorCount;
+    public int ErrorCount
+    {
+        get => _errorCount;
+        set
+        {
+            _errorCount = value;
+            OnPropertyChanged();
+        }
+    }
+
+    // 연결 상태 관련 속성들
+    public string ConnectionTypeText => SelectedSerialType == SerialType.Modbus ? "모드버스 RTU 통신" : "일반 시리얼 통신";
+
+    public string PortName => SelectedPort ?? "선택 안됨";
+
+    public string ModbusProtocol => SelectedModbusProtocol;
+
+    public string SlaveId => ModbusSlaveId.ToString();
+
+    // 모드 확인 속성들
+    public bool IsSerialMode => SelectedSerialType == SerialType.Normal;
+    public bool IsModbusMode => SelectedSerialType == SerialType.Modbus;
+
+    // 상태 표시 색상 속성들
+    public Color StatusBadgeColor => IsConnected ?
+        (Application.Current?.RequestedTheme == AppTheme.Dark ? Color.FromArgb("#059669") : Color.FromArgb("#DCFCE7")) :
+        (Application.Current?.RequestedTheme == AppTheme.Dark ? Color.FromArgb("#DC2626") : Color.FromArgb("#FEE2E2"));
+
+    public Color StatusBorderColor => IsConnected ? Color.FromArgb("#059669") : Color.FromArgb("#DC2626");
+
+    public Color StatusTextColor => IsConnected ? Color.FromArgb("#059669") : Color.FromArgb("#DC2626");
+
 
 
 
@@ -275,7 +326,16 @@ public class MainPageViewModel : BindableObject
     public bool IsDarkModeEnabled
     {
         get => _isDarkModeEnabled;
-        set { _isDarkModeEnabled = value; OnPropertyChanged(); }
+        set
+        {
+            if (_isDarkModeEnabled != value)
+            {
+                _isDarkModeEnabled = value;
+                OnPropertyChanged();
+
+                ApplyTheme(value);
+            }
+        }
     }
 
     // 알림 설정
@@ -345,6 +405,9 @@ public class MainPageViewModel : BindableObject
             {
                 _selectedSerialType = value;
                 OnPropertyChanged();
+                OnPropertyChanged(nameof(ConnectionTypeText));
+                OnPropertyChanged(nameof(IsSerialMode));
+                OnPropertyChanged(nameof(IsModbusMode));
 
                 ((Command)ModbusReadCommand).ChangeCanExecute();
                 ((Command)ModbusWriteCommand).ChangeCanExecute();
@@ -352,6 +415,7 @@ public class MainPageViewModel : BindableObject
             }
         }
     }
+
 
     private string? _selectedPort;
     public string? SelectedPort
@@ -466,7 +530,6 @@ public class MainPageViewModel : BindableObject
         ClearMessageCommand = new Command(() => SendText = "");
         ClearLogsCommand = new Command(() => ClearLogs());
         QuickSendCommand = new Command<string>(async (message) => await QuickSendAsync(message));
-
 
 
         ModbusReadCommand = new Command(async () => await ModbusReadAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
@@ -773,5 +836,16 @@ public class MainPageViewModel : BindableObject
     {
         StatusText = "코일 쓰기 기능은 아직 구현되지 않았습니다.";
     }
+
+
+    private void ApplyTheme(bool isDarkMode)
+    {
+     
+        MainThread.BeginInvokeOnMainThread(() =>
+        {
+            Application.Current.UserAppTheme = isDarkMode ? AppTheme.Dark : AppTheme.Light;
+        });
+    }
+
 }
 
