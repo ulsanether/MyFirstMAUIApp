@@ -2,7 +2,7 @@
 using MauiFirstUartApp.Core.Abstractions;
 using MauiFirstUartApp.Services;
 using MauiFirstUartApp.ViewModels;
-
+using MauiFirstUartApp.Views; // Views 네임스페이스 추가
 
 #if WINDOWS
 using MauiFirstUartApp.Platforms.Windows;
@@ -23,7 +23,6 @@ public static class MauiProgram
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                 fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-
                 fonts.AddFont("MaterialIcons-Regular.ttf", "MaterialIcons");
                 fonts.AddFont("MaterialIconsOutlined-Regular.otf", "MaterialIconsOutlined");
             });
@@ -37,7 +36,7 @@ public static class MauiProgram
 
         return builder.Build();
     }
-  
+
     private static void RegisterServices(IServiceCollection services)
     {
         // 플랫폼별 서비스 등록
@@ -50,15 +49,15 @@ public static class MauiProgram
         // 비즈니스 서비스
         services.AddSingleton<UartCommunicationService>();
 
-        // ViewModels
-        services.AddTransient<MainPageViewModel>();
+        // ViewModels - 싱글톤으로 변경 (ViewModel 공유를 위해)
+        services.AddSingleton<MainPageViewModel>();
 
         // Pages
         services.AddTransient<MainPage>();
+        services.AddTransient<SerialTerminalPage>();
 
-
-        //설정 페이지
-     //   services.AddTransient<SettingsPage>();
-
+        services.AddTransient<ModbusPage>();
+        services.AddTransient<SettingPage>(); 
     }
 }
+

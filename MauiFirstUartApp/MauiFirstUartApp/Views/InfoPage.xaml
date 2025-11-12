@@ -50,7 +50,7 @@
                         FontAttributes="Bold"
                         FontSize="20"
                         HorizontalTextAlignment="Center"
-                        Text="통신 앱"
+                        Text="씨투모통"
                         TextColor="{AppThemeBinding Light={StaticResource Gray900},
                                                     Dark={StaticResource Gray50}}" />
                     <Label
@@ -310,8 +310,9 @@
                         BorderColor="{AppThemeBinding Light={StaticResource Gray200},
                                                       Dark={StaticResource Gray700}}"
                         BorderWidth="1"
+                        Clicked="OnEmailButtonClicked"
                         HorizontalOptions="FillAndExpand"
-                        Text="📧 이메일 보내기"
+                        Text="📧 이메일 보내기 링크"
                         TextColor="{AppThemeBinding Light={StaticResource Gray900},
                                                     Dark={StaticResource Gray50}}" />
 
@@ -320,12 +321,15 @@
                         BorderColor="{AppThemeBinding Light={StaticResource Gray200},
                                                       Dark={StaticResource Gray700}}"
                         BorderWidth="1"
+                        Clicked="OnGitHubButtonClicked"
                         HorizontalOptions="FillAndExpand"
-                        Text="🔗 GitHub 저장소"
+                        Text="🔗 GitHub 저장소 링크"
                         TextColor="{AppThemeBinding Light={StaticResource Gray900},
                                                     Dark={StaticResource Gray50}}" />
+
                 </VerticalStackLayout>
             </Frame>
+
 
             <!--  Footer  -->
             <VerticalStackLayout
@@ -333,6 +337,7 @@
                 HorizontalOptions="Center"
                 Spacing="8">
                 <HorizontalStackLayout HorizontalOptions="Center" Spacing="4">
+
                     <Label
                         FontSize="12"
                         Text="Made with"

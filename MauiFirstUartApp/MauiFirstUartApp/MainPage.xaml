@@ -4,119 +4,139 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <ScrollView>
-        <VerticalStackLayout Padding="16" Spacing="16">
+        <VerticalStackLayout
+            Padding="16"
+            MaximumWidthRequest="800"
+            Spacing="16">
 
-            <!-- Serial Type Selection -->
+            <!--  Serial Type Selection  -->
             <HorizontalStackLayout Spacing="20">
-                <Label Text="시리얼 타입:" VerticalOptions="Center"/>
-                <RadioButton Content="일반 시리얼" 
-                             GroupName="SerialType" 
-                             IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Normal, Mode=TwoWay}"/>
-                <RadioButton Content="모드버스" 
-                             GroupName="SerialType" 
-                             IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus, Mode=TwoWay}"/>
+                <Label Text="시리얼 타입:" VerticalOptions="Center" />
+                <RadioButton
+                    Content="일반 시리얼"
+                    GroupName="SerialType"
+                    IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Normal, Mode=TwoWay}" />
+                <RadioButton
+                    Content="모드버스"
+                    GroupName="SerialType"
+                    IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus, Mode=TwoWay}" />
             </HorizontalStackLayout>
 
-            <!-- Modbus Settings (Only visible when Modbus is selected) -->
-            <VerticalStackLayout IsVisible="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus}" 
-                                Spacing="10">
-                <Label Text="모드버스 설정" FontAttributes="Bold"/>
+            <!--  Modbus Settings (Only visible when Modbus is selected)  -->
+            <VerticalStackLayout IsVisible="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus}" Spacing="10">
+                <Label FontAttributes="Bold" Text="모드버스 설정" />
                 <HorizontalStackLayout Spacing="10">
-                    <Label Text="슬레이브 ID:" VerticalOptions="Center"/>
-                    <Entry Keyboard="Numeric" 
-                           Text="{Binding ModbusSlaveId, Mode=TwoWay}" 
-                           WidthRequest="60"/>
-                    <Label Text="어드레스:" VerticalOptions="Center"/>
-                    <Entry Keyboard="Numeric" 
-                           Text="{Binding ModbusAddress, Mode=TwoWay}" 
-                           WidthRequest="80"/>
-                    <Label Text="개수:" VerticalOptions="Center"/>
-                    <Entry Keyboard="Numeric" 
-                           Text="{Binding ModbusQuantity, Mode=TwoWay}" 
-                           WidthRequest="60"/>
+                    <Label Text="슬레이브 ID:" VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding ModbusSlaveId, Mode=TwoWay}"
+                        WidthRequest="60" />
+                    <Label Text="어드레스:" VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding ModbusAddress, Mode=TwoWay}"
+                        WidthRequest="80" />
+                    <Label Text="개수:" VerticalOptions="Center" />
+                    <Entry
+                        Keyboard="Numeric"
+                        Text="{Binding ModbusQuantity, Mode=TwoWay}"
+                        WidthRequest="60" />
                 </HorizontalStackLayout>
 
-                <Button Text="모드버스 읽기" 
-                        Command="{Binding ModbusReadCommand}" 
-                        IsEnabled="{Binding IsConnected}"
-                        BackgroundColor="{StaticResource YellowPrimary}" 
-                        TextColor="{StaticResource Gray900}"/>
+                <Button
+                    BackgroundColor="{StaticResource YellowPrimary}"
+                    Command="{Binding ModbusReadCommand}"
+                    IsEnabled="{Binding IsConnected}"
+                    Text="모드버스 읽기"
+                    TextColor="{StaticResource Gray900}" />
 
-                <Button Text="모드버스 인풋 읽기" 
-                        Command="{Binding ModbusReadInputCommand}" 
-                        IsEnabled="{Binding IsConnected}"
-                        BackgroundColor="{StaticResource YellowPrimary}" 
-                        TextColor="{StaticResource Gray900}"/>
+                <Button
+                    BackgroundColor="{StaticResource YellowPrimary}"
+                    Command="{Binding ModbusReadInputCommand}"
+                    IsEnabled="{Binding IsConnected}"
+                    Text="모드버스 인풋 읽기"
+                    TextColor="{StaticResource Gray900}" />
 
-                <Button Text="모드버스 쓰기" 
-                        Command="{Binding ModbusWriteCommand}" 
-                        IsEnabled="{Binding IsConnected}"
-                        BackgroundColor="{StaticResource YellowPrimary}" 
-                        TextColor="{StaticResource Gray900}"/>
+                <Button
+                    BackgroundColor="{StaticResource YellowPrimary}"
+                    Command="{Binding ModbusWriteCommand}"
+                    IsEnabled="{Binding IsConnected}"
+                    Text="모드버스 쓰기"
+                    TextColor="{StaticResource Gray900}" />
             </VerticalStackLayout>
 
-            <!-- Port and Baud Rate -->
+            <!--  Port and Baud Rate  -->
             <HorizontalStackLayout Spacing="10">
-                <Label Text="포트:" VerticalOptions="Center"/>
-                <Picker ItemsSource="{Binding PortNames}" 
-                        SelectedItem="{Binding SelectedPort, Mode=TwoWay}" 
-                        WidthRequest="120"/>
-                <Label Text="Baud:" VerticalOptions="Center"/>
-                <Entry Keyboard="Numeric" 
-                       Text="{Binding BaudRate, Mode=TwoWay}" 
-                       WidthRequest="80"/>
+                <Label Text="포트:" VerticalOptions="Center" />
+                <Picker
+                    ItemsSource="{Binding PortNames}"
+                    SelectedItem="{Binding SelectedPort, Mode=TwoWay}"
+                    WidthRequest="120" />
+                <Label Text="Baud:" VerticalOptions="Center" />
+                <Entry
+                    Keyboard="Numeric"
+                    Text="{Binding BaudRate, Mode=TwoWay}"
+                    WidthRequest="80" />
             </HorizontalStackLayout>
 
-            <!-- DataBits, Parity, StopBits -->
+            <!--  DataBits, Parity, StopBits  -->
             <HorizontalStackLayout Spacing="10">
-                <Label Text="DataBits:" VerticalOptions="Center"/>
-                <Entry Keyboard="Numeric" 
-                       Text="{Binding DataBits, Mode=TwoWay}" 
-                       WidthRequest="50"/>
-                <Label Text="Parity:" VerticalOptions="Center"/>
-                <Picker ItemsSource="{Binding ParityOptions}" 
-                        SelectedItem="{Binding SelectedParity, Mode=TwoWay}" 
-                        WidthRequest="80"/>
-                <Label Text="StopBits:" VerticalOptions="Center"/>
-                <Picker ItemsSource="{Binding StopBitsOptions}" 
-                        SelectedItem="{Binding SelectedStopBits, Mode=TwoWay}" 
-                        WidthRequest="80"/>
+                <Label Text="DataBits:" VerticalOptions="Center" />
+                <Entry
+                    Keyboard="Numeric"
+                    Text="{Binding DataBits, Mode=TwoWay}"
+                    WidthRequest="50" />
+                <Label Text="Parity:" VerticalOptions="Center" />
+                <Picker
+                    ItemsSource="{Binding ParityOptions}"
+                    SelectedItem="{Binding SelectedParity, Mode=TwoWay}"
+                    WidthRequest="80" />
+                <Label Text="StopBits:" VerticalOptions="Center" />
+                <Picker
+                    ItemsSource="{Binding StopBitsOptions}"
+                    SelectedItem="{Binding SelectedStopBits, Mode=TwoWay}"
+                    WidthRequest="80" />
             </HorizontalStackLayout>
 
-            <!-- Connect/Disconnect Buttons -->
+            <!--  Connect/Disconnect Buttons  -->
             <HorizontalStackLayout Spacing="10">
-                <Button Text="연결" 
-                        Command="{Binding ConnectCommand}" 
-                        IsEnabled="{Binding CanConnect}"
-                        BackgroundColor="{StaticResource YellowPrimary}" 
-                        TextColor="{StaticResource Gray900}"/>
-                <Button Text="해제" 
-                        Command="{Binding DisconnectCommand}" 
-                        IsEnabled="{Binding CanDisconnect}"
-                        BackgroundColor="LightCoral" 
-                        TextColor="White"/>
-                <Label Text="{Binding StatusText}" VerticalOptions="Center"/>
+                <Button
+                    BackgroundColor="{StaticResource YellowPrimary}"
+                    Command="{Binding ConnectCommand}"
+                    IsEnabled="{Binding CanConnect}"
+                    Text="연결"
+                    TextColor="{StaticResource Gray900}" />
+                <Button
+                    BackgroundColor="LightCoral"
+                    Command="{Binding DisconnectCommand}"
+                    IsEnabled="{Binding CanDisconnect}"
+                    Text="해제"
+                    TextColor="White" />
+                <Label Text="{Binding StatusText}" VerticalOptions="Center" />
             </HorizontalStackLayout>
 
-            <!-- Send Data Section -->
-            <Label Text="송신 데이터:"/>
+            <!--  Send Data Section  -->
+            <Label Text="송신 데이터:" />
             <HorizontalStackLayout Spacing="10">
-                <Entry Placeholder="데이터 입력" 
-                       Text="{Binding SendText, Mode=TwoWay}" 
-                       WidthRequest="250"/>
-                <Button Text="전송" 
-                        Command="{Binding SendCommand}" 
-                        IsEnabled="{Binding CanSend}"
-                        BackgroundColor="{StaticResource YellowPrimary}" 
-                        TextColor="{StaticResource Gray900}"/>
+                <Entry
+                    Placeholder="데이터 입력"
+                    Text="{Binding SendText, Mode=TwoWay}"
+                    WidthRequest="250" />
+                <Button
+                    BackgroundColor="{StaticResource YellowPrimary}"
+                    Command="{Binding SendCommand}"
+                    IsEnabled="{Binding CanSend}"
+                    Text="전송"
+                    TextColor="{StaticResource Gray900}" />
             </HorizontalStackLayout>
 
-            <!-- Receive Data Section -->
-            <Label Text="수신 데이터:"/>
-            <Editor HeightRequest="80" 
-                    IsReadOnly="True" 
-                    Text="{Binding ReceivedText}"
-                    BackgroundColor="White"/>
+            <!--  Receive Data Section  -->
+            <Label Text="수신 데이터:" />
+            <Editor
+                BackgroundColor="White"
+                HeightRequest="80"
+                IsReadOnly="True"
+                Text="{Binding ReceivedText}" />
 
         </VerticalStackLayout>
     </ScrollView>

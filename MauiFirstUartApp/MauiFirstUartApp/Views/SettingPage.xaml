@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="MauiFirstUartApp.Views.SettingPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -52,16 +52,7 @@
                             FontAttributes="Bold"
                             FontSize="12"
                             Text="포트" />
-                        <Picker x:Name="PortPicker">
-                            <Picker.Items>
-                                <x:String>COM1</x:String>
-                                <x:String>COM2</x:String>
-                                <x:String>COM3</x:String>
-                                <x:String>COM4</x:String>
-                                <x:String>COM5</x:String>
-                                <x:String>COM6</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker ItemsSource="{Binding PortNames}" SelectedItem="{Binding SelectedPort}" />
                     </VerticalStackLayout>
 
                     <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
@@ -72,16 +63,7 @@
                             FontAttributes="Bold"
                             FontSize="12"
                             Text="Baud Rate" />
-                        <Picker x:Name="BaudRatePicker">
-                            <Picker.Items>
-                                <x:String>4800</x:String>
-                                <x:String>9600</x:String>
-                                <x:String>19200</x:String>
-                                <x:String>38400</x:String>
-                                <x:String>57600</x:String>
-                                <x:String>115200</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Entry Keyboard="Numeric" Text="{Binding BaudRate}" />
                     </VerticalStackLayout>
 
                     <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
@@ -93,25 +75,14 @@
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 Text="Data Bits" />
-                            <Picker x:Name="DataBitsPicker">
-                                <Picker.Items>
-                                    <x:String>7</x:String>
-                                    <x:String>8</x:String>
-                                </Picker.Items>
-                            </Picker>
+                            <Entry Keyboard="Numeric" Text="{Binding DataBits}" />
                         </VerticalStackLayout>
                         <VerticalStackLayout Grid.Column="1" Spacing="8">
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 Text="Stop Bits" />
-                            <Picker x:Name="StopBitsPicker">
-                                <Picker.Items>
-                                    <x:String>1</x:String>
-                                    <x:String>1.5</x:String>
-                                    <x:String>2</x:String>
-                                </Picker.Items>
-                            </Picker>
+                            <Picker ItemsSource="{Binding StopBitsOptions}" SelectedItem="{Binding SelectedStopBits}" />
                         </VerticalStackLayout>
                     </Grid>
 
@@ -123,15 +94,7 @@
                             FontAttributes="Bold"
                             FontSize="12"
                             Text="Parity" />
-                        <Picker x:Name="ParityPicker">
-                            <Picker.Items>
-                                <x:String>None</x:String>
-                                <x:String>Even</x:String>
-                                <x:String>Odd</x:String>
-                                <x:String>Mark</x:String>
-                                <x:String>Space</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker ItemsSource="{Binding ParityOptions}" SelectedItem="{Binding SelectedParity}" />
                     </VerticalStackLayout>
 
                     <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
@@ -148,7 +111,10 @@
                                 Text="Request To Send"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding IsRtsEnabled}"
+                            OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
 
                     <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
@@ -165,7 +131,10 @@
                                 Text="Data Terminal Ready"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding IsDtrEnabled}"
+                            OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -195,12 +164,10 @@
                             FontAttributes="Bold"
                             FontSize="12"
                             Text="프로토콜" />
-                        <Picker x:Name="ModbusProtocolPicker" SelectedIndexChanged="OnModbusProtocolChanged">
-                            <Picker.Items>
-                                <x:String>Modbus RTU</x:String>
-                                <x:String>Modbus ASCII</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker
+                            ItemsSource="{Binding ModbusProtocolOptions}"
+                            SelectedIndexChanged="OnModbusProtocolChanged"
+                            SelectedItem="{Binding SelectedModbusProtocol}" />
                         <Label
                             FontSize="10"
                             Text="시리얼 포트를 통한 통신 (위의 시리얼 포트 설정 사용)"
@@ -215,10 +182,7 @@
                             FontAttributes="Bold"
                             FontSize="12"
                             Text="슬레이브 ID" />
-                        <Entry
-                            x:Name="SlaveIdEntry"
-                            Keyboard="Numeric"
-                            Text="1" />
+                        <Entry Keyboard="Numeric" Text="{Binding ModbusSlaveId}" />
                         <Label
                             FontSize="10"
                             Text="통신할 장치의 주소 (1-247)"
@@ -233,10 +197,7 @@
                             FontAttributes="Bold"
                             FontSize="12"
                             Text="타임아웃 (ms)" />
-                        <Entry
-                            x:Name="TimeoutEntry"
-                            Keyboard="Numeric"
-                            Text="1000" />
+                        <Entry Keyboard="Numeric" Text="{Binding ModbusTimeout}" />
                         <Label
                             FontSize="10"
                             Text="응답 대기 시간"
@@ -259,7 +220,7 @@
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
-                            IsToggled="True"
+                            IsToggled="{Binding IsAutoReconnectEnabled}"
                             OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
 
@@ -278,9 +239,8 @@
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
                         <Switch
-                            x:Name="CrcSwitch"
                             Grid.Column="1"
-                            IsToggled="True"
+                            IsToggled="{Binding IsCrcVerificationEnabled}"
                             OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
                 </VerticalStackLayout>
@@ -317,13 +277,10 @@
                                 Text="앱 표시 언어"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Picker x:Name="LanguagePicker" Grid.Column="1">
-                            <Picker.Items>
-                                <x:String>한국어</x:String>
-                                <x:String>English</x:String>
-                                <x:String>日本語</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker
+                            Grid.Column="1"
+                            ItemsSource="{Binding LanguageOptions}"
+                            SelectedItem="{Binding SelectedLanguage}" />
                     </Grid>
 
                     <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
@@ -340,7 +297,10 @@
                                 Text="어두운 테마 사용"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding IsDarkModeEnabled}"
+                            OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -378,7 +338,7 @@
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
-                            IsToggled="True"
+                            IsToggled="{Binding IsConnectionNotificationEnabled}"
                             OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
 
@@ -398,7 +358,7 @@
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
-                            IsToggled="True"
+                            IsToggled="{Binding IsErrorNotificationEnabled}"
                             OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
 
@@ -416,7 +376,10 @@
                                 Text="알림 소리 재생"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding IsSoundNotificationEnabled}"
+                            OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
@@ -454,7 +417,7 @@
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
-                            IsToggled="True"
+                            IsToggled="{Binding IsAutoSaveLogsEnabled}"
                             OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
 
@@ -472,14 +435,10 @@
                                 Text="로그 파일 보관 기간"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Picker x:Name="LogRetentionPicker" Grid.Column="1">
-                            <Picker.Items>
-                                <x:String>1일</x:String>
-                                <x:String>7일</x:String>
-                                <x:String>30일</x:String>
-                                <x:String>90일</x:String>
-                            </Picker.Items>
-                        </Picker>
+                        <Picker
+                            Grid.Column="1"
+                            ItemsSource="{Binding LogRetentionOptions}"
+                            SelectedItem="{Binding SelectedLogRetention}" />
                     </Grid>
 
                     <BoxView HeightRequest="1" Color="{StaticResource Gray200}" />
@@ -498,7 +457,7 @@
                         </VerticalStackLayout>
                         <Switch
                             Grid.Column="1"
-                            IsToggled="True"
+                            IsToggled="{Binding IsTimestampDisplayEnabled}"
                             OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
 
@@ -516,13 +475,15 @@
                                 Text="데이터를 16진수로 표시"
                                 TextColor="{StaticResource Gray600}" />
                         </VerticalStackLayout>
-                        <Switch Grid.Column="1" OnColor="{StaticResource YellowPrimary}" />
+                        <Switch
+                            Grid.Column="1"
+                            IsToggled="{Binding IsHexFormatEnabled}"
+                            OnColor="{StaticResource YellowPrimary}" />
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
 
         </VerticalStackLayout>
     </ScrollView>
-
 
 </ContentPage>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="MauiFirstUartApp.Views.ModbusPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -36,7 +36,7 @@
                         HeightRequest="8"
                         WidthRequest="8"
                         Color="{StaticResource Green500}" />
-                    <Label FontSize="12" Text="Modbus RTU - 슬레이브 ID: 1 - 연결됨" />
+                    <Label FontSize="12" Text="{Binding StatusText}" />
                 </HorizontalStackLayout>
             </Frame>
 
@@ -79,7 +79,10 @@
                         CornerRadius="8"
                         HasShadow="False">
                         <Grid ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
-                            <Switch x:Name="AutoReadSwitch" OnColor="{StaticResource YellowPrimary}" />
+                            <Switch
+                                x:Name="AutoReadSwitch"
+                                IsToggled="{Binding IsAutoReadEnabled}"
+                                OnColor="{StaticResource YellowPrimary}" />
                             <VerticalStackLayout Grid.Column="1" Spacing="2">
                                 <Label
                                     FontAttributes="Bold"
@@ -87,20 +90,15 @@
                                     Text="자동 읽기" />
                                 <Label
                                     FontSize="11"
-                                    Text="1000ms 간격으로 자동 데이터 수집"
+                                    Text="설정된 간격으로 자동 데이터 수집"
                                     TextColor="{StaticResource Gray600}" />
                             </VerticalStackLayout>
                             <Picker
                                 x:Name="IntervalPicker"
                                 Grid.Column="2"
-                                WidthRequest="120">
-                                <Picker.Items>
-                                    <x:String>500ms</x:String>
-                                    <x:String>1s</x:String>
-                                    <x:String>2s</x:String>
-                                    <x:String>5s</x:String>
-                                </Picker.Items>
-                            </Picker>
+                                ItemsSource="{Binding PollingIntervalOptions}"
+                                SelectedItem="{Binding SelectedPollingInterval}"
+                                WidthRequest="120" />
                         </Grid>
                     </Frame>
 
@@ -163,7 +161,7 @@
 
                             <!--  Table Body  -->
                             <ScrollView Grid.Row="1">
-                                <CollectionView x:Name="DataTableCollection">
+                                <CollectionView x:Name="DataTableCollection" ItemsSource="{Binding ModbusDataItems}">
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid
@@ -179,7 +177,7 @@
                                                 <Label
                                                     Grid.Column="1"
                                                     FontSize="11"
-                                                    Text="{Binding Timestamp}" />
+                                                    Text="{Binding FormattedTimestamp}" />
                                                 <Frame
                                                     Grid.Column="2"
                                                     Padding="6,2"
@@ -245,10 +243,9 @@
                                     Text="총 레코드"
                                     TextColor="{StaticResource Gray600}" />
                                 <Label
-                                    x:Name="TotalRecordsLabel"
                                     FontSize="16"
                                     HorizontalTextAlignment="Center"
-                                    Text="0"
+                                    Text="{Binding ModbusDataItems.Count}"
                                     TextColor="{StaticResource Gray700}" />
                             </VerticalStackLayout>
                         </Frame>
@@ -265,10 +262,9 @@
                                     Text="최근 주소"
                                     TextColor="{StaticResource Gray600}" />
                                 <Label
-                                    x:Name="RecentAddressLabel"
                                     FontSize="16"
                                     HorizontalTextAlignment="Center"
-                                    Text="-"
+                                    Text="{Binding ModbusAddress}"
                                     TextColor="{StaticResource Blue600}" />
                             </VerticalStackLayout>
                         </Frame>
@@ -285,10 +281,9 @@
                                     Text="최근 값"
                                     TextColor="{StaticResource Gray600}" />
                                 <Label
-                                    x:Name="RecentValueLabel"
                                     FontSize="16"
                                     HorizontalTextAlignment="Center"
-                                    Text="-"
+                                    Text="{Binding WriteValue}"
                                     TextColor="{StaticResource YellowDark}" />
                             </VerticalStackLayout>
                         </Frame>
@@ -296,7 +291,7 @@
                 </VerticalStackLayout>
             </Frame>
 
-            <!--  Read/Write Operations (Tabs 대신 Segmented Control 사용)  -->
+            <!--  Read/Write Operations  -->
             <Frame
                 Padding="16"
                 BackgroundColor="White"
@@ -336,42 +331,39 @@
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 Text="기능 코드" />
-                            <Picker x:Name="ReadFunctionPicker">
-                                <Picker.Items>
-                                    <x:String>01 - Read Coils</x:String>
-                                    <x:String>02 - Read Discrete Inputs</x:String>
-                                    <x:String>03 - Read Holding Registers</x:String>
-                                    <x:String>04 - Read Input Registers</x:String>
-                                </Picker.Items>
-                            </Picker>
+                            <Picker
+                                x:Name="ReadFunctionPicker"
+                                ItemsSource="{Binding ReadFunctionOptions}"
+                                SelectedItem="{Binding SelectedReadFunction}" />
                         </VerticalStackLayout>
 
-                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                        <Grid ColumnDefinitions="*,*,*" ColumnSpacing="12">
                             <VerticalStackLayout Spacing="8">
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="12"
-                                    Text="시작 주소" />
-                                <Entry
-                                    x:Name="ReadAddressEntry"
-                                    Keyboard="Numeric"
-                                    Text="0" />
+                                    Text="슬레이브 ID" />
+                                <Entry Keyboard="Numeric" Text="{Binding ModbusSlaveId}" />
                             </VerticalStackLayout>
                             <VerticalStackLayout Grid.Column="1" Spacing="8">
                                 <Label
                                     FontAttributes="Bold"
                                     FontSize="12"
+                                    Text="시작 주소" />
+                                <Entry Keyboard="Numeric" Text="{Binding ModbusAddress}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="2" Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
                                     Text="레지스터 개수" />
-                                <Entry
-                                    x:Name="ReadCountEntry"
-                                    Keyboard="Numeric"
-                                    Text="1" />
+                                <Entry Keyboard="Numeric" Text="{Binding ModbusQuantity}" />
                             </VerticalStackLayout>
                         </Grid>
 
                         <Button
                             BackgroundColor="{StaticResource YellowPrimary}"
-                            Clicked="OnReadExecuteClicked"
+                            Command="{Binding ModbusReadCommand}"
                             Text="읽기 실행"
                             TextColor="{StaticResource Gray900}" />
                     </VerticalStackLayout>
@@ -386,38 +378,43 @@
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 Text="기능 코드" />
-                            <Picker x:Name="WriteFunctionPicker">
-                                <Picker.Items>
-                                    <x:String>05 - Write Single Coil</x:String>
-                                    <x:String>06 - Write Single Register</x:String>
-                                    <x:String>15 - Write Multiple Coils</x:String>
-                                    <x:String>16 - Write Multiple Registers</x:String>
-                                </Picker.Items>
-                            </Picker>
+                            <Picker
+                                x:Name="WriteFunctionPicker"
+                                ItemsSource="{Binding WriteFunctionOptions}"
+                                SelectedItem="{Binding SelectedWriteFunction}" />
                         </VerticalStackLayout>
 
-                        <VerticalStackLayout Spacing="8">
-                            <Label
-                                FontAttributes="Bold"
-                                FontSize="12"
-                                Text="시작 주소" />
-                            <Entry
-                                x:Name="WriteAddressEntry"
-                                Keyboard="Numeric"
-                                Text="0" />
-                        </VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                            <VerticalStackLayout Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="슬레이브 ID" />
+                                <Entry Keyboard="Numeric" Text="{Binding ModbusSlaveId}" />
+                            </VerticalStackLayout>
+                            <VerticalStackLayout Grid.Column="1" Spacing="8">
+                                <Label
+                                    FontAttributes="Bold"
+                                    FontSize="12"
+                                    Text="시작 주소" />
+                                <Entry Keyboard="Numeric" Text="{Binding ModbusAddress}" />
+                            </VerticalStackLayout>
+                        </Grid>
 
                         <VerticalStackLayout Spacing="8">
                             <Label
                                 FontAttributes="Bold"
                                 FontSize="12"
                                 Text="값" />
-                            <Entry x:Name="WriteValueEntry" Placeholder="예: 1234 또는 0x4D2" />
+                            <Entry
+                                Keyboard="Numeric"
+                                Placeholder="예: 1234"
+                                Text="{Binding WriteValue}" />
                         </VerticalStackLayout>
 
                         <Button
                             BackgroundColor="{StaticResource YellowPrimary}"
-                            Clicked="OnWriteExecuteClicked"
+                            Command="{Binding ModbusWriteCommand}"
                             Text="쓰기 실행"
                             TextColor="{StaticResource Gray900}" />
                     </VerticalStackLayout>
@@ -447,6 +444,7 @@
                             BackgroundColor="Transparent"
                             BorderColor="{StaticResource Gray200}"
                             BorderWidth="1"
+                            Command="{Binding ReadMultipleRegistersCommand}"
                             FontSize="12"
                             Text="레지스터 0-9 읽기"
                             TextColor="{StaticResource Gray900}" />
@@ -456,6 +454,7 @@
                             BackgroundColor="Transparent"
                             BorderColor="{StaticResource Gray200}"
                             BorderWidth="1"
+                            Command="{Binding ReadCoilsCommand}"
                             FontSize="12"
                             Text="코일 0-7 읽기"
                             TextColor="{StaticResource Gray900}" />
@@ -465,6 +464,7 @@
                             BackgroundColor="Transparent"
                             BorderColor="{StaticResource Gray200}"
                             BorderWidth="1"
+                            Command="{Binding WriteRegister100Command}"
                             FontSize="12"
                             Text="레지스터 0에 100 쓰기"
                             TextColor="{StaticResource Gray900}" />
@@ -474,6 +474,7 @@
                             BackgroundColor="Transparent"
                             BorderColor="{StaticResource Gray200}"
                             BorderWidth="1"
+                            Command="{Binding WriteCoilOnCommand}"
                             FontSize="12"
                             Text="코일 0 켜기"
                             TextColor="{StaticResource Gray900}" />
@@ -492,10 +493,9 @@
                     HasShadow="False">
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
                         <Label
-                            x:Name="ModbusReadCountLabel"
                             FontSize="18"
                             HorizontalTextAlignment="Center"
-                            Text="0" />
+                            Text="{Binding ModbusReadCount}" />
                         <Label
                             FontSize="10"
                             HorizontalTextAlignment="Center"
@@ -512,10 +512,9 @@
                     HasShadow="False">
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
                         <Label
-                            x:Name="ModbusWriteCountLabel"
                             FontSize="18"
                             HorizontalTextAlignment="Center"
-                            Text="0" />
+                            Text="{Binding ModbusWriteCount}" />
                         <Label
                             FontSize="10"
                             HorizontalTextAlignment="Center"
@@ -532,10 +531,9 @@
                     HasShadow="False">
                     <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
                         <Label
-                            x:Name="ModbusTotalCountLabel"
                             FontSize="18"
                             HorizontalTextAlignment="Center"
-                            Text="0" />
+                            Text="{Binding ModbusTotalCount}" />
                         <Label
                             FontSize="10"
                             HorizontalTextAlignment="Center"

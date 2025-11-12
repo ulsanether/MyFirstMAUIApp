@@ -1,22 +1,22 @@
+ï»¿using MauiFirstUartApp.ViewModels;
+
 namespace MauiFirstUartApp.Views;
 
 public partial class SettingPage : ContentPage
 {
-	public SettingPage()
-	{
-		InitializeComponent();
-	}
-    // ÀÌº¥Æ® ÇÚµé·¯ Ãß°¡
+    public SettingPage(MainPageViewModel viewModel)
+    {
+        InitializeComponent();
+        BindingContext = viewModel; // ê°™ì€ ì¸ìŠ¤í„´ìŠ¤ ê³µìœ 
+    }
+
     private void OnModbusProtocolChanged(object sender, EventArgs e)
     {
-        // ÇÊ¿ä¿¡ µû¶ó ÇÁ·ÎÅäÄİ º¯°æ ½Ã µ¿ÀÛ ±¸Çö
         var picker = sender as Picker;
         if (picker != null && picker.SelectedItem != null)
         {
             string selectedProtocol = picker.SelectedItem.ToString();
-            // ¿¹½Ã: TCP °ü·Ã UI Ç¥½Ã/¼û±è Ã³¸® (ÇöÀç TCP Ç×¸ñ ¾øÀ½)
-            // TcpSettingsStack.IsVisible = selectedProtocol.Contains("TCP");
+            // í•„ìš”ì‹œ UI ì²˜ë¦¬
         }
     }
-
 }
