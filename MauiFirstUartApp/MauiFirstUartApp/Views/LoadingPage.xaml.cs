@@ -1,15 +1,21 @@
 using MauiFirstUartApp.ViewModels;
-
+using MauiFirstUartApp.Views;
 namespace MauiFirstUartApp.Views;
 
 public partial class LoadingPage : ContentPage
 {
-    private readonly MainPageViewModel _viewModel;
+    private readonly MainPageViewModel _mainViewModel;
 
-    public LoadingPage(MainPageViewModel viewModel)
+    private SerialTerminalPage _serialTerminalPage;
+    private ModbusPage _modbusPage;
+    private SettingPage _settingPage;
+
+    public LoadingPage(
+        MainPageViewModel mainViewModel)
     {
         InitializeComponent();
-        _viewModel = viewModel;
+        _mainViewModel = mainViewModel;
+       
     }
 
     protected override async void OnAppearing()
@@ -18,37 +24,34 @@ public partial class LoadingPage : ContentPage
         await InitializeApp();
     }
 
+
     private async Task InitializeApp()
     {
         try
         {
-            // 로딩 텍스트 업데이트
             LoadingText.Text = "시리얼 포트를 검색하는 중...";
-            await Task.Delay(500);
+            await _mainViewModel.InitializeAsync();
 
-            // ViewModel 초기화
-            await _viewModel.InitializeAsync();
-            LoadingText.Text = "설정을 로드하는 중...";
-            await Task.Delay(500);
+            LoadingText.Text = "페이지를 미리 생성하는 중...";
+            _serialTerminalPage = new SerialTerminalPage(_mainViewModel);
+            _modbusPage = new ModbusPage(_mainViewModel);
+            _settingPage = new SettingPage(_mainViewModel);
 
-            // 추가 초기화 작업들
             LoadingText.Text = "UI를 준비하는 중...";
             await Task.Delay(500);
 
             LoadingText.Text = "완료!";
             await Task.Delay(300);
 
-            // 메인 셸로 이동
             Application.Current.MainPage = new AppShell();
+            // AppShell에서 미리 생성한 페이지를 활용하도록 구현 필요
         }
         catch (Exception ex)
         {
-            // 오류 처리
             LoadingText.Text = $"초기화 오류: {ex.Message}";
             await Task.Delay(1000);
-
-            // 오류가 있어도 메인 화면으로 이동
             Application.Current.MainPage = new AppShell();
         }
     }
+
 }

@@ -22,15 +22,19 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
   <img src="Etc/img03.png" width="30%" style="margin: 5px;">
   <img src="Etc/img04.png" width="30%" style="margin: 5px;"><br>
   <img src="Etc/img05.png" width="30%" style="margin: 5px;">
+  <img src="Etc/img06.png" width="30%" style="margin: 5px;"><br>
+  <img src="Etc/img07.png" width="30%" style="margin: 5px;">
 </p>
 ## 현재 상태
 - 프로젝트 초기 단계
 - Modbus 기능 추가 중 (코어 로직 일부 구현 modbus func 03,04,06 구현)   
-- UI(뷰)는 아직 미구현   <-------------------여기 왔음
-- 앱 구조와 통신 백엔드 설계 완료   -안함-
+- UI(뷰) 구현 , 다크 or 화이트 테마 구현
+- 앱 구조와 통신 백엔드 설계 완료   
+- 다국어 지원(영,일) <- 미구현
+- 데이터 로그 기르고 <- 미구현
+- 알림, 사운드 <- 미구현
 
-
-## 앱 레이아웃 (예정)
+## 앱 레이아웃 
 하단 고정 버튼(탭바)으로 화면 전환
 - Main (메인)
 - Serial Terminal (시리얼 터미널)
@@ -46,7 +50,7 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 
 **Modbus**
 - Modbus RTU / TCP 지원 예정
-- 읽기/쓰기 요청 전송 (구현 중)
+- 읽기/쓰기 요청 전송 (구현 중)  <---- 쓰기 구현중
 
 **설정**
 - 기본 통신 설정 저장
@@ -69,4 +73,13 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 -  [x] Modbus 요청/응답 처리 완성 (RTU, TCP)  <---- TCP는 일단 계획 없음 
 
 디자인 
-- [ ] 하단 탭바 구현 및 화면 연결
+-  [x] 하단 탭바 구현 및 화면 연결
+-  [ ] 디자인 완성및, 아이콘 등등 세부 구현
+
+다국어
+-  [ ] 한국어, 영어, 일본어 분리
+
+알림
+
+-  [ ] 로그 기록및 ,알림구현 
+

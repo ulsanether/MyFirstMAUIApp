@@ -150,12 +150,12 @@
                                 Padding="8,12"
                                 BackgroundColor="{AppThemeBinding Light={StaticResource Muted},
                                                                   Dark={StaticResource DarkMuted}}"
-                                ColumnDefinitions="60,100,80,100,120,120,100">
+                                ColumnDefinitions="40,90,40,100,90,80,80">
                                 <Label
                                     Grid.Column="0"
                                     FontAttributes="Bold"
                                     FontSize="11"
-                                    HorizontalTextAlignment="Center"
+                                    HorizontalTextAlignment="Start"
                                     Text="ID"
                                     TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                                 Dark={StaticResource DarkForeground}}" />
@@ -186,7 +186,7 @@
                                     Grid.Column="4"
                                     FontAttributes="Bold"
                                     FontSize="11"
-                                    HorizontalTextAlignment="End"
+                                    HorizontalTextAlignment="Center"
                                     Text="값 (10진수)"
                                     TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                                 Dark={StaticResource DarkForeground}}" />
@@ -194,7 +194,7 @@
                                     Grid.Column="5"
                                     FontAttributes="Bold"
                                     FontSize="11"
-                                    HorizontalTextAlignment="End"
+                                    HorizontalTextAlignment="Center"
                                     Text="값 (16진수)"
                                     TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                                 Dark={StaticResource DarkForeground}}" />
@@ -217,11 +217,11 @@
                                                 Padding="8,12"
                                                 BackgroundColor="{AppThemeBinding Light={StaticResource Card},
                                                                                   Dark={StaticResource DarkCard}}"
-                                                ColumnDefinitions="60,100,80,100,120,120,100">
+                                                ColumnDefinitions="40,90,40,100,90,80,80">
                                                 <Label
                                                     Grid.Column="0"
                                                     FontSize="11"
-                                                    HorizontalTextAlignment="Center"
+                                                    HorizontalTextAlignment="Start"
                                                     Text="{Binding Id}"
                                                     TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
                                                                                 Dark={StaticResource DarkMutedForeground}}" />
@@ -256,7 +256,7 @@
                                                     Grid.Column="4"
                                                     FontFamily="Courier"
                                                     FontSize="11"
-                                                    HorizontalTextAlignment="End"
+                                                    HorizontalTextAlignment="Center"
                                                     Text="{Binding Value}"
                                                     TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                                                 Dark={StaticResource DarkForeground}}" />
@@ -264,7 +264,7 @@
                                                     Grid.Column="5"
                                                     FontFamily="Courier"
                                                     FontSize="11"
-                                                    HorizontalTextAlignment="End"
+                                                    HorizontalTextAlignment="Center"
                                                     Text="{Binding HexValue}"
                                                     TextColor="{AppThemeBinding Light=#9333EA,
                                                                                 Dark={StaticResource DarkPrimary}}" />

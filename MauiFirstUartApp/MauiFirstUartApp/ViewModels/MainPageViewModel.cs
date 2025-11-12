@@ -68,6 +68,10 @@ public class MainPageViewModel : BindableObject
         }
     }
 
+
+    public ICommand RefreshPortsCommand { get; }
+
+
     // 연결 상태 관련 속성들
     public string ConnectionTypeText => SelectedSerialType == SerialType.Modbus ? "모드버스 RTU 통신" : "일반 시리얼 통신";
 
@@ -99,6 +103,12 @@ public class MainPageViewModel : BindableObject
     public ObservableCollection<string> PortNames { get; } = new();
     public ObservableCollection<string> ParityOptions { get; } = new(Enum.GetNames(typeof(SerialParity)));
     public ObservableCollection<string> StopBitsOptions { get; } = new(Enum.GetNames(typeof(SerialStopBits)));
+
+
+
+
+
+
 
 
     #region Serial Terminal Properties
@@ -431,7 +441,7 @@ public class MainPageViewModel : BindableObject
         set { _selectedParity = value; OnPropertyChanged(); }
     }
 
-    private string? _selectedStopBits;
+    private string? _selectedStopBits = "One";
     public string? SelectedStopBits
     {
         get => _selectedStopBits;
@@ -525,7 +535,7 @@ public class MainPageViewModel : BindableObject
         ConnectCommand = new Command(async () => await ConnectAsync());
         DisconnectCommand = new Command(async () => await DisconnectAsync());
         SendCommand = new Command(async () => await SendAsync());
-
+        RefreshPortsCommand = new Command(async () => await RefreshPortsAsync());
         // 시리얼 터미널 명령어들 추가
         ClearMessageCommand = new Command(() => SendText = "");
         ClearLogsCommand = new Command(() => ClearLogs());
@@ -837,7 +847,17 @@ public class MainPageViewModel : BindableObject
         StatusText = "코일 쓰기 기능은 아직 구현되지 않았습니다.";
     }
 
+    private async Task RefreshPortsAsync()
+    {
+        PortNames.Clear();
+        var ports = await _serialService.GetDeviceNamesAsync();
+        foreach (var port in ports)
+            PortNames.Add(port);
 
+        // 선택된 포트가 없으면 첫 번째 포트 선택
+        if (PortNames.Count > 0)
+            SelectedPort = PortNames[0];
+    }
     private void ApplyTheme(bool isDarkMode)
     {
      
