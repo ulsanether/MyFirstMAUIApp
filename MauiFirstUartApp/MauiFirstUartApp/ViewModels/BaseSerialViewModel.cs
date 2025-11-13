@@ -1,5 +1,6 @@
 ﻿// ViewModels/BaseSerialViewModel.cs
 using MauiFirstUartApp.Core.Abstractions;
+using MauiFirstUartApp.Core.Constants;
 
 using System.Collections.ObjectModel;
 
@@ -27,8 +28,8 @@ public abstract class BaseSerialViewModel : BindableObject
         set { _selectedParity = value; OnPropertyChanged(); }
     }
 
-    private string? _selectedStopBits;
-    public string? SelectedStopBits
+    private string _selectedStopBits = SerialConstants.DefaultStopBits;
+    public string SelectedStopBits
     {
         get => _selectedStopBits;
         set { _selectedStopBits = value; OnPropertyChanged(); }

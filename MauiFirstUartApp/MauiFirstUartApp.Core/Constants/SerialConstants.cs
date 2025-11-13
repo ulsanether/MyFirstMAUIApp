@@ -242,6 +242,45 @@ public static class SerialConstants
 
     #endregion
 
+    #region UI Text Constants
+
+    /// <summary>
+    /// 시리얼 통신 타입 표시 텍스트
+    /// </summary>
+    public const string SerialCommunicationText = "일반 시리얼 통신";
+
+    /// <summary>
+    /// Modbus RTU 통신 타입 표시 텍스트
+    /// </summary>
+    public const string ModbusRtuCommunicationText = "모드버스 RTU 통신";
+
+    /// <summary>
+    /// 포트 선택 안됨 텍스트
+    /// </summary>
+    public const string PortNotSelectedText = "선택 안됨";
+
+    /// <summary>
+    /// 자동 읽기 시작 메시지
+    /// </summary>
+    public const string AutoReadStartMessage = "자동 읽기 시작";
+
+    /// <summary>
+    /// 자동 읽기 중지 메시지
+    /// </summary>
+    public const string AutoReadStopMessage = "자동 읽기 중지";
+
+    /// <summary>
+    /// 코일 읽기 미구현 메시지
+    /// </summary>
+    public const string CoilReadNotImplementedMessage = "코일 읽기 기능은 아직 구현되지 않았습니다.";
+
+    /// <summary>
+    /// 코일 쓰기 미구현 메시지
+    /// </summary>
+    public const string CoilWriteNotImplementedMessage = "코일 쓰기 기능은 아직 구현되지 않았습니다.";
+
+    #endregion
+
     #region Settings
 
     /// <summary>
@@ -259,5 +298,45 @@ public static class SerialConstants
     /// </summary>
     public const string DefaultLogRetention = "7일";
 
+    /// <summary>
+    /// 기본 폴링 간격 표시 텍스트
+    /// </summary>
+    public const string DefaultPollingIntervalText = "1s";
+
+    /// <summary>
+    /// 기본 읽기 기능 코드 표시 텍스트
+    /// </summary>
+    public const string DefaultReadFunctionText = "03 - Read Holding Registers";
+
+    /// <summary>
+    /// 기본 쓰기 기능 코드 표시 텍스트
+    /// </summary>
+    public const string DefaultWriteFunctionText = "06 - Write Single Register";
+
+    /// <summary>
+    /// 기본 Modbus 프로토콜 표시 텍스트
+    /// </summary>
+    public const string DefaultModbusProtocolText = "Modbus RTU";
+
+    #endregion
+
+    #region Numeric Constants
+
+    /// <summary>
+    /// 다중 레지스터 읽기 테스트용 수량
+    /// </summary>
+    public const ushort TestMultipleRegisterQuantity = 10;
+
+    /// <summary>
+    /// 테스트용 레지스터 값
+    /// </summary>
+    public const ushort TestRegisterValue = 100;
+
+    /// <summary>
+    /// 빈 문자열 교체용
+    /// </summary>
+    public const string EmptyString = "";
+
     #endregion
 }
+

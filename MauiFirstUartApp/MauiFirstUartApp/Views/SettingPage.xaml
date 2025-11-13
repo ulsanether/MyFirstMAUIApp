@@ -87,11 +87,16 @@
                             Text="Baud Rate"
                             TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                         Dark={StaticResource DarkForeground}}" />
-                        <Entry
-                            Keyboard="Numeric"
-                            Text="{Binding BaudRate}"
+                        <Picker
+                            ItemsSource="{Binding BaudRateOptions}"
+                            SelectedItem="{Binding SelectedBaudRate}"
                             TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                         Dark={StaticResource DarkForeground}}" />
+                        <Label
+                            FontSize="10"
+                            Text="시리얼 통신 속도 (bps)"
+                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
+                                                        Dark={StaticResource DarkMutedForeground}}" />
                     </VerticalStackLayout>
 
                     <BoxView HeightRequest="1" Color="{AppThemeBinding Light={StaticResource Border}, Dark={StaticResource DarkBorder}}" />

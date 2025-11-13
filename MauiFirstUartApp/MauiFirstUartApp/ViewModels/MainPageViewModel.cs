@@ -10,7 +10,7 @@ namespace MauiFirstUartApp.ViewModels;
 public class SerialLogItem
 {
     public DateTime Timestamp { get; set; }
-    public string Message { get; set; } = "";
+    public string Message { get; set; } = SerialConstants.EmptyString;
     public LogType Type { get; set; }
     public string FormattedTimestamp => Timestamp.ToString("HH:mm:ss");
     public string TypeLabel => Type == LogType.Sent ? "송신" : "수신";
@@ -25,8 +25,8 @@ public enum LogType
 
 public class ActivityLogItem
 {
-    public string Time { get; set; } = "";
-    public string Message { get; set; } = "";
+    public string Time { get; set; } = SerialConstants.EmptyString;
+    public string Message { get; set; } = SerialConstants.EmptyString;
     public Color BackgroundColor { get; set; }
     public Color MessageColor { get; set; }
 }
@@ -35,8 +35,8 @@ public class ModbusDataItem
 {
     public int Id { get; set; }
     public DateTime Timestamp { get; set; }
-    public string Address { get; set; } = "";
-    public string FunctionCode { get; set; } = "";
+    public string Address { get; set; } = SerialConstants.EmptyString;
+    public string FunctionCode { get; set; } = SerialConstants.EmptyString;
     public ushort Value { get; set; }
     public string HexValue => $"0x{Value:X4}";
     public string DataType { get; set; } = SerialConstants.DefaultDataType;
@@ -68,8 +68,11 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     // 연결 상태 관련 속성들
-    public string ConnectionTypeText => SelectedSerialType == SerialType.Modbus ? "모드버스 RTU 통신" : "일반 시리얼 통신";
-    public string PortName => SelectedPort ?? "선택 안됨";
+    public string ConnectionTypeText => SelectedSerialType == SerialType.Modbus ?
+        SerialConstants.ModbusRtuCommunicationText :
+        SerialConstants.SerialCommunicationText;
+
+    public string PortName => SelectedPort ?? SerialConstants.PortNotSelectedText;
     public string ModbusProtocol => SelectedModbusProtocol;
     public string SlaveId => ModbusSlaveId.ToString();
 
@@ -79,11 +82,20 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 상태 표시 색상 속성들
     public Color StatusBadgeColor => IsConnected ?
-        (Application.Current?.RequestedTheme == AppTheme.Dark ? Color.FromArgb(SerialConstants.ColorSuccess) : Color.FromArgb(SerialConstants.ColorSuccessBackground)) :
-        (Application.Current?.RequestedTheme == AppTheme.Dark ? Color.FromArgb(SerialConstants.ColorError) : Color.FromArgb(SerialConstants.ColorErrorBackground));
+        (Application.Current?.RequestedTheme == AppTheme.Dark ?
+            Color.FromArgb(SerialConstants.ColorSuccess) :
+            Color.FromArgb(SerialConstants.ColorSuccessBackground)) :
+        (Application.Current?.RequestedTheme == AppTheme.Dark ?
+            Color.FromArgb(SerialConstants.ColorError) :
+            Color.FromArgb(SerialConstants.ColorErrorBackground));
 
-    public Color StatusBorderColor => IsConnected ? Color.FromArgb(SerialConstants.ColorSuccess) : Color.FromArgb(SerialConstants.ColorError);
-    public Color StatusTextColor => IsConnected ? Color.FromArgb(SerialConstants.ColorSuccess) : Color.FromArgb(SerialConstants.ColorError);
+    public Color StatusBorderColor => IsConnected ?
+        Color.FromArgb(SerialConstants.ColorSuccess) :
+        Color.FromArgb(SerialConstants.ColorError);
+
+    public Color StatusTextColor => IsConnected ?
+        Color.FromArgb(SerialConstants.ColorSuccess) :
+        Color.FromArgb(SerialConstants.ColorError);
 
     #endregion
 
@@ -129,7 +141,7 @@ public class MainPageViewModel : BaseSerialViewModel
         set { _sendText = value; OnPropertyChanged(); }
     }
 
-    private string _receivedText = "";
+    private string _receivedText = SerialConstants.EmptyString;
     public string ReceivedText
     {
         get => _receivedText;
@@ -138,11 +150,10 @@ public class MainPageViewModel : BaseSerialViewModel
 
     public bool CanSend => IsConnected;
 
-    // 명령어들
-    public ICommand ClearMessageCommand { get; }
-    public ICommand ClearLogsCommand { get; }
-    public ICommand QuickSendCommand { get; }
-    public ICommand SendCommand { get; }
+    public ICommand ClearMessageCommand { get; private set; }
+    public ICommand ClearLogsCommand { get; private set; }
+    public ICommand QuickSendCommand { get; private set; }
+    public ICommand SendCommand { get; private set; }
 
     #endregion
 
@@ -165,9 +176,7 @@ public class MainPageViewModel : BaseSerialViewModel
                 OnPropertyChanged(nameof(IsSerialMode));
                 OnPropertyChanged(nameof(IsModbusMode));
 
-                ((Command)ModbusReadCommand).ChangeCanExecute();
-                ((Command)ModbusWriteCommand).ChangeCanExecute();
-                ((Command)ModbusReadInputCommand).ChangeCanExecute();
+                UpdateModbusCommandCanExecute();
             }
         }
     }
@@ -204,7 +213,7 @@ public class MainPageViewModel : BaseSerialViewModel
     // 폴링 간격 옵션
     public ObservableCollection<string> PollingIntervalOptions { get; } = new() { "500ms", "1s", "2s", "5s" };
 
-    private string _selectedPollingInterval = "1s";
+    private string _selectedPollingInterval = SerialConstants.DefaultPollingIntervalText;
     public string SelectedPollingInterval
     {
         get => _selectedPollingInterval;
@@ -218,7 +227,7 @@ public class MainPageViewModel : BaseSerialViewModel
         "04 - Read Input Registers"
     };
 
-    private string _selectedReadFunction = "03 - Read Holding Registers";
+    private string _selectedReadFunction = SerialConstants.DefaultReadFunctionText;
     public string SelectedReadFunction
     {
         get => _selectedReadFunction;
@@ -232,7 +241,7 @@ public class MainPageViewModel : BaseSerialViewModel
         "16 - Write Multiple Registers"
     };
 
-    private string _selectedWriteFunction = "06 - Write Single Register";
+    private string _selectedWriteFunction = SerialConstants.DefaultWriteFunctionText;
     public string SelectedWriteFunction
     {
         get => _selectedWriteFunction;
@@ -293,10 +302,31 @@ public class MainPageViewModel : BaseSerialViewModel
 
     #region Settings Properties
 
+    // Baud Rate 선택 관련 속성 추가
+    public ObservableCollection<string> BaudRateOptions { get; } = new() { "9600", "15500", "19200", "38400", "57600", "115200" };
+
+    private string _selectedBaudRate = "115200";
+    public string SelectedBaudRate
+    {
+        get => _selectedBaudRate;
+        set
+        {
+            _selectedBaudRate = value;
+            OnPropertyChanged();
+            // BaseSerialViewModel의 BaudRate 속성도 업데이트
+            if (int.TryParse(value, out int baudRateInt))
+            {
+                BaudRate = baudRateInt;
+            }
+        }
+    }
+
+
+
     // Modbus 프로토콜 관련
     public ObservableCollection<string> ModbusProtocolOptions { get; } = new() { "Modbus RTU", "Modbus ASCII" };
 
-    private string _selectedModbusProtocol = "Modbus RTU";
+    private string _selectedModbusProtocol = SerialConstants.DefaultModbusProtocolText;
     public string SelectedModbusProtocol
     {
         get => _selectedModbusProtocol;
@@ -339,7 +369,7 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     // 일반 설정
-    public ObservableCollection<string> LanguageOptions { get; } = new() { "한국어", "English", "日本語" };
+    public ObservableCollection<string> LanguageOptions { get; } = new() { "한국어", "English", "日본語" };
 
     private string _selectedLanguage = SerialConstants.DefaultLanguage;
     public string SelectedLanguage
@@ -420,25 +450,36 @@ public class MainPageViewModel : BaseSerialViewModel
 
     #region Commands
 
-    public ICommand ModbusReadCommand { get; }
-    public ICommand ModbusWriteCommand { get; }
-    public ICommand ModbusReadInputCommand { get; }
-    public ICommand ConnectCommand { get; }
-    public ICommand DisconnectCommand { get; }
-    public ICommand RefreshPortsCommand { get; }
+    // 모든 Command 속성들을 private set으로 변경
+    public ICommand ModbusReadCommand { get; private set; }
+    public ICommand ModbusWriteCommand { get; private set; }
+    public ICommand ModbusReadInputCommand { get; private set; }
+    public ICommand ConnectCommand { get; private set; }
+    public ICommand DisconnectCommand { get; private set; }
+    public ICommand RefreshPortsCommand { get; private set; }
 
     // Modbus 빠른 명령어들
-    public ICommand ReadMultipleRegistersCommand { get; }
-    public ICommand ReadCoilsCommand { get; }
-    public ICommand WriteRegister100Command { get; }
-    public ICommand WriteCoilOnCommand { get; }
-    public ICommand ToggleAutoReadCommand { get; }
-    public ICommand SelectReadTabCommand { get; }
-    public ICommand SelectWriteTabCommand { get; }
+    public ICommand ReadMultipleRegistersCommand { get; private set; }
+    public ICommand ReadCoilsCommand { get; private set; }
+    public ICommand WriteRegister100Command { get; private set; }
+    public ICommand WriteCoilOnCommand { get; private set; }
+    public ICommand ToggleAutoReadCommand { get; private set; }
+    public ICommand SelectReadTabCommand { get; private set; }
+    public ICommand SelectWriteTabCommand { get; private set; }
 
     #endregion
 
     public MainPageViewModel(ISerialService serialService) : base(serialService)
+    {
+        InitializeCommands();
+    }
+
+    #region Initialization
+
+    /// <summary>
+    /// 모든 명령어 초기화
+    /// </summary>
+    private void InitializeCommands()
     {
         // 기본 명령어들
         ConnectCommand = new Command(async () => await ConnectAsync());
@@ -447,24 +488,34 @@ public class MainPageViewModel : BaseSerialViewModel
         RefreshPortsCommand = new Command(async () => await RefreshPortsAsync());
 
         // 시리얼 터미널 명령어들
-        ClearMessageCommand = new Command(() => SendText = "");
+        ClearMessageCommand = new Command(() => SendText = SerialConstants.EmptyString);
         ClearLogsCommand = new Command(() => ClearLogs());
         QuickSendCommand = new Command<string>(async (message) => await QuickSendAsync(message));
 
         // Modbus 명령어들
-        ModbusReadCommand = new Command(async () => await ModbusReadAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
-        ModbusWriteCommand = new Command(async () => await ModbusWriteAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
-        ModbusReadInputCommand = new Command(async () => await ModbusReadInputAsync(), () => IsConnected && SelectedSerialType == SerialType.Modbus);
+        ModbusReadCommand = new Command(
+            async () => await ExecuteWithErrorHandling(ModbusReadAsync),
+            () => IsConnected && SelectedSerialType == SerialType.Modbus);
+
+        ModbusWriteCommand = new Command(
+            async () => await ExecuteWithErrorHandling(ModbusWriteAsync),
+            () => IsConnected && SelectedSerialType == SerialType.Modbus);
+
+        ModbusReadInputCommand = new Command(
+            async () => await ExecuteWithErrorHandling(ModbusReadInputAsync),
+            () => IsConnected && SelectedSerialType == SerialType.Modbus);
 
         // Modbus 전용 명령어들
         SelectReadTabCommand = new Command(() => IsReadTabSelected = true);
         SelectWriteTabCommand = new Command(() => IsReadTabSelected = false);
         ToggleAutoReadCommand = new Command(async () => await ToggleAutoReadAsync());
-        ReadMultipleRegistersCommand = new Command(async () => await ReadMultipleRegistersAsync());
+        ReadMultipleRegistersCommand = new Command(async () => await ExecuteWithErrorHandling(ReadMultipleRegistersAsync));
         ReadCoilsCommand = new Command(async () => await ReadCoilsAsync());
-        WriteRegister100Command = new Command(async () => await WriteRegister100Async());
+        WriteRegister100Command = new Command(async () => await ExecuteWithErrorHandling(WriteRegister100Async));
         WriteCoilOnCommand = new Command(async () => await WriteCoilOnAsync());
     }
+
+    #endregion
 
     #region Overridden Methods
 
@@ -480,10 +531,7 @@ public class MainPageViewModel : BaseSerialViewModel
         OnPropertyChanged(nameof(StatusBorderColor));
         OnPropertyChanged(nameof(StatusTextColor));
 
-        // Modbus 명령어 상태 업데이트
-        ((Command)ModbusReadCommand).ChangeCanExecute();
-        ((Command)ModbusReadInputCommand).ChangeCanExecute();
-        ((Command)ModbusWriteCommand).ChangeCanExecute();
+        UpdateModbusCommandCanExecute();
     }
 
     #endregion
@@ -496,7 +544,7 @@ public class MainPageViewModel : BaseSerialViewModel
         if (success)
         {
             _readCts = new CancellationTokenSource();
-            ReceivedText = "";
+            ReceivedText = SerialConstants.EmptyString;
 
             if (SelectedSerialType != SerialType.Modbus)
             {
@@ -529,20 +577,13 @@ public class MainPageViewModel : BaseSerialViewModel
             var bytes = Encoding.UTF8.GetBytes(SendText);
             await _serialService.WriteAsync(bytes);
 
-            // 로그에 추가
-            var logItem = new SerialLogItem
-            {
-                Timestamp = DateTime.Now,
-                Message = SendText,
-                Type = LogType.Sent
-            };
-            SerialLogItems.Add(logItem);
+            AddSerialLogItem(SendText, LogType.Sent);
             SendCount++;
 
             // 일반 시리얼 모드에서는 전송 후 텍스트 지우기
             if (SelectedSerialType == SerialType.Normal)
             {
-                SendText = "";
+                SendText = SerialConstants.EmptyString;
             }
         }
         catch (Exception ex)
@@ -566,28 +607,7 @@ public class MainPageViewModel : BaseSerialViewModel
                     var receivedText = Encoding.UTF8.GetString(data);
                     buffer.Append(receivedText);
 
-                    // 줄바꿈 문자가 있으면 로그에 추가
-                    var lines = buffer.ToString().Split('\n');
-                    for (int i = 0; i < lines.Length - 1; i++)
-                    {
-                        if (!string.IsNullOrWhiteSpace(lines[i]))
-                        {
-                            var logItem = new SerialLogItem
-                            {
-                                Timestamp = DateTime.Now,
-                                Message = lines[i].Trim(),
-                                Type = LogType.Received
-                            };
-                            SerialLogItems.Add(logItem);
-                            ReceiveCount++;
-                        }
-                    }
-
-                    // 마지막 불완전한 줄은 버퍼에 유지
-                    buffer.Clear();
-                    buffer.Append(lines[^1]);
-
-                    // 전체 수신 텍스트도 업데이트 (기존 동작 유지)
+                    ProcessReceivedData(buffer);
                     ReceivedText += receivedText;
                 }
             }
@@ -603,6 +623,35 @@ public class MainPageViewModel : BaseSerialViewModel
 
             await Task.Delay(SerialConstants.ReadLoopDelayMs, ct);
         }
+    }
+
+    private void ProcessReceivedData(StringBuilder buffer)
+    {
+        // 줄바꿈 문자가 있으면 로그에 추가
+        var lines = buffer.ToString().Split('\n');
+        for (int i = 0; i < lines.Length - 1; i++)
+        {
+            if (!string.IsNullOrWhiteSpace(lines[i]))
+            {
+                AddSerialLogItem(lines[i].Trim(), LogType.Received);
+                ReceiveCount++;
+            }
+        }
+
+        // 마지막 불완전한 줄은 버퍼에 유지
+        buffer.Clear();
+        buffer.Append(lines[^1]);
+    }
+
+    private void AddSerialLogItem(string message, LogType type)
+    {
+        var logItem = new SerialLogItem
+        {
+            Timestamp = DateTime.Now,
+            Message = message,
+            Type = type
+        };
+        SerialLogItems.Add(logItem);
     }
 
     private void ClearLogs()
@@ -628,102 +677,60 @@ public class MainPageViewModel : BaseSerialViewModel
 
     private async Task ModbusReadAsync()
     {
-        try
-        {
-            var result = await _serialService.ModbusReadHoldingRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
-
-            // 결과를 데이터 테이블에 추가
-            for (int i = 0; i < result.Length; i++)
-            {
-                var dataItem = new ModbusDataItem
-                {
-                    Id = ModbusDataItems.Count + 1,
-                    Timestamp = DateTime.Now,
-                    Address = (ModbusAddress + i).ToString(),
-                    FunctionCode = SerialConstants.FunctionCode03,
-                    Value = result[i]
-                };
-                ModbusDataItems.Add(dataItem);
-            }
-
-            ModbusReadCount++;
-            StatusText = SerialConstants.StatusModbusReadComplete;
-        }
-        catch (Exception ex)
-        {
-            StatusText = string.Format(SerialConstants.StatusModbusReadErrorFormat, ex.Message);
-            ErrorCount++;
-        }
+        var result = await _serialService.ModbusReadHoldingRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+        AddModbusDataItems(result, SerialConstants.FunctionCode03);
+        ModbusReadCount++;
+        StatusText = SerialConstants.StatusModbusReadComplete;
     }
 
     private async Task ModbusReadInputAsync()
     {
-        try
-        {
-            var result = await _serialService.ModbusReadInputRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
-
-            // 결과를 데이터 테이블에 추가
-            for (int i = 0; i < result.Length; i++)
-            {
-                var dataItem = new ModbusDataItem
-                {
-                    Id = ModbusDataItems.Count + 1,
-                    Timestamp = DateTime.Now,
-                    Address = (ModbusAddress + i).ToString(),
-                    FunctionCode = SerialConstants.FunctionCode04,
-                    Value = result[i]
-                };
-                ModbusDataItems.Add(dataItem);
-            }
-
-            ModbusReadCount++;
-            StatusText = SerialConstants.StatusModbusInputReadComplete;
-        }
-        catch (Exception ex)
-        {
-            StatusText = string.Format(SerialConstants.StatusModbusReadErrorFormat, ex.Message);
-            ErrorCount++;
-        }
+        var result = await _serialService.ModbusReadInputRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+        AddModbusDataItems(result, SerialConstants.FunctionCode04);
+        ModbusReadCount++;
+        StatusText = SerialConstants.StatusModbusInputReadComplete;
     }
 
     private async Task ModbusWriteAsync()
     {
-        try
-        {
-            await _serialService.ModbusWriteSingleRegisterAsync(ModbusSlaveId, ModbusAddress, WriteValue);
+        await _serialService.ModbusWriteSingleRegisterAsync(ModbusSlaveId, ModbusAddress, WriteValue);
 
-            // 쓰기 결과를 데이터 테이블에 추가
+        var dataItem = new ModbusDataItem
+        {
+            Id = ModbusDataItems.Count + 1,
+            Timestamp = DateTime.Now,
+            Address = ModbusAddress.ToString(),
+            FunctionCode = SerialConstants.FunctionCode06,
+            Value = WriteValue
+        };
+        ModbusDataItems.Add(dataItem);
+
+        ModbusWriteCount++;
+        StatusText = SerialConstants.StatusModbusWriteComplete;
+    }
+
+    private void AddModbusDataItems(ushort[] values, string functionCode)
+    {
+        for (int i = 0; i < values.Length; i++)
+        {
             var dataItem = new ModbusDataItem
             {
                 Id = ModbusDataItems.Count + 1,
                 Timestamp = DateTime.Now,
-                Address = ModbusAddress.ToString(),
-                FunctionCode = SerialConstants.FunctionCode06,
-                Value = WriteValue
+                Address = (ModbusAddress + i).ToString(),
+                FunctionCode = functionCode,
+                Value = values[i]
             };
             ModbusDataItems.Add(dataItem);
-
-            ModbusWriteCount++;
-            StatusText = SerialConstants.StatusModbusWriteComplete;
-        }
-        catch (Exception ex)
-        {
-            StatusText = string.Format(SerialConstants.StatusModbusWriteErrorFormat, ex.Message);
-            ErrorCount++;
         }
     }
 
     // Modbus 전용 메서드들
     private async Task ToggleAutoReadAsync()
     {
-        if (IsAutoReadEnabled)
-        {
-            StatusText = "자동 읽기 시작";
-        }
-        else
-        {
-            StatusText = "자동 읽기 중지";
-        }
+        StatusText = IsAutoReadEnabled ?
+            SerialConstants.AutoReadStartMessage :
+            SerialConstants.AutoReadStopMessage;
     }
 
     private async Task ReadMultipleRegistersAsync()
@@ -731,8 +738,8 @@ public class MainPageViewModel : BaseSerialViewModel
         var originalAddress = ModbusAddress;
         var originalQuantity = ModbusQuantity;
 
-        ModbusAddress = 0;
-        ModbusQuantity = 10;
+        ModbusAddress = SerialConstants.DefaultModbusStartAddress;
+        ModbusQuantity = SerialConstants.TestMultipleRegisterQuantity;
 
         await ModbusReadAsync();
 
@@ -742,7 +749,7 @@ public class MainPageViewModel : BaseSerialViewModel
 
     private async Task ReadCoilsAsync()
     {
-        StatusText = "코일 읽기 기능은 아직 구현되지 않았습니다.";
+        StatusText = SerialConstants.CoilReadNotImplementedMessage;
     }
 
     private async Task WriteRegister100Async()
@@ -750,8 +757,8 @@ public class MainPageViewModel : BaseSerialViewModel
         var originalAddress = ModbusAddress;
         var originalValue = WriteValue;
 
-        ModbusAddress = 0;
-        WriteValue = 100;
+        ModbusAddress = SerialConstants.DefaultModbusStartAddress;
+        WriteValue = SerialConstants.TestRegisterValue;
 
         await ModbusWriteAsync();
 
@@ -761,12 +768,42 @@ public class MainPageViewModel : BaseSerialViewModel
 
     private async Task WriteCoilOnAsync()
     {
-        StatusText = "코일 쓰기 기능은 아직 구현되지 않았습니다.";
+        StatusText = SerialConstants.CoilWriteNotImplementedMessage;
+    }
+
+    #endregion
+
+    #region Error Handling
+
+    /// <summary>
+    /// 공통 오류 처리가 적용된 메서드 실행
+    /// </summary>
+    private async Task ExecuteWithErrorHandling(Func<Task> operation)
+    {
+        try
+        {
+            await operation();
+        }
+        catch (Exception ex)
+        {
+            StatusText = string.Format(SerialConstants.StatusModbusReadErrorFormat, ex.Message);
+            ErrorCount++;
+        }
     }
 
     #endregion
 
     #region Utility Methods
+
+    /// <summary>
+    /// Modbus 명령어들의 CanExecute 상태 업데이트
+    /// </summary>
+    private void UpdateModbusCommandCanExecute()
+    {
+        ((Command)ModbusReadCommand).ChangeCanExecute();
+        ((Command)ModbusReadInputCommand).ChangeCanExecute();
+        ((Command)ModbusWriteCommand).ChangeCanExecute();
+    }
 
     private void ApplyTheme(bool isDarkMode)
     {
@@ -778,3 +815,5 @@ public class MainPageViewModel : BaseSerialViewModel
 
     #endregion
 }
+
+
