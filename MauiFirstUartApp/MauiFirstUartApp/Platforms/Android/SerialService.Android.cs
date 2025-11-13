@@ -1,4 +1,5 @@
 ﻿using MauiFirstUartApp.Core.Abstractions;
+using MauiFirstUartApp.Core.Constants;
 
 using UsbSerialForAndroid.Net;
 using UsbSerialForAndroid.Net.Drivers;
@@ -10,12 +11,10 @@ namespace MauiFirstUartApp.Platforms.Android
     {
         private UsbDriverBase? _usbDriver;
         private CancellationTokenSource? _modbusPollingCts;
-        private readonly SemaphoreSlim _txLock = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _txLock = new(1, 1);
 
-        
-        private int _readTimeoutMs = 2000;
-       
-        private int _postWriteDelayMs = 10;
+        private readonly int _readTimeoutMs = 2000;
+        private readonly int _postWriteDelayMs = 10;
 
         public event Action<ushort[]>? ModbusPolled;
 
@@ -63,7 +62,6 @@ namespace MauiFirstUartApp.Platforms.Android
 
             if (serialType == SerialType.Modbus)
             {
-                // 기존 폴링이 있다면 중지
                 _modbusPollingCts?.Cancel();
                 _modbusPollingCts = null;
             }
@@ -76,12 +74,10 @@ namespace MauiFirstUartApp.Platforms.Android
             return Task.CompletedTask;
         }
 
-        public Task StartModbusPollingAsync(byte slaveId, ushort startAddress, ushort numberOfPoints, int intervalMs = 1000)
+        public Task StartModbusPollingAsync(byte slaveId, ushort startAddress, ushort numberOfPoints, int intervalMs = SerialConstants.DefaultModbusPollingInterval)
         {
-            if (_usbDriver == null)
-                throw new InvalidOperationException("USB driver not initialized");
+            ValidateUsbDriver();
 
-            // 기존 폴링 중지
             _modbusPollingCts?.Cancel();
             _modbusPollingCts = new CancellationTokenSource();
 
@@ -117,7 +113,6 @@ namespace MauiFirstUartApp.Platforms.Android
                     }
                     catch (Exception ex)
                     {
-                        // Modbus 통신 오류 로깅
                         System.Diagnostics.Debug.WriteLine($"Modbus polling error: {ex.Message}");
                     }
 
@@ -133,52 +128,17 @@ namespace MauiFirstUartApp.Platforms.Android
             }, token);
         }
 
-        private void StartModbusPolling(CancellationToken token)
-        {
-         
-            byte slaveId = 1;
-            ushort startAddress = 0;
-            ushort numberOfPoints = 10;
-            int pollingIntervalMs = 1000;
-
-            Task.Run(async () =>
-            {
-                while (!token.IsCancellationRequested)
-                {
-                    try
-                    {
-                        if (_usbDriver != null)
-                        {
-                            var result = await ModbusReadHoldingRegistersAsync(slaveId, startAddress, numberOfPoints);
-                            ModbusPolled?.Invoke(result);
-                        }
-                    }
-                    catch
-                    {
-                        // 필요시 에러 처리/로깅
-                    }
-                    try
-                    {
-                        await Task.Delay(pollingIntervalMs, token);
-                    }
-                    catch (TaskCanceledException) { break; }
-                }
-            }, token);
-        }
-
         public Task WriteAsync(byte[] buffer, CancellationToken ct = default)
         {
-            if (_usbDriver == null)
-                throw new InvalidOperationException("Serial port not open");
-            _usbDriver.Write(buffer);
+            ValidateUsbDriver();
+            _usbDriver!.Write(buffer);
             return Task.CompletedTask;
         }
 
         public Task<byte[]> ReadAsync(CancellationToken ct = default)
         {
-            if (_usbDriver == null)
-                throw new InvalidOperationException("Serial port not open");
-            var buffer = _usbDriver.Read();
+            ValidateUsbDriver();
+            var buffer = _usbDriver!.Read();
             return Task.FromResult(buffer ?? Array.Empty<byte>());
         }
 
@@ -207,9 +167,137 @@ namespace MauiFirstUartApp.Platforms.Android
             return ValueTask.CompletedTask;
         }
 
-        // ---------------- Modbus RTU 직접 구현부 ----------------
+        public async Task<ushort[]> ModbusReadHoldingRegistersAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
+        {
+            ValidateUsbDriver();
+            ValidateModbusPointsRange(numberOfPoints);
 
-        // CRC16 (Modbus)
+            return await ExecuteModbusReadOperation(
+                async () => await ModbusReadHoldingRegistersInternalAsync(slaveId, startAddress, numberOfPoints),
+                slaveId,
+                startAddress,
+                numberOfPoints
+            );
+        }
+
+        public async Task<ushort[]> ModbusReadInputRegistersAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
+        {
+            ValidateUsbDriver();
+            ValidateModbusPointsRange(numberOfPoints);
+
+            return await ExecuteModbusReadOperation(
+                async () => await ModbusReadInputRegistersInternalAsync(slaveId, startAddress, numberOfPoints),
+                slaveId,
+                startAddress,
+                numberOfPoints
+            );
+        }
+
+        public async Task ModbusWriteSingleRegisterAsync(byte slaveId, ushort address, ushort value)
+        {
+            ValidateUsbDriver();
+
+            await ExecuteModbusWriteOperation(
+                async () => await ModbusWriteSingleRegisterInternalAsync(slaveId, address, value),
+                slaveId,
+                address,
+                value
+            );
+        }
+
+        #region Private Helper Methods
+
+        /// <summary>
+        /// USB 드라이버 초기화 상태 검증
+        /// </summary>
+        private void ValidateUsbDriver()
+        {
+            if (_usbDriver == null)
+                throw new InvalidOperationException(SerialConstants.ErrorSerialPortNotOpen);
+        }
+
+        /// <summary>
+        /// Modbus 포인트 수 범위 검증
+        /// </summary>
+        private static void ValidateModbusPointsRange(ushort numberOfPoints)
+        {
+            if (numberOfPoints < SerialConstants.ModbusMinPoints || numberOfPoints > SerialConstants.ModbusMaxPoints)
+                throw new ArgumentException(SerialConstants.ErrorPointsOutOfRange);
+        }
+
+        /// <summary>
+        /// Modbus 읽기 작업 공통 예외 처리
+        /// </summary>
+        private async Task<ushort[]> ExecuteModbusReadOperation(
+            Func<Task<ushort[]>> operation,
+            byte slaveId,
+            ushort startAddress,
+            ushort numberOfPoints)
+        {
+            try
+            {
+                return await operation();
+            }
+            catch (TimeoutException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusTimeoutReadWriteFormat, slaveId, startAddress, numberOfPoints),
+                    ex);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("CRC mismatch") || ex.Message.Contains("Modbus exception"))
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusSlaveFormat, slaveId, startAddress, numberOfPoints, ex.Message),
+                    ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusCommunicationFormat, ex.Message),
+                    ex);
+            }
+        }
+
+        /// <summary>
+        /// Modbus 쓰기 작업 공통 예외 처리
+        /// </summary>
+        private async Task ExecuteModbusWriteOperation(
+            Func<Task> operation,
+            byte slaveId,
+            ushort address,
+            ushort value)
+        {
+            try
+            {
+                await operation();
+            }
+            catch (TimeoutException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusTimeoutSingleWriteFormat, slaveId, address, value),
+                    ex);
+            }
+            catch (InvalidOperationException ex) when (ex.Message.Contains("CRC mismatch") || ex.Message.Contains("Modbus exception"))
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusSlaveSingleWriteFormat, slaveId, address, value, ex.Message),
+                    ex);
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusCommunicationFormat, ex.Message),
+                    ex);
+            }
+        }
+
+        #endregion
+
+        #region Modbus RTU Implementation
+
+        /// <summary>
+        /// CRC16 계산 (Modbus용)
+        /// </summary>
         private static ushort Crc16(byte[] data, int length)
         {
             ushort crc = 0xFFFF;
@@ -232,18 +320,20 @@ namespace MauiFirstUartApp.Platforms.Android
             return crc;
         }
 
-        // helper: 요청 전송 후 응답을 읽는 유틸 (헤더/바디를 따로 읽는 방식으로 사용)
+        /// <summary>
+        /// 헤더와 바디를 순차적으로 읽는 응답 처리 유틸리티
+        /// </summary>
         private async Task<byte[]> ReadResponseHeaderAndBodyAsync(int headerLen, Func<byte[], int> getRemainingLengthFromHeader, int timeoutMs)
         {
-            if (_usbDriver == null) throw new InvalidOperationException("Serial port not open");
+            ValidateUsbDriver();
 
             var buffer = new List<byte>();
             var sw = System.Diagnostics.Stopwatch.StartNew();
 
-            // 먼저 headerLen 바이트 수집
+            // 헤더 바이트 수집
             while (buffer.Count < headerLen && sw.ElapsedMilliseconds < timeoutMs)
             {
-                var chunk = _usbDriver.Read();
+                var chunk = _usbDriver!.Read();
                 if (chunk != null && chunk.Length > 0)
                 {
                     buffer.AddRange(chunk);
@@ -257,15 +347,15 @@ namespace MauiFirstUartApp.Platforms.Android
             if (buffer.Count < headerLen)
                 throw new TimeoutException("Timeout while waiting for response header");
 
-            // header 확보 -> 전체 바디 길이 계산
+            // 전체 바디 길이 계산
             var headerArr = buffer.Take(headerLen).ToArray();
             int remaining = getRemainingLengthFromHeader(headerArr);
             if (remaining < 0) throw new InvalidOperationException("Invalid header or cannot determine remaining length");
 
-            // 남은 바이트 수집 (remaining includes CRC bytes typically)
+            // 남은 바이트 수집
             while (buffer.Count < headerLen + remaining && sw.ElapsedMilliseconds < timeoutMs)
             {
-                var chunk = _usbDriver.Read();
+                var chunk = _usbDriver!.Read();
                 if (chunk != null && chunk.Length > 0)
                 {
                     buffer.AddRange(chunk);
@@ -282,19 +372,15 @@ namespace MauiFirstUartApp.Platforms.Android
             return buffer.ToArray();
         }
 
-        // Modbus: Read Holding Registers (function 0x03)
-        public async Task<ushort[]> ModbusReadHoldingRegistersAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
+        /// <summary>
+        /// Modbus Read Holding Registers 내부 구현 (Function 0x03)
+        /// </summary>
+        private async Task<ushort[]> ModbusReadHoldingRegistersInternalAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
         {
-            if (_usbDriver == null)
-                throw new InvalidOperationException("Serial port not open");
-
-            if (numberOfPoints == 0 || numberOfPoints > 125)
-                throw new ArgumentException("Number of points must be between 1 and 125");
-
             await _txLock.WaitAsync().ConfigureAwait(false);
             try
             {
-                // Build request: slave(1) + func(1) + addrHi(1)+addrLo(1) + qtyHi(1)+qtyLo(1) + crcLo(1)+crcHi(1)
+                // 요청 빌드
                 byte[] req = new byte[8];
                 req[0] = slaveId;
                 req[1] = 0x03;
@@ -306,64 +392,21 @@ namespace MauiFirstUartApp.Platforms.Android
                 req[6] = (byte)(crc & 0xFF);
                 req[7] = (byte)(crc >> 8);
 
-                // Clear driver's rx buffer if driver supports (no standard here) -> best effort read once
-                try { _usbDriver.Read(); } catch { }
+                // 수신 버퍼 클리어
+                try { _usbDriver!.Read(); } catch { }
 
-                // Write
-                _usbDriver.Write(req);
-
-                // small delay to allow device to respond
+                // 요청 전송
+                _usbDriver!.Write(req);
                 await Task.Delay(_postWriteDelayMs).ConfigureAwait(false);
 
-                // First read header 3 bytes: slave, func, byteCount
+                // 응답 읽기
                 byte[] full = await ReadResponseHeaderAndBodyAsync(3, header =>
                 {
-                    // header[2] == byteCount
                     int byteCount = header[2];
-                    // remaining bytes = data(byteCount) + CRC(2)
-                    return byteCount + 2;
+                    return byteCount + 2; // 데이터 + CRC
                 }, _readTimeoutMs).ConfigureAwait(false);
 
-                // Validate slave
-                if (full.Length < 5) throw new InvalidOperationException("Invalid response length");
-                if (full[0] != slaveId) throw new InvalidOperationException($"Unexpected slave id in response: {full[0]}");
-
-                byte func = full[1];
-                if ((func & 0x80) != 0)
-                {
-                    // exception: next byte is exception code, then CRC
-                    byte ex = full.Length >= 4 ? full[3] : (byte)0;
-                    throw new InvalidOperationException($"Modbus exception from slave {slaveId}: function {(func & 0x7F)}, code {ex}");
-                }
-
-                byte byteCountResp = full[2];
-                int expectedLen = 3 + byteCountResp + 2; // header + data + CRC
-                if (full.Length < expectedLen) throw new InvalidOperationException("Incomplete response");
-
-                // CRC check on (slave..data)
-                int payloadLen = 3 + byteCountResp; // exclude CRC
-                ushort calcCrc = Crc16(full, payloadLen);
-                ushort recvCrc = (ushort)(full[payloadLen] | (full[payloadLen + 1] << 8));
-                if (calcCrc != recvCrc) throw new InvalidOperationException($"CRC mismatch. Calc=0x{calcCrc:X4}, Recv=0x{recvCrc:X4}");
-
-                // Parse registers
-                int regCount = byteCountResp / 2;
-                var regs = new ushort[regCount];
-                for (int i = 0; i < regCount; i++)
-                {
-                    int idx = 3 + i * 2;
-                    regs[i] = (ushort)((full[idx] << 8) | full[idx + 1]);
-                }
-
-                // Trim returned count to requested numberOfPoints (device might return more/less)
-                if (regs.Length != numberOfPoints)
-                {
-                    var arr = new ushort[numberOfPoints];
-                    Array.Copy(regs, 0, arr, 0, Math.Min(regs.Length, numberOfPoints));
-                    return arr;
-                }
-
-                return regs;
+                return ProcessReadResponse(full, slaveId, numberOfPoints);
             }
             finally
             {
@@ -371,15 +414,11 @@ namespace MauiFirstUartApp.Platforms.Android
             }
         }
 
-        // Modbus: Read Input Registers (function 0x04)
-        public async Task<ushort[]> ModbusReadInputRegistersAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
+        /// <summary>
+        /// Modbus Read Input Registers 내부 구현 (Function 0x04)
+        /// </summary>
+        private async Task<ushort[]> ModbusReadInputRegistersInternalAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
         {
-            if (_usbDriver == null)
-                throw new InvalidOperationException("Serial port not open");
-
-            if (numberOfPoints == 0 || numberOfPoints > 125)
-                throw new ArgumentException("Number of points must be between 1 and 125");
-
             await _txLock.WaitAsync().ConfigureAwait(false);
             try
             {
@@ -394,9 +433,9 @@ namespace MauiFirstUartApp.Platforms.Android
                 req[6] = (byte)(crc & 0xFF);
                 req[7] = (byte)(crc >> 8);
 
-                try { _usbDriver.Read(); } catch { }
+                try { _usbDriver!.Read(); } catch { }
 
-                _usbDriver.Write(req);
+                _usbDriver!.Write(req);
                 await Task.Delay(_postWriteDelayMs).ConfigureAwait(false);
 
                 byte[] full = await ReadResponseHeaderAndBodyAsync(3, header =>
@@ -405,38 +444,7 @@ namespace MauiFirstUartApp.Platforms.Android
                     return byteCount + 2;
                 }, _readTimeoutMs).ConfigureAwait(false);
 
-                if (full.Length < 5) throw new InvalidOperationException("Invalid response length");
-                if (full[0] != slaveId) throw new InvalidOperationException($"Unexpected slave id in response: {full[0]}");
-
-                byte func = full[1];
-                if ((func & 0x80) != 0)
-                {
-                    byte ex = full.Length >= 4 ? full[3] : (byte)0;
-                    throw new InvalidOperationException($"Modbus exception from slave {slaveId}: function {(func & 0x7F)}, code {ex}");
-                }
-
-                byte byteCountResp = full[2];
-                int payloadLen = 3 + byteCountResp;
-                ushort calcCrc = Crc16(full, payloadLen);
-                ushort recvCrc = (ushort)(full[payloadLen] | (full[payloadLen + 1] << 8));
-                if (calcCrc != recvCrc) throw new InvalidOperationException($"CRC mismatch. Calc=0x{calcCrc:X4}, Recv=0x{recvCrc:X4}");
-
-                int regCount = byteCountResp / 2;
-                var regs = new ushort[regCount];
-                for (int i = 0; i < regCount; i++)
-                {
-                    int idx = 3 + i * 2;
-                    regs[i] = (ushort)((full[idx] << 8) | full[idx + 1]);
-                }
-
-                if (regs.Length != numberOfPoints)
-                {
-                    var arr = new ushort[numberOfPoints];
-                    Array.Copy(regs, 0, arr, 0, Math.Min(regs.Length, numberOfPoints));
-                    return arr;
-                }
-
-                return regs;
+                return ProcessReadResponse(full, slaveId, numberOfPoints);
             }
             finally
             {
@@ -444,12 +452,11 @@ namespace MauiFirstUartApp.Platforms.Android
             }
         }
 
-        // Modbus: Write Single Register (function 0x06)
-        public async Task ModbusWriteSingleRegisterAsync(byte slaveId, ushort address, ushort value)
+        /// <summary>
+        /// Modbus Write Single Register 내부 구현 (Function 0x06)
+        /// </summary>
+        private async Task ModbusWriteSingleRegisterInternalAsync(byte slaveId, ushort address, ushort value)
         {
-            if (_usbDriver == null)
-                throw new InvalidOperationException("Serial port not open");
-
             await _txLock.WaitAsync().ConfigureAwait(false);
             try
             {
@@ -464,33 +471,77 @@ namespace MauiFirstUartApp.Platforms.Android
                 req[6] = (byte)(crc & 0xFF);
                 req[7] = (byte)(crc >> 8);
 
-                try { _usbDriver.Read(); } catch { }
+                try { _usbDriver!.Read(); } catch { }
 
-                _usbDriver.Write(req);
+                _usbDriver!.Write(req);
                 await Task.Delay(_postWriteDelayMs).ConfigureAwait(false);
 
-                // Response should echo request (8 bytes)
-                // We'll read 8 bytes total
-                byte[] full = await ReadResponseHeaderAndBodyAsync(8, header =>
-                {
-                    // headerLen == 8 means getRemainingLengthFromHeader will not be used; we return 0
-                    return 0;
-                }, _readTimeoutMs).ConfigureAwait(false);
+                // 응답은 요청을 에코함 (8바이트)
+                byte[] full = await ReadResponseHeaderAndBodyAsync(8, header => 0, _readTimeoutMs).ConfigureAwait(false);
 
-                if (full.Length < 8) throw new InvalidOperationException("Invalid response length");
-                // CRC check on first 6 bytes
-                ushort calcCrc = Crc16(full, 6);
-                ushort recvCrc = (ushort)(full[6] | (full[7] << 8));
-                if (calcCrc != recvCrc) throw new InvalidOperationException($"CRC mismatch. Calc=0x{calcCrc:X4}, Recv=0x{recvCrc:X4}");
-
-                if (full[0] != slaveId) throw new InvalidOperationException($"Unexpected slave id in response: {full[0]}");
-                if (full[1] != 0x06) throw new InvalidOperationException($"Unexpected function code in response: {full[1]}");
-                // success
+                ProcessWriteResponse(full, slaveId);
             }
             finally
             {
                 _txLock.Release();
             }
         }
+
+        /// <summary>
+        /// 읽기 응답 처리 공통 로직
+        /// </summary>
+        private static ushort[] ProcessReadResponse(byte[] full, byte slaveId, ushort numberOfPoints)
+        {
+            if (full.Length < 5) throw new InvalidOperationException("Invalid response length");
+            if (full[0] != slaveId) throw new InvalidOperationException($"Unexpected slave id in response: {full[0]}");
+
+            byte func = full[1];
+            if ((func & 0x80) != 0)
+            {
+                byte ex = full.Length >= 4 ? full[3] : (byte)0;
+                throw new InvalidOperationException($"Modbus exception from slave {slaveId}: function {func & 0x7F}, code {ex}");
+            }
+
+            byte byteCountResp = full[2];
+            int payloadLen = 3 + byteCountResp;
+            ushort calcCrc = Crc16(full, payloadLen);
+            ushort recvCrc = (ushort)(full[payloadLen] | (full[payloadLen + 1] << 8));
+            if (calcCrc != recvCrc) throw new InvalidOperationException($"CRC mismatch. Calc=0x{calcCrc:X4}, Recv=0x{recvCrc:X4}");
+
+            int regCount = byteCountResp / 2;
+            var regs = new ushort[regCount];
+            for (int i = 0; i < regCount; i++)
+            {
+                int idx = 3 + i * 2;
+                regs[i] = (ushort)((full[idx] << 8) | full[idx + 1]);
+            }
+
+            if (regs.Length != numberOfPoints)
+            {
+                var arr = new ushort[numberOfPoints];
+                Array.Copy(regs, 0, arr, 0, Math.Min(regs.Length, numberOfPoints));
+                return arr;
+            }
+
+            return regs;
+        }
+
+        /// <summary>
+        /// 쓰기 응답 처리 공통 로직
+        /// </summary>
+        private static void ProcessWriteResponse(byte[] full, byte slaveId)
+        {
+            if (full.Length < 8) throw new InvalidOperationException("Invalid response length");
+
+            ushort calcCrc = Crc16(full, 6);
+            ushort recvCrc = (ushort)(full[6] | (full[7] << 8));
+            if (calcCrc != recvCrc) throw new InvalidOperationException($"CRC mismatch. Calc=0x{calcCrc:X4}, Recv=0x{recvCrc:X4}");
+
+            if (full[0] != slaveId) throw new InvalidOperationException($"Unexpected slave id in response: {full[0]}");
+            if (full[1] != 0x06) throw new InvalidOperationException($"Unexpected function code in response: {full[1]}");
+        }
+
+        #endregion
     }
 }
+

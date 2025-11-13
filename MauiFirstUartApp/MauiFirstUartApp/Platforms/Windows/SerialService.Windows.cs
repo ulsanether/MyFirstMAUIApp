@@ -1,13 +1,10 @@
 ﻿using MauiFirstUartApp.Core.Abstractions;
+using MauiFirstUartApp.Core.Constants;
 
 using NModbus;
 using NModbus.Serial;
 
 using System.IO.Ports;
-using System.Threading;
-
-using Windows.ApplicationModel.Email;
-using Windows.UI.Popups;
 
 namespace MauiFirstUartApp.Platforms.Windows
 {
@@ -53,8 +50,8 @@ namespace MauiFirstUartApp.Platforms.Windows
 
             _port = new SerialPort(portName, baudRate, netParity, dataBits, netStopBits)
             {
-                ReadTimeout = 3000,
-                WriteTimeout = 3000,
+                ReadTimeout = SerialConstants.SerialReadTimeout,
+                WriteTimeout = SerialConstants.SerialWriteTimeout,
                 Handshake = Handshake.None,
                 RtsEnable = true,
                 DtrEnable = true
@@ -64,10 +61,9 @@ namespace MauiFirstUartApp.Platforms.Windows
             if (serialType == SerialType.Modbus)
             {
                 var factory = new ModbusFactory();
-                var adapter = new SerialPortAdapter(_port); // 수정된 부분
+                var adapter = new SerialPortAdapter(_port);
                 _modbusMaster = factory.CreateRtuMaster(adapter);
-       
-                // 기존 폴링이 있다면 중지
+
                 _modbusPollingCts?.Cancel();
                 _modbusPollingCts = null;
             }
@@ -81,13 +77,10 @@ namespace MauiFirstUartApp.Platforms.Windows
             return Task.CompletedTask;
         }
 
-        // 누락된 StartModbusPollingAsync 메서드 추가
-        public Task StartModbusPollingAsync(byte slaveId, ushort startAddress, ushort numberOfPoints, int intervalMs = 1000)
+        public Task StartModbusPollingAsync(byte slaveId, ushort startAddress, ushort numberOfPoints, int intervalMs = SerialConstants.DefaultModbusPollingInterval)
         {
-            if (_modbusMaster == null)
-                throw new InvalidOperationException("Modbus master not initialized");
+            ValidateModbusMaster();
 
-            // 기존 폴링 중지
             _modbusPollingCts?.Cancel();
             _modbusPollingCts = new CancellationTokenSource();
 
@@ -107,7 +100,6 @@ namespace MauiFirstUartApp.Platforms.Windows
             return Task.FromResult(_modbusPollingCts != null && !_modbusPollingCts.Token.IsCancellationRequested);
         }
 
-        // 중복 제거: 하나의 StartModbusPolling 메서드만 유지
         private void StartModbusPolling(byte slaveId, ushort startAddress, ushort numberOfPoints, int pollingIntervalMs, CancellationToken token)
         {
             Task.Run(async () =>
@@ -124,12 +116,10 @@ namespace MauiFirstUartApp.Platforms.Windows
                     }
                     catch (InvalidOperationException ex) when (ex.Message.Contains("Modbus timeout"))
                     {
-                        // 타임아웃은 일시적 오류로 간주하고 계속 진행
                         System.Diagnostics.Debug.WriteLine($"Modbus polling timeout: {ex.Message}");
                     }
                     catch (Exception ex)
                     {
-                        // 기타 오류 로깅
                         System.Diagnostics.Debug.WriteLine($"Modbus polling error: {ex.Message}");
                     }
 
@@ -147,27 +137,25 @@ namespace MauiFirstUartApp.Platforms.Windows
 
         public Task WriteAsync(byte[] buffer, CancellationToken ct = default)
         {
-            if (_port == null || !_port.IsOpen)
-                throw new InvalidOperationException("Serial port not open");
-            _port.BaseStream.Write(buffer, 0, buffer.Length);
+            ValidateSerialPort();
+            _port!.BaseStream.Write(buffer, 0, buffer.Length);
             return Task.CompletedTask;
         }
 
         public async Task<byte[]> ReadAsync(CancellationToken ct = default)
         {
-            if (_port == null || !_port.IsOpen)
-                throw new InvalidOperationException("Serial port not open");
-            var buf = new byte[4096];
+            ValidateSerialPort();
+            var buf = new byte[SerialConstants.ReadBufferSize];
             int n = 0;
             try
             {
-                n = await _port.BaseStream.ReadAsync(buf, 0, buf.Length, ct);
+                n = await _port!.BaseStream.ReadAsync(buf, 0, buf.Length, ct);
             }
             catch { }
             if (n > 0)
             {
                 var result = new byte[n];
-                System.Array.Copy(buf, result, n);
+                Array.Copy(buf, result, n);
                 return result;
             }
             return [];
@@ -175,79 +163,40 @@ namespace MauiFirstUartApp.Platforms.Windows
 
         public async Task<ushort[]> ModbusReadHoldingRegistersAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
         {
-            if (_modbusMaster == null)
-                throw new InvalidOperationException("Modbus master not initialized");
+            ValidateModbusMaster();
+            ValidateModbusPointsRange(numberOfPoints);
 
-
-            if (numberOfPoints == 0 || numberOfPoints > 125)
-                throw new ArgumentException("Number of points must be between 1 and 125");
-
-            try
-            {
-                var values = await Task.Run(() => _modbusMaster.ReadHoldingRegisters(slaveId, startAddress, numberOfPoints));
-                return values;
-
-            }
-            catch (NModbus.SlaveException ex)
-            {
-                throw new InvalidOperationException($"Modbus slave error: SlaveId={slaveId}, Address={startAddress}, Count={numberOfPoints}, Error={ex.Message}", ex);
-            }
-            catch (System.IO.IOException ex)
-            {
-                throw new InvalidOperationException($"Modbus communication error: {ex.Message}", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                throw new InvalidOperationException($"Modbus timeout: SlaveId={slaveId}, Address={startAddress}, Count={numberOfPoints}", ex);
-            }
+            return await ExecuteModbusOperation(
+                () => _modbusMaster!.ReadHoldingRegisters(slaveId, startAddress, numberOfPoints),
+                slaveId,
+                startAddress,
+                numberOfPoints
+            );
         }
 
         public async Task<ushort[]> ModbusReadInputRegistersAsync(byte slaveId, ushort startAddress, ushort numberOfPoints)
         {
-            if (_modbusMaster == null)
-                throw new InvalidOperationException("Modbus master not initialized");
-            
-            if (numberOfPoints == 0 || numberOfPoints > 125)
-                throw new ArgumentException("Number of points must be between 1 and 125");
-            try
-            {
-                return await Task.Run(() => _modbusMaster.ReadInputRegisters(slaveId, startAddress, numberOfPoints));
-            }
-            catch (NModbus.SlaveException ex)
-            {
-                throw new InvalidOperationException($"Modbus slave error: SlaveId={slaveId}, Address={startAddress}, Count={numberOfPoints}, Error={ex.Message}", ex);
-            }
-            catch (System.IO.IOException ex)
-            {
-                throw new InvalidOperationException($"Modbus communication error: {ex.Message}", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                throw new InvalidOperationException($"Modbus timeout: SlaveId={slaveId}, Address={startAddress}, Count={numberOfPoints}", ex);
-            }
+            ValidateModbusMaster();
+            ValidateModbusPointsRange(numberOfPoints);
+
+            return await ExecuteModbusOperation(
+                () => _modbusMaster!.ReadInputRegisters(slaveId, startAddress, numberOfPoints),
+                slaveId,
+                startAddress,
+                numberOfPoints
+            );
         }
 
         public async Task ModbusWriteSingleRegisterAsync(byte slaveId, ushort address, ushort value)
         {
-            if (_modbusMaster == null)
-                throw new InvalidOperationException("Modbus master not initialized");
+            ValidateModbusMaster();
 
-            try
-            {
-                await Task.Run(() => _modbusMaster.WriteSingleRegister(slaveId, address, value));
-            }
-            catch (NModbus.SlaveException ex)
-            {
-                throw new InvalidOperationException($"Modbus slave error: SlaveId={slaveId}, Address={address}, Value={value}, Error={ex.Message}", ex);
-            }
-            catch (System.IO.IOException ex)
-            {
-                throw new InvalidOperationException($"Modbus communication error: {ex.Message}", ex);
-            }
-            catch (TimeoutException ex)
-            {
-                throw new InvalidOperationException($"Modbus timeout: SlaveId={slaveId}, Address={address}, Value={value}", ex);
-            }
+            await ExecuteModbusWriteOperation(
+                () => _modbusMaster!.WriteSingleRegister(slaveId, address, value),
+                slaveId,
+                address,
+                value
+            );
         }
 
         public Task CloseAsync()
@@ -268,11 +217,108 @@ namespace MauiFirstUartApp.Platforms.Windows
         public ValueTask DisposeAsync()
         {
             _modbusPollingCts?.Cancel();
-            _modbusPollingCts = null;   
+            _modbusPollingCts = null;
             _port?.Dispose();
             _port = null;
             _modbusMaster = null;
             return ValueTask.CompletedTask;
         }
+
+        #region Private Helper Methods
+
+        /// <summary>
+        /// Modbus 마스터 초기화 상태 검증
+        /// </summary>
+        private void ValidateModbusMaster()
+        {
+            if (_modbusMaster == null)
+                throw new InvalidOperationException(SerialConstants.ErrorModbusMasterNotInitialized);
+        }
+
+        /// <summary>
+        /// 시리얼 포트 연결 상태 검증
+        /// </summary>
+        private void ValidateSerialPort()
+        {
+            if (_port == null || !_port.IsOpen)
+                throw new InvalidOperationException(SerialConstants.ErrorSerialPortNotOpen);
+        }
+
+        /// <summary>
+        /// Modbus 포인트 수 범위 검증
+        /// </summary>
+        private static void ValidateModbusPointsRange(ushort numberOfPoints)
+        {
+            if (numberOfPoints < SerialConstants.ModbusMinPoints || numberOfPoints > SerialConstants.ModbusMaxPoints)
+                throw new ArgumentException(SerialConstants.ErrorPointsOutOfRange);
+        }
+
+        /// <summary>
+        /// Modbus 읽기 작업 공통 예외 처리
+        /// </summary>
+        private async Task<ushort[]> ExecuteModbusOperation(
+            Func<ushort[]> operation,
+            byte slaveId,
+            ushort startAddress,
+            ushort numberOfPoints)
+        {
+            try
+            {
+                return await Task.Run(operation);
+            }
+            catch (SlaveException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusSlaveFormat, slaveId, startAddress, numberOfPoints, ex.Message),
+                    ex);
+            }
+            catch (IOException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusCommunicationFormat, ex.Message),
+                    ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusTimeoutReadWriteFormat, slaveId, startAddress, numberOfPoints),
+                    ex);
+            }
+        }
+
+        /// <summary>
+        /// Modbus 쓰기 작업 공통 예외 처리
+        /// </summary>
+        private async Task ExecuteModbusWriteOperation(
+            Action operation,
+            byte slaveId,
+            ushort address,
+            ushort value)
+        {
+            try
+            {
+                await Task.Run(operation);
+            }
+            catch (SlaveException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusSlaveSingleWriteFormat, slaveId, address, value, ex.Message),
+                    ex);
+            }
+            catch (IOException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusCommunicationFormat, ex.Message),
+                    ex);
+            }
+            catch (TimeoutException ex)
+            {
+                throw new InvalidOperationException(
+                    string.Format(SerialConstants.ErrorModbusTimeoutSingleWriteFormat, slaveId, address, value),
+                    ex);
+            }
+        }
+
+        #endregion
     }
 }

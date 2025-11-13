@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using MauiFirstUartApp.Core.Abstractions;
-using MauiFirstUartApp.Services;
 using MauiFirstUartApp.ViewModels;
 using MauiFirstUartApp.Views;
 
@@ -47,7 +46,7 @@ public static class MauiProgram
 #endif
 
         // 비즈니스 서비스
-        services.AddSingleton<UartCommunicationService>();
+     //   services.AddSingleton<UartCommunicationService>();
 
         // ViewModels
         services.AddSingleton<MainPageViewModel>();
