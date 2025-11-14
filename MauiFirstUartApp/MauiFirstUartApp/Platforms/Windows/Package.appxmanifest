@@ -7,12 +7,12 @@
   xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
   IgnorableNamespaces="uap rescap uap18">
 
-  <Identity Name="maui-package-name-placeholder" Publisher="CN=User Name" Version="0.9.0.0" />
+  <Identity Name="DaftSerialModbus" Publisher="CN=User Name" Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="1BDC2DB8-A585-42B5-9DD8-3BD042AC1CAF" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>$placeholder$</DisplayName>
+    <DisplayName>Daft Serial&amp;Modbus</DisplayName>
     <PublisherDisplayName>DaftWork</PublisherDisplayName>
     <Logo>$placeholder$.png</Logo>
   </Properties>
@@ -27,12 +27,12 @@
   </Resources>
 
   <Applications>
-    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$" uap18:RuntimeBehavior="windowsApp">
+    <Application Id="App" Executable="$targetnametoken$.exe" EntryPoint="$targetentrypoint$" uap18:RuntimeBehavior="windowsApp" uap18:TrustLevel="mediumIL">
       <uap:VisualElements
-        Description="$placeholder$"
+        Description="시리얼 통신 및 모드버스 기능을 제공하는 .NET MAUI 기반 앱."
         Square150x150Logo="$placeholder$.png"
-        Square44x44Logo="$placeholder$.png"
-        BackgroundColor="transparent" DisplayName="$placeholder$">
+        Square44x44Logo="Resources\Images\appicon\appicon.png"
+        BackgroundColor="transparent" DisplayName="Daft Serial&amp;Modbus">
         <uap:DefaultTile Square71x71Logo="$placeholder$.png" Wide310x150Logo="$placeholder$.png" Square310x310Logo="$placeholder$.png" />
         <uap:SplashScreen Image="$placeholder$.png" />
         <uap:InitialRotationPreference>
