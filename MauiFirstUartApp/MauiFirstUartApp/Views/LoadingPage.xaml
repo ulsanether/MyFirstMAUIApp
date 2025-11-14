@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
     x:Class="MauiFirstUartApp.Views.LoadingPage"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
@@ -28,18 +28,14 @@
                     <Ellipse
                         Fill="{AppThemeBinding Light={StaticResource Primary},
                                                Dark={StaticResource DarkPrimary}}"
-                        HeightRequest="72"
-                        WidthRequest="72" />
+                        HeightRequest="110"
+                        WidthRequest="110" />
 
+                    <Image
+                        HeightRequest="110"
+                        Source="appiconw.png"
+                        WidthRequest="110" />
                     <!--  아이콘  -->
-                    <Label
-                        FontFamily="MaterialIcons"
-                        FontSize="36"
-                        HorizontalOptions="Center"
-                        Text="&#xe1c0;"
-                        TextColor="{AppThemeBinding Light={StaticResource PrimaryForeground},
-                                                    Dark={StaticResource DarkPrimaryForeground}}"
-                        VerticalOptions="Center" />
                 </Grid>
             </Frame>
 
@@ -79,7 +75,6 @@
                     TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
                                                 Dark={StaticResource DarkMutedForeground}}" />
             </VerticalStackLayout>
-
         </VerticalStackLayout>
 
         <!--  버전 정보 (하단)  -->
@@ -110,7 +105,5 @@
                 TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
                                             Dark={StaticResource DarkMutedForeground}}" />
         </VerticalStackLayout>
-
     </Grid>
-
 </ContentPage>
