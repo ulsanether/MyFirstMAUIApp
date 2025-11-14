@@ -319,6 +319,6 @@ namespace MauiFirstUartApp.Platforms.Windows
             }
         }
 
-        #endregion Private Helper Methods
+        #endregion
     }
 }

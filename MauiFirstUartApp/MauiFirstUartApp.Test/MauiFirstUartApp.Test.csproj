@@ -15,7 +15,6 @@
   <ItemGroup>
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
     <PackageReference Include="Moq" Version="4.20.72" />
-    <PackageReference Include="NModbus" Version="3.0.81" />
     <PackageReference Include="NModbus.Serial" Version="3.0.81" />
     <PackageReference Include="NModbus4" Version="2.1.0" />
     <PackageReference Include="SQLite" Version="3.13.0" />

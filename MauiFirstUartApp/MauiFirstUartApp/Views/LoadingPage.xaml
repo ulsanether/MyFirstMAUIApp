@@ -36,6 +36,7 @@
                         Source="appiconw.png"
                         WidthRequest="110" />
                     <!--  아이콘  -->
+
                 </Grid>
             </Frame>
 
@@ -75,6 +76,7 @@
                     TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
                                                 Dark={StaticResource DarkMutedForeground}}" />
             </VerticalStackLayout>
+
         </VerticalStackLayout>
 
         <!--  버전 정보 (하단)  -->
@@ -105,5 +107,7 @@
                 TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
                                             Dark={StaticResource DarkMutedForeground}}" />
         </VerticalStackLayout>
+
     </Grid>
+
 </ContentPage>

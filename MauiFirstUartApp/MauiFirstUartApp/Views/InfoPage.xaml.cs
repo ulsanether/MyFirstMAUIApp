@@ -2,10 +2,11 @@
 
 public partial class InfoPage : ContentPage
 {
-    public InfoPage()
-    {
-        InitializeComponent();
-    }
+	public InfoPage()
+	{
+		InitializeComponent();
+	}
+
 
     private async void OnEmailButtonClicked(object sender, EventArgs e)
     {

@@ -52,13 +52,11 @@ public class MainPageViewModel : BaseSerialViewModel
     // ActivityLog 컬렉션
     public ObservableCollection<ActivityLogItem> ActivityLog { get; } = new();
 
-    // 대시보드용 통계 속성들
+    // 대시보드용 통계 속성들  
     public int SentCount => SendCount;
-
     public int ReceivedCount => ReceiveCount;
 
     private int _errorCount;
-
     public int ErrorCount
     {
         get => _errorCount;
@@ -80,7 +78,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 모드 확인 속성들
     public bool IsSerialMode => SelectedSerialType == SerialType.Normal;
-
     public bool IsModbusMode => SelectedSerialType == SerialType.Modbus;
 
     // 상태 표시 색상 속성들
@@ -100,7 +97,7 @@ public class MainPageViewModel : BaseSerialViewModel
         Color.FromArgb(SerialConstants.ColorSuccess) :
         Color.FromArgb(SerialConstants.ColorError);
 
-    #endregion Dashboard Properties
+    #endregion
 
     #region Serial Terminal Properties
 
@@ -109,7 +106,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 통계
     private int _sendCount;
-
     public int SendCount
     {
         get => _sendCount;
@@ -123,7 +119,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private int _receiveCount;
-
     public int ReceiveCount
     {
         get => _receiveCount;
@@ -140,7 +135,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 시리얼 전용 속성들
     private string? _sendText;
-
     public string? SendText
     {
         get => _sendText;
@@ -148,7 +142,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private string _receivedText = SerialConstants.EmptyString;
-
     public string ReceivedText
     {
         get => _receivedText;
@@ -162,7 +155,7 @@ public class MainPageViewModel : BaseSerialViewModel
     public ICommand QuickSendCommand { get; private set; }
     public ICommand SendCommand { get; private set; }
 
-    #endregion Serial Terminal Properties
+    #endregion
 
     #region Modbus Properties
 
@@ -170,7 +163,6 @@ public class MainPageViewModel : BaseSerialViewModel
     public ObservableCollection<ModbusDataItem> ModbusDataItems { get; } = new();
 
     private SerialType _selectedSerialType = SerialType.Normal;
-
     public SerialType SelectedSerialType
     {
         get => _selectedSerialType;
@@ -190,7 +182,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private byte _modbusSlaveId = SerialConstants.DefaultModbusSlaveId;
-
     public byte ModbusSlaveId
     {
         get => _modbusSlaveId;
@@ -198,7 +189,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private ushort _modbusAddress = SerialConstants.DefaultModbusStartAddress;
-
     public ushort ModbusAddress
     {
         get => _modbusAddress;
@@ -206,7 +196,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private ushort _modbusQuantity = SerialConstants.DefaultModbusQuantity;
-
     public ushort ModbusQuantity
     {
         get => _modbusQuantity;
@@ -215,7 +204,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 자동 읽기 기능
     private bool _isAutoReadEnabled;
-
     public bool IsAutoReadEnabled
     {
         get => _isAutoReadEnabled;
@@ -226,7 +214,6 @@ public class MainPageViewModel : BaseSerialViewModel
     public ObservableCollection<string> PollingIntervalOptions { get; } = new() { "500ms", "1s", "2s", "5s" };
 
     private string _selectedPollingInterval = SerialConstants.DefaultPollingIntervalText;
-
     public string SelectedPollingInterval
     {
         get => _selectedPollingInterval;
@@ -241,7 +228,6 @@ public class MainPageViewModel : BaseSerialViewModel
     };
 
     private string _selectedReadFunction = SerialConstants.DefaultReadFunctionText;
-
     public string SelectedReadFunction
     {
         get => _selectedReadFunction;
@@ -256,7 +242,6 @@ public class MainPageViewModel : BaseSerialViewModel
     };
 
     private string _selectedWriteFunction = SerialConstants.DefaultWriteFunctionText;
-
     public string SelectedWriteFunction
     {
         get => _selectedWriteFunction;
@@ -265,7 +250,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 읽기/쓰기 값
     private ushort _writeValue;
-
     public ushort WriteValue
     {
         get => _writeValue;
@@ -274,7 +258,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 통계
     private int _modbusReadCount;
-
     public int ModbusReadCount
     {
         get => _modbusReadCount;
@@ -287,7 +270,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private int _modbusWriteCount;
-
     public int ModbusWriteCount
     {
         get => _modbusWriteCount;
@@ -303,7 +285,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 탭 관리
     private bool _isReadTabSelected = true;
-
     public bool IsReadTabSelected
     {
         get => _isReadTabSelected;
@@ -317,7 +298,7 @@ public class MainPageViewModel : BaseSerialViewModel
 
     public bool IsWriteTabSelected => !_isReadTabSelected;
 
-    #endregion Modbus Properties
+    #endregion
 
     #region Settings Properties
 
@@ -325,7 +306,6 @@ public class MainPageViewModel : BaseSerialViewModel
     public ObservableCollection<string> BaudRateOptions { get; } = new() { "9600", "15500", "19200", "38400", "57600", "115200" };
 
     private string _selectedBaudRate = "115200";
-
     public string SelectedBaudRate
     {
         get => _selectedBaudRate;
@@ -341,11 +321,12 @@ public class MainPageViewModel : BaseSerialViewModel
         }
     }
 
+
+
     // Modbus 프로토콜 관련
     public ObservableCollection<string> ModbusProtocolOptions { get; } = new() { "Modbus RTU", "Modbus ASCII" };
 
     private string _selectedModbusProtocol = SerialConstants.DefaultModbusProtocolText;
-
     public string SelectedModbusProtocol
     {
         get => _selectedModbusProtocol;
@@ -353,7 +334,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private int _modbusTimeout = SerialConstants.DefaultModbusTimeout;
-
     public int ModbusTimeout
     {
         get => _modbusTimeout;
@@ -361,7 +341,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isAutoReconnectEnabled = true;
-
     public bool IsAutoReconnectEnabled
     {
         get => _isAutoReconnectEnabled;
@@ -369,7 +348,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isCrcVerificationEnabled = true;
-
     public bool IsCrcVerificationEnabled
     {
         get => _isCrcVerificationEnabled;
@@ -377,7 +355,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isRtsEnabled;
-
     public bool IsRtsEnabled
     {
         get => _isRtsEnabled;
@@ -385,7 +362,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isDtrEnabled;
-
     public bool IsDtrEnabled
     {
         get => _isDtrEnabled;
@@ -396,7 +372,6 @@ public class MainPageViewModel : BaseSerialViewModel
     public ObservableCollection<string> LanguageOptions { get; } = new() { "한국어", "English", "日본語" };
 
     private string _selectedLanguage = SerialConstants.DefaultLanguage;
-
     public string SelectedLanguage
     {
         get => _selectedLanguage;
@@ -404,7 +379,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isDarkModeEnabled;
-
     public bool IsDarkModeEnabled
     {
         get => _isDarkModeEnabled;
@@ -421,7 +395,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // 알림 설정
     private bool _isConnectionNotificationEnabled = true;
-
     public bool IsConnectionNotificationEnabled
     {
         get => _isConnectionNotificationEnabled;
@@ -429,7 +402,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isErrorNotificationEnabled = true;
-
     public bool IsErrorNotificationEnabled
     {
         get => _isErrorNotificationEnabled;
@@ -437,7 +409,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isSoundNotificationEnabled;
-
     public bool IsSoundNotificationEnabled
     {
         get => _isSoundNotificationEnabled;
@@ -448,7 +419,6 @@ public class MainPageViewModel : BaseSerialViewModel
     public ObservableCollection<string> LogRetentionOptions { get; } = new() { "1일", "7일", "30일", "90일" };
 
     private string _selectedLogRetention = SerialConstants.DefaultLogRetention;
-
     public string SelectedLogRetention
     {
         get => _selectedLogRetention;
@@ -456,7 +426,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isAutoSaveLogsEnabled = true;
-
     public bool IsAutoSaveLogsEnabled
     {
         get => _isAutoSaveLogsEnabled;
@@ -464,7 +433,6 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isTimestampDisplayEnabled = true;
-
     public bool IsTimestampDisplayEnabled
     {
         get => _isTimestampDisplayEnabled;
@@ -472,20 +440,18 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     private bool _isHexFormatEnabled;
-
     public bool IsHexFormatEnabled
     {
         get => _isHexFormatEnabled;
         set { _isHexFormatEnabled = value; OnPropertyChanged(); }
     }
 
-    #endregion Settings Properties
+    #endregion
 
     #region Commands
 
     // 모든 Command 속성들을 private set으로 변경
     public ICommand ModbusReadCommand { get; private set; }
-
     public ICommand ModbusWriteCommand { get; private set; }
     public ICommand ModbusReadInputCommand { get; private set; }
     public ICommand ConnectCommand { get; private set; }
@@ -494,7 +460,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     // Modbus 빠른 명령어들
     public ICommand ReadMultipleRegistersCommand { get; private set; }
-
     public ICommand ReadCoilsCommand { get; private set; }
     public ICommand WriteRegister100Command { get; private set; }
     public ICommand WriteCoilOnCommand { get; private set; }
@@ -502,7 +467,7 @@ public class MainPageViewModel : BaseSerialViewModel
     public ICommand SelectReadTabCommand { get; private set; }
     public ICommand SelectWriteTabCommand { get; private set; }
 
-    #endregion Commands
+    #endregion
 
     public MainPageViewModel(ISerialService serialService) : base(serialService)
     {
@@ -550,7 +515,7 @@ public class MainPageViewModel : BaseSerialViewModel
         WriteCoilOnCommand = new Command(async () => await WriteCoilOnAsync());
     }
 
-    #endregion Initialization
+    #endregion
 
     #region Overridden Methods
 
@@ -569,7 +534,7 @@ public class MainPageViewModel : BaseSerialViewModel
         UpdateModbusCommandCanExecute();
     }
 
-    #endregion Overridden Methods
+    #endregion
 
     #region Connection Methods
 
@@ -599,7 +564,7 @@ public class MainPageViewModel : BaseSerialViewModel
         await InitializeAsync();
     }
 
-    #endregion Connection Methods
+    #endregion
 
     #region Serial Communication Methods
 
@@ -686,15 +651,12 @@ public class MainPageViewModel : BaseSerialViewModel
             Message = message,
             Type = type
         };
-        MainThread.BeginInvokeOnMainThread(() => SerialLogItems.Add(logItem));
+        SerialLogItems.Add(logItem);
     }
 
     private void ClearLogs()
     {
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            SerialLogItems.Clear();
-        });
+        SerialLogItems.Clear();
         SendCount = 0;
         ReceiveCount = 0;
     }
@@ -709,7 +671,7 @@ public class MainPageViewModel : BaseSerialViewModel
         SendText = originalText;
     }
 
-    #endregion Serial Communication Methods
+    #endregion
 
     #region Modbus Methods
 
@@ -733,23 +695,19 @@ public class MainPageViewModel : BaseSerialViewModel
     {
         await _serialService.ModbusWriteSingleRegisterAsync(ModbusSlaveId, ModbusAddress, WriteValue);
 
-        MainThread.BeginInvokeOnMainThread(() =>
+        var dataItem = new ModbusDataItem
         {
-            var dataItem = new ModbusDataItem
-            {
-                Id = ModbusDataItems.Count + 1,
-                Timestamp = DateTime.Now,
-                Address = ModbusAddress.ToString(),
-                FunctionCode = SerialConstants.FunctionCode06,
-                Value = WriteValue
-            };
-            ModbusDataItems.Add(dataItem);
-        });
+            Id = ModbusDataItems.Count + 1,
+            Timestamp = DateTime.Now,
+            Address = ModbusAddress.ToString(),
+            FunctionCode = SerialConstants.FunctionCode06,
+            Value = WriteValue
+        };
+        ModbusDataItems.Add(dataItem);
 
         ModbusWriteCount++;
         StatusText = SerialConstants.StatusModbusWriteComplete;
     }
-
 
     private void AddModbusDataItems(ushort[] values, string functionCode)
     {
@@ -813,7 +771,7 @@ public class MainPageViewModel : BaseSerialViewModel
         StatusText = SerialConstants.CoilWriteNotImplementedMessage;
     }
 
-    #endregion Modbus Methods
+    #endregion
 
     #region Error Handling
 
@@ -833,7 +791,7 @@ public class MainPageViewModel : BaseSerialViewModel
         }
     }
 
-    #endregion Error Handling
+    #endregion
 
     #region Utility Methods
 
@@ -855,5 +813,7 @@ public class MainPageViewModel : BaseSerialViewModel
         });
     }
 
-    #endregion Utility Methods
+    #endregion
 }
+
+

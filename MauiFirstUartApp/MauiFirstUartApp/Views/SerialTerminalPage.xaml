@@ -169,6 +169,7 @@
                 </VerticalStackLayout>
             </Frame>
 
+
             <!--  Communication Log  -->
             <Frame
                 Padding="16"
@@ -321,6 +322,9 @@
                     </VerticalStackLayout>
                 </Frame>
             </Grid>
+
+
+
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

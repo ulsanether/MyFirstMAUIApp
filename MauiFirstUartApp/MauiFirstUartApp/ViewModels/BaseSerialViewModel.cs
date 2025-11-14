@@ -15,7 +15,6 @@ public abstract class BaseSerialViewModel : BindableObject
     public ObservableCollection<string> StopBitsOptions { get; } = new(Enum.GetNames(typeof(SerialStopBits)));
 
     private string? _selectedPort;
-
     public string? SelectedPort
     {
         get => _selectedPort;
@@ -23,7 +22,6 @@ public abstract class BaseSerialViewModel : BindableObject
     }
 
     private string? _selectedParity;
-
     public string? SelectedParity
     {
         get => _selectedParity;
@@ -31,7 +29,6 @@ public abstract class BaseSerialViewModel : BindableObject
     }
 
     private string _selectedStopBits = SerialConstants.DefaultStopBits;
-
     public string SelectedStopBits
     {
         get => _selectedStopBits;
@@ -39,7 +36,6 @@ public abstract class BaseSerialViewModel : BindableObject
     }
 
     private int _baudRate = 115200;
-
     public int BaudRate
     {
         get => _baudRate;
@@ -47,7 +43,6 @@ public abstract class BaseSerialViewModel : BindableObject
     }
 
     private int _dataBits = 8;
-
     public int DataBits
     {
         get => _dataBits;
@@ -55,7 +50,6 @@ public abstract class BaseSerialViewModel : BindableObject
     }
 
     private string _statusText = "상태: 연결 안됨";
-
     public string StatusText
     {
         get => _statusText;
@@ -63,7 +57,6 @@ public abstract class BaseSerialViewModel : BindableObject
     }
 
     private bool _isConnected;
-
     public bool IsConnected
     {
         get => _isConnected;
@@ -87,23 +80,17 @@ public abstract class BaseSerialViewModel : BindableObject
 
     public async Task InitializeAsync()
     {
+        PortNames.Clear();
         var ports = await _serialService.GetDeviceNamesAsync();
-
-        MainThread.BeginInvokeOnMainThread(() =>
-        {
-            PortNames.Clear();
-            foreach (var port in ports)
-                PortNames.Add(port);
-            if (PortNames.Count > 0)
-                SelectedPort = PortNames[0];
-            SelectedParity = ParityOptions[0];
-            SelectedStopBits = StopBitsOptions[0];
-        });
+        foreach (var port in ports)
+            PortNames.Add(port);
+        if (PortNames.Count > 0)
+            SelectedPort = PortNames[0];
+        SelectedParity = ParityOptions[0];
+        SelectedStopBits = StopBitsOptions[0];
     }
 
-
-    protected virtual void OnConnectionStatusChanged()
-    { }
+    protected virtual void OnConnectionStatusChanged() { }
 
     protected async Task<bool> ConnectAsync(SerialType serialType)
     {
