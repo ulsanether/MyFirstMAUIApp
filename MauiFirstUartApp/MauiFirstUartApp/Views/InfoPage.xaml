@@ -13,7 +13,7 @@
             <HorizontalStackLayout Spacing="8">
                 <Image
                     HeightRequest="24"
-                    Source="appiconw.png"
+                    Source="infoicon.png"
                     WidthRequest="24" />
                 <Label
                     FontAttributes="Bold"
@@ -187,9 +187,9 @@
                             HasShadow="False">
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                                 <Image
-                                    HeightRequest="24"
-                                    Source="appiconw.png"
-                                    WidthRequest="24" />
+                                    HeightRequest="48"
+                                    Source="androidicon.png"
+                                    WidthRequest="48" />
                                 <Label
                                     FontSize="13"
                                     HorizontalTextAlignment="Center"
@@ -207,9 +207,9 @@
                             HasShadow="False">
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                                 <Image
-                                    HeightRequest="24"
-                                    Source="appiconw.png"
-                                    WidthRequest="24" />
+                                    HeightRequest="48"
+                                    Source="windowsicon.png"
+                                    WidthRequest="48" />
                                 <Label
                                     FontSize="13"
                                     HorizontalTextAlignment="Center"

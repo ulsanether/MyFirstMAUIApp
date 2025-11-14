@@ -17,7 +17,7 @@
             <HorizontalStackLayout Spacing="8">
                 <Image
                     HeightRequest="24"
-                    Source="appiconw.png"
+                    Source="settingsicon.png"
                     WidthRequest="24" />
                 <Label
                     FontAttributes="Bold"
@@ -40,7 +40,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <Image
                             HeightRequest="20"
-                            Source="appiconw.png"
+                            Source="serialporticon.png"
                             WidthRequest="20" />
                         <Label
                             FontAttributes="Bold"
@@ -211,7 +211,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <Image
                             HeightRequest="20"
-                            Source="network_icon.png"
+                            Source="modbusicon.png"
                             WidthRequest="20" />
                         <Label
                             FontAttributes="Bold"
@@ -349,7 +349,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <Image
                             HeightRequest="20"
-                            Source="globe_icon.png"
+                            Source="generalicon.png"
                             WidthRequest="20" />
                         <Label
                             FontAttributes="Bold"
@@ -421,7 +421,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <Image
                             HeightRequest="20"
-                            Source="bell_icon.png"
+                            Source="notificationicon.png"
                             WidthRequest="20" />
                         <Label
                             FontAttributes="Bold"
@@ -516,7 +516,7 @@
                     <HorizontalStackLayout Spacing="8">
                         <Image
                             HeightRequest="20"
-                            Source="database_icon.png"
+                            Source="databaseicon.png"
                             WidthRequest="20" />
                         <Label
                             FontAttributes="Bold"
