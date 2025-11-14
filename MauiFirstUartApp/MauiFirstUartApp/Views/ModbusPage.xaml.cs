@@ -37,12 +37,10 @@ public partial class ModbusPage : ContentPage
         ReadTabButton.TextColor = Color.FromArgb("#64748B");
     }
 
-   
     private void OnReadExecuteClicked(object sender, EventArgs e)
     {
         _viewModel.ModbusReadCommand.Execute(null);
     }
-
 
     private void OnWriteExecuteClicked(object sender, EventArgs e)
     {

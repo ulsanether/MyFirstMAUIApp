@@ -1,9 +1,7 @@
-﻿using System;
+﻿using MauiFirstUartApp.Core.Abstractions;
+
 using System.Globalization;
 
-using MauiFirstUartApp.Core.Abstractions;
-
-using Microsoft.Maui.Controls;
 namespace MauiFirstUartApp.Converters
 {
     public class SerialTypeToBoolConverter : IValueConverter

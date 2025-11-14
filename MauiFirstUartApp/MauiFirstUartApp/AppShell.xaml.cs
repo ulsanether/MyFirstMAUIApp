@@ -1,5 +1,4 @@
-﻿
-using MauiFirstUartApp.Views;
+﻿using MauiFirstUartApp.Views;
 
 namespace MauiFirstUartApp
 {
@@ -9,12 +8,8 @@ namespace MauiFirstUartApp
         {
             InitializeComponent();
 
-    
             Routing.RegisterRoute("mainpage", typeof(MainPage));
             Routing.RegisterRoute("settingpage", typeof(SettingPage));
         }
     }
-
-
-
 }

@@ -291,7 +291,7 @@ namespace MauiFirstUartApp.Platforms.Android
             }
         }
 
-        #endregion
+        #endregion Private Helper Methods
 
         #region Modbus RTU Implementation
 
@@ -541,7 +541,6 @@ namespace MauiFirstUartApp.Platforms.Android
             if (full[1] != 0x06) throw new InvalidOperationException($"Unexpected function code in response: {full[1]}");
         }
 
-        #endregion
+        #endregion Modbus RTU Implementation
     }
 }
-

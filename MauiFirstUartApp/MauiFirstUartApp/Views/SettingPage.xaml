@@ -622,8 +622,6 @@
                     </Grid>
                 </VerticalStackLayout>
             </Frame>
-
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+
 using MauiFirstUartApp.Core.Abstractions;
 using MauiFirstUartApp.ViewModels;
 using MauiFirstUartApp.Views;
@@ -6,7 +7,9 @@ using MauiFirstUartApp.Views;
 #if WINDOWS
 using MauiFirstUartApp.Platforms.Windows;
 #elif ANDROID
+
 using MauiFirstUartApp.Platforms.Android;
+
 #endif
 
 namespace MauiFirstUartApp;
@@ -26,7 +29,6 @@ public static class MauiProgram
                 fonts.AddFont("MaterialIconsOutlined-Regular.otf", "MaterialIconsOutlined");
             });
 
-        // 서비스 등록
         RegisterServices(builder.Services);
 
 #if DEBUG
@@ -46,7 +48,7 @@ public static class MauiProgram
 #endif
 
         // 비즈니스 서비스
-     //   services.AddSingleton<UartCommunicationService>();
+        //   services.AddSingleton<UartCommunicationService>();
 
         // ViewModels
         services.AddSingleton<MainPageViewModel>();
@@ -57,6 +59,6 @@ public static class MauiProgram
         services.AddTransient<ModbusPage>();
         services.AddTransient<SettingPage>();
         services.AddTransient<InfoPage>();
-        services.AddTransient<LoadingPage>(); 
+        services.AddTransient<LoadingPage>();
     }
 }

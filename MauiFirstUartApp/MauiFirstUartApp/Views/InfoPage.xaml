@@ -325,10 +325,8 @@
                         Text="🔗 GitHub 저장소 링크"
                         TextColor="{AppThemeBinding Light={StaticResource Gray900},
                                                     Dark={StaticResource Gray50}}" />
-
                 </VerticalStackLayout>
             </Frame>
-
 
             <!--  Footer  -->
             <VerticalStackLayout
@@ -356,7 +354,6 @@
                     TextColor="{AppThemeBinding Light={StaticResource Gray600},
                                                 Dark={StaticResource Gray300}}" />
             </VerticalStackLayout>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

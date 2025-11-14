@@ -1,13 +1,10 @@
-﻿using MauiFirstUartApp.Views;
-using MauiFirstUartApp.ViewModels;
+﻿using MauiFirstUartApp.ViewModels;
+using MauiFirstUartApp.Views;
 
 namespace MauiFirstUartApp
 {
     public partial class App : Application
     {
-
-
-
         public App()
         {
             InitializeComponent();
@@ -44,6 +41,7 @@ namespace MauiFirstUartApp
             MauiWinUIApplication.Current.Services;
 #elif ANDROID
             MauiApplication.Current.Services;
+
 #elif IOS || MACCATALYST
             MauiUIApplicationDelegate.Current.Services;
 #else

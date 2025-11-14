@@ -441,8 +441,6 @@
                     </VerticalStackLayout>
                 </Border>
             </Grid>
-
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>
-

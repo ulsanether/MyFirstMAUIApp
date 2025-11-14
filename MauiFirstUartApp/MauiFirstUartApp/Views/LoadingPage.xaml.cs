@@ -1,21 +1,16 @@
-using MauiFirstUartApp.ViewModels;
-using MauiFirstUartApp.Views;
+ï»¿using MauiFirstUartApp.ViewModels;
+
 namespace MauiFirstUartApp.Views;
 
 public partial class LoadingPage : ContentPage
 {
     private readonly MainPageViewModel _mainViewModel;
 
-    private SerialTerminalPage _serialTerminalPage;
-    private ModbusPage _modbusPage;
-    private SettingPage _settingPage;
-
     public LoadingPage(
         MainPageViewModel mainViewModel)
     {
         InitializeComponent();
         _mainViewModel = mainViewModel;
-       
     }
 
     protected override async void OnAppearing()
@@ -24,33 +19,52 @@ public partial class LoadingPage : ContentPage
         await InitializeApp();
     }
 
-
     private async Task InitializeApp()
     {
         try
         {
-            LoadingText.Text = "½Ã¸®¾ó Æ÷Æ®¸¦ °Ë»öÇÏ´Â Áß...";
+            // UI ì—…ë°ì´íŠ¸: UI ìŠ¤ë ˆë“œì—ì„œ
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadingText.Text = "ì‹œë¦¬ì–¼ í¬íŠ¸ë¥¼ ê²€ìƒ‰í•˜ëŠ” ì¤‘...";
+            });
+
             await _mainViewModel.InitializeAsync();
 
-            LoadingText.Text = "ÆäÀÌÁö¸¦ ¹Ì¸® »ý¼ºÇÏ´Â Áß...";
-            _serialTerminalPage = new SerialTerminalPage(_mainViewModel);
-            _modbusPage = new ModbusPage(_mainViewModel);
-            _settingPage = new SettingPage(_mainViewModel);
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadingText.Text = "íŽ˜ì´ì§€ë¥¼ ë¯¸ë¦¬ ìƒì„±í•˜ëŠ” ì¤‘...";
+            });
 
-            LoadingText.Text = "UI¸¦ ÁØºñÇÏ´Â Áß...";
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadingText.Text = "UIë¥¼ ì¤€ë¹„í•˜ëŠ” ì¤‘...";
+            });
             await Task.Delay(500);
 
-            LoadingText.Text = "¿Ï·á!";
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadingText.Text = "ì™„ë£Œ!";
+            });
             await Task.Delay(300);
 
-            Application.Current.MainPage = new AppShell();
-            // AppShell¿¡¼­ ¹Ì¸® »ý¼ºÇÑ ÆäÀÌÁö¸¦ È°¿ëÇÏµµ·Ï ±¸Çö ÇÊ¿ä
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Application.Current.MainPage = new AppShell();
+            });
         }
         catch (Exception ex)
         {
-            LoadingText.Text = $"ÃÊ±âÈ­ ¿À·ù: {ex.Message}";
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                LoadingText.Text = $"ì´ˆê¸°í™” ì˜¤ë¥˜: {ex.Message}";
+            });
             await Task.Delay(1000);
-            Application.Current.MainPage = new AppShell();
+
+            MainThread.BeginInvokeOnMainThread(() =>
+            {
+                Application.Current.MainPage = new AppShell();
+            });
         }
     }
 
