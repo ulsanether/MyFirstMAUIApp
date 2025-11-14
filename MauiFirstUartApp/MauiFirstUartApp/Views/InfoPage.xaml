@@ -13,7 +13,7 @@
             <HorizontalStackLayout Spacing="8">
                 <Image
                     HeightRequest="24"
-                    Source="info_icon.png"
+                    Source="appiconw.png"
                     WidthRequest="24" />
                 <Label
                     FontAttributes="Bold"
@@ -41,9 +41,9 @@
                         HeightRequest="64"
                         WidthRequest="64">
                         <Image
-                            HeightRequest="32"
-                            Source="smartphone_icon.png"
-                            WidthRequest="32" />
+                            HeightRequest="64"
+                            Source="appiconw.png"
+                            WidthRequest="64" />
                     </Frame>
                     <Label
                         FontAttributes="Bold"
@@ -188,7 +188,7 @@
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                                 <Image
                                     HeightRequest="24"
-                                    Source="smartphone_icon.png"
+                                    Source="appiconw.png"
                                     WidthRequest="24" />
                                 <Label
                                     FontSize="13"
@@ -208,7 +208,7 @@
                             <VerticalStackLayout HorizontalOptions="Center" Spacing="8">
                                 <Image
                                     HeightRequest="24"
-                                    Source="code_icon.png"
+                                    Source="appiconw.png"
                                     WidthRequest="24" />
                                 <Label
                                     FontSize="13"
