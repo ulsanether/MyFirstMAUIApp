@@ -161,7 +161,7 @@
                         <Border
                             Grid.Column="1"
                             Padding="8,4"
-                            BackgroundColor="{Binding StatusBorderColor}"
+                            BackgroundColor="{Binding StatusBadgeColor}"
                             Stroke="{Binding StatusBorderColor}"
                             StrokeShape="RoundRectangle 6"
                             StrokeThickness="1"
@@ -169,7 +169,7 @@
                             <Label
                                 FontSize="12"
                                 Text="{Binding StatusText}"
-                                TextColor="{DynamicResource White}" />
+                                TextColor="{Binding StatusTextColor}" />
                         </Border>
                     </Grid>
 

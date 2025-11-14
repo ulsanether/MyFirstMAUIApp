@@ -17,7 +17,7 @@
             <HorizontalStackLayout Spacing="8">
                 <Image
                     HeightRequest="24"
-                    Source="appiconw.png"
+                    Source="network_icon.png"
                     WidthRequest="24" />
                 <Label
                     FontAttributes="Bold"
@@ -65,7 +65,7 @@
                         <HorizontalStackLayout Spacing="8">
                             <Image
                                 HeightRequest="20"
-                                Source="appiconw.png"
+                                Source="table_icon.png"
                                 WidthRequest="20" />
                             <Label
                                 FontAttributes="Bold"
