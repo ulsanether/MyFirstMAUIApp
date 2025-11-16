@@ -320,17 +320,7 @@ public static class SerialConstants
 
     #endregion
 
-    #region Numeric Constants
-
-    /// <summary>
-    /// 다중 레지스터 읽기 테스트용 수량
-    /// </summary>
-    public const ushort TestMultipleRegisterQuantity = 10;
-
-    /// <summary>
-    /// 테스트용 레지스터 값
-    /// </summary>
-    public const ushort TestRegisterValue = 100;
+    #region String Constants
 
     /// <summary>
     /// 빈 문자열 교체용
@@ -339,4 +329,3 @@ public static class SerialConstants
 
     #endregion
 }
-

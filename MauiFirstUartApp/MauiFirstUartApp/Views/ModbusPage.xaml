@@ -81,6 +81,7 @@
                             BorderColor="{AppThemeBinding Light={StaticResource Border},
                                                           Dark={StaticResource DarkBorder}}"
                             BorderWidth="1"
+                            Command="{Binding ExportToCsvCommand}"
                             Text="📥 CSV"
                             TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                         Dark={StaticResource DarkForeground}}" />
@@ -90,10 +91,12 @@
                             BorderColor="{AppThemeBinding Light={StaticResource Border},
                                                           Dark={StaticResource DarkBorder}}"
                             BorderWidth="1"
+                            Command="{Binding ClearModbusDataCommand}"
                             Text="🗑️"
                             TextColor="{AppThemeBinding Light={StaticResource Foreground},
                                                         Dark={StaticResource DarkForeground}}"
                             WidthRequest="40" />
+
                     </Grid>
 
                     <!--  Auto Read Controls  -->
@@ -541,79 +544,6 @@
                             TextColor="{AppThemeBinding Light={StaticResource PrimaryForeground},
                                                         Dark={StaticResource DarkPrimaryForeground}}" />
                     </VerticalStackLayout>
-                </VerticalStackLayout>
-            </Frame>
-
-            <!--  Quick Commands  -->
-            <Frame
-                Padding="16"
-                BackgroundColor="{AppThemeBinding Light={StaticResource Card},
-                                                  Dark={StaticResource DarkCard}}"
-                BorderColor="{AppThemeBinding Light={StaticResource Border},
-                                              Dark={StaticResource DarkBorder}}"
-                CornerRadius="12"
-                HasShadow="False">
-                <VerticalStackLayout Spacing="12">
-                    <Label
-                        FontAttributes="Bold"
-                        FontSize="16"
-                        Text="빠른 명령"
-                        TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                    Dark={StaticResource DarkForeground}}" />
-                    <Grid
-                        ColumnDefinitions="*,*"
-                        ColumnSpacing="8"
-                        RowDefinitions="Auto,Auto"
-                        RowSpacing="8">
-                        <Button
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            BackgroundColor="Transparent"
-                            BorderColor="{AppThemeBinding Light={StaticResource Border},
-                                                          Dark={StaticResource DarkBorder}}"
-                            BorderWidth="1"
-                            Command="{Binding ReadMultipleRegistersCommand}"
-                            FontSize="12"
-                            Text="레지스터 0-9 읽기"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                        <Button
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            BackgroundColor="Transparent"
-                            BorderColor="{AppThemeBinding Light={StaticResource Border},
-                                                          Dark={StaticResource DarkBorder}}"
-                            BorderWidth="1"
-                            Command="{Binding ReadCoilsCommand}"
-                            FontSize="12"
-                            Text="코일 0-7 읽기"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                        <Button
-                            Grid.Row="1"
-                            Grid.Column="0"
-                            BackgroundColor="Transparent"
-                            BorderColor="{AppThemeBinding Light={StaticResource Border},
-                                                          Dark={StaticResource DarkBorder}}"
-                            BorderWidth="1"
-                            Command="{Binding WriteRegister100Command}"
-                            FontSize="12"
-                            Text="레지스터 0에 100 쓰기"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                        <Button
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            BackgroundColor="Transparent"
-                            BorderColor="{AppThemeBinding Light={StaticResource Border},
-                                                          Dark={StaticResource DarkBorder}}"
-                            BorderWidth="1"
-                            Command="{Binding WriteCoilOnCommand}"
-                            FontSize="12"
-                            Text="코일 0 켜기"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                    </Grid>
                 </VerticalStackLayout>
             </Frame>
 

@@ -7,7 +7,7 @@
   xmlns:uap18="http://schemas.microsoft.com/appx/manifest/uap/windows10/18"
   IgnorableNamespaces="uap rescap uap18">
 
-  <Identity Name="DaftSerialModbus" Publisher="CN=DaftWork" Version="1.0.0.0" />
+  <Identity Name="DaftSerialModbus" Publisher="CN=DaftWork" Version="1.0.1.0" />
 
   <mp:PhoneIdentity PhoneProductId="1BDC2DB8-A585-42B5-9DD8-3BD042AC1CAF" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 

@@ -16,6 +16,7 @@ namespace MauiFirstUartApp
 
             // LoadingPage를 첫 화면으로 설정
             var viewModel = ServiceHelper.GetService<MainPageViewModel>();
+
             MainPage = new LoadingPage(viewModel);
         }
 

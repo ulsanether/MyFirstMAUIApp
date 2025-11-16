@@ -32,9 +32,9 @@
                         WidthRequest="110" />
 
                     <Image
-                        HeightRequest="110"
+                        HeightRequest="60"
                         Source="appiconw.png"
-                        WidthRequest="110" />
+                        WidthRequest="60" />
                     <!--  아이콘  -->
                 </Grid>
             </Frame>

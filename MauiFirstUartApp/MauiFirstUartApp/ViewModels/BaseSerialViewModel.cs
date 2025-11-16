@@ -15,11 +15,21 @@ public abstract class BaseSerialViewModel : BindableObject
     public ObservableCollection<string> StopBitsOptions { get; } = new(Enum.GetNames(typeof(SerialStopBits)));
 
     private string? _selectedPort;
-    public string? SelectedPort
+    public string SelectedPort
     {
         get => _selectedPort;
-        set { _selectedPort = value; OnPropertyChanged(); }
+        set
+        {
+            if (_selectedPort != value)
+            {
+                _selectedPort = value;
+                OnPropertyChanged(nameof(SelectedPort));
+                OnPropertyChanged(nameof(PortName)); // PortName 변경 알림 추가
+            }
+        }
     }
+
+    public virtual string PortName => SelectedPort ?? "포트가 선택되지 않음";
 
     private string? _selectedParity;
     public string? SelectedParity

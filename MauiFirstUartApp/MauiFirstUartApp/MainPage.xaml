@@ -25,7 +25,6 @@
                     TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
                                                 Dark={StaticResource DarkMutedForeground}}" />
             </VerticalStackLayout>
-
             <!--  Connection Type Selection Card  -->
             <Border
                 Padding="16"
@@ -55,7 +54,7 @@
                         <HorizontalStackLayout Spacing="12">
                             <RadioButton
                                 GroupName="SerialType"
-                                IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Normal, Mode=TwoWay}"
+                                IsChecked="{Binding IsNormalModeSelected}"
                                 VerticalOptions="Center" />
                             <Border
                                 Padding="8"
@@ -99,7 +98,7 @@
                         <HorizontalStackLayout Spacing="12">
                             <RadioButton
                                 GroupName="SerialType"
-                                IsChecked="{Binding SelectedSerialType, Converter={StaticResource SerialTypeToBoolConverter}, ConverterParameter=Modbus, Mode=TwoWay}"
+                                IsChecked="{Binding IsModbusModeSelected}"
                                 VerticalOptions="Center" />
                             <Border
                                 Padding="8"
@@ -356,92 +355,7 @@
             </Border>
 
             <!--  Quick Stats  -->
-            <Grid
-                ColumnDefinitions="*,*,*"
-                ColumnSpacing="12"
-                RowDefinitions="Auto">
-                <!--  Sent  -->
-                <Border
-                    Grid.Column="0"
-                    Padding="16"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Card},
-                                                      Dark={StaticResource DarkCard}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Border},
-                                             Dark={StaticResource DarkBorder}}"
-                    StrokeShape="RoundRectangle 10"
-                    StrokeThickness="1">
-                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="24"
-                            HorizontalOptions="Center"
-                            Text="{Binding SentCount}"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="송신"
-                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
-                                                        Dark={StaticResource DarkMutedForeground}}" />
-                    </VerticalStackLayout>
-                </Border>
-
-                <!--  Received  -->
-                <Border
-                    Grid.Column="1"
-                    Padding="16"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Card},
-                                                      Dark={StaticResource DarkCard}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Border},
-                                             Dark={StaticResource DarkBorder}}"
-                    StrokeShape="RoundRectangle 10"
-                    StrokeThickness="1">
-                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="24"
-                            HorizontalOptions="Center"
-                            Text="{Binding ReceivedCount}"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="수신"
-                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
-                                                        Dark={StaticResource DarkMutedForeground}}" />
-                    </VerticalStackLayout>
-                </Border>
-
-                <!--  Errors  -->
-                <Border
-                    Grid.Column="2"
-                    Padding="16"
-                    BackgroundColor="{AppThemeBinding Light={StaticResource Card},
-                                                      Dark={StaticResource DarkCard}}"
-                    Stroke="{AppThemeBinding Light={StaticResource Border},
-                                             Dark={StaticResource DarkBorder}}"
-                    StrokeShape="RoundRectangle 10"
-                    StrokeThickness="1">
-                    <VerticalStackLayout HorizontalOptions="Center" Spacing="4">
-                        <Label
-                            FontAttributes="Bold"
-                            FontSize="24"
-                            HorizontalOptions="Center"
-                            Text="{Binding ErrorCount}"
-                            TextColor="{AppThemeBinding Light={StaticResource Foreground},
-                                                        Dark={StaticResource DarkForeground}}" />
-                        <Label
-                            FontSize="12"
-                            HorizontalOptions="Center"
-                            Text="오류"
-                            TextColor="{AppThemeBinding Light={StaticResource MutedForeground},
-                                                        Dark={StaticResource DarkMutedForeground}}" />
-                    </VerticalStackLayout>
-                </Border>
-            </Grid>
-
+       
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

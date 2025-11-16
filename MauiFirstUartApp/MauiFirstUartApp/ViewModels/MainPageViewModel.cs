@@ -2,8 +2,11 @@
 using MauiFirstUartApp.Core.Constants;
 
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Text;
 using System.Windows.Input;
+
+
 
 namespace MauiFirstUartApp.ViewModels;
 
@@ -31,17 +34,58 @@ public class ActivityLogItem
     public Color MessageColor { get; set; }
 }
 
-public class ModbusDataItem
+
+public class ModbusDataItem : INotifyPropertyChanged
 {
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    private void OnPropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string? propertyName = null)
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     public int Id { get; set; }
-    public DateTime Timestamp { get; set; }
+
+    private DateTime _timestamp;
+    public DateTime Timestamp
+    {
+        get => _timestamp;
+        set
+        {
+            if (_timestamp != value)
+            {
+                _timestamp = value;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(FormattedTimestamp)); // FormattedTimestamp도 갱신
+            }
+        }
+    }
+
     public string Address { get; set; } = SerialConstants.EmptyString;
     public string FunctionCode { get; set; } = SerialConstants.EmptyString;
-    public ushort Value { get; set; }
-    public string HexValue => $"0x{Value:X4}";
+
+    private ushort _value;
+    public ushort Value
+    {
+        get => _value;
+        set
+        {
+            if (_value != value)
+            {
+                _value = value;
+                HexValue = $"0x{_value:X4}"; // Value가 변경될 때 HexValue를 자동 계산
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(HexValue));
+            }
+        }
+    }
+
+    public string HexValue { get; set; } = $"0x0000";
+
     public string DataType { get; set; } = SerialConstants.DefaultDataType;
     public string FormattedTimestamp => Timestamp.ToString("HH:mm:ss");
 }
+
 
 public class MainPageViewModel : BaseSerialViewModel
 {
@@ -72,7 +116,7 @@ public class MainPageViewModel : BaseSerialViewModel
         SerialConstants.ModbusRtuCommunicationText :
         SerialConstants.SerialCommunicationText;
 
-    public string PortName => SelectedPort ?? SerialConstants.PortNotSelectedText;
+    public new string PortName => SelectedPort ?? SerialConstants.PortNotSelectedText;
     public string ModbusProtocol => SelectedModbusProtocol;
     public string SlaveId => ModbusSlaveId.ToString();
 
@@ -152,7 +196,6 @@ public class MainPageViewModel : BaseSerialViewModel
 
     public ICommand ClearMessageCommand { get; private set; }
     public ICommand ClearLogsCommand { get; private set; }
-    public ICommand QuickSendCommand { get; private set; }
     public ICommand SendCommand { get; private set; }
 
     #endregion
@@ -207,8 +250,79 @@ public class MainPageViewModel : BaseSerialViewModel
     public bool IsAutoReadEnabled
     {
         get => _isAutoReadEnabled;
-        set { _isAutoReadEnabled = value; OnPropertyChanged(); }
+        set
+        {
+            if (_isAutoReadEnabled != value)
+            {
+                _isAutoReadEnabled = value;
+                OnPropertyChanged();
+                _ = ToggleAutoReadAsync(); // 상태 변경 시 자동 읽기 실행/중지
+            }
+        }
     }
+
+
+    private CancellationTokenSource? _autoSaveCts;
+
+    public bool IsAutoSaveLogsEnabled
+    {
+        get => _isAutoSaveLogsEnabled;
+        set
+        {
+            if (_isAutoSaveLogsEnabled != value)
+            {
+                _isAutoSaveLogsEnabled = value;
+                OnPropertyChanged();
+
+                if (_isAutoSaveLogsEnabled)
+                {
+                    // 자동 저장 시작
+                    _autoSaveCts = new CancellationTokenSource();
+                    _ = AutoSaveLogsAsync(_autoSaveCts.Token);
+                }
+                else
+                {
+                    // 자동 저장 중지
+                    _autoSaveCts?.Cancel();
+                }
+            }
+        }
+    }
+
+    private async Task AutoSaveLogsAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try
+            {
+                // 로그 저장 경로
+                var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ModbusLogs.txt");
+
+
+                // 로그 데이터 생성
+                var logBuilder = new StringBuilder();
+                foreach (var log in SerialLogItems)
+                {
+                    logBuilder.AppendLine($"{log.Timestamp:yyyy-MM-dd HH:mm:ss} [{log.TypeLabel}] {log.Message}");
+                }
+
+                // 파일 저장
+                File.WriteAllText(filePath, logBuilder.ToString());
+
+                // 상태 업데이트
+                StatusText = $"로그가 자동 저장되었습니다: {filePath}";
+            }
+            catch (Exception ex)
+            {
+                StatusText = $"로그 자동 저장 중 오류 발생: {ex.Message}";
+            }
+
+            // 1분 간격으로 저장
+            await Task.Delay(TimeSpan.FromMinutes(10), ct);
+        }
+    }
+
+
 
     // 폴링 간격 옵션
     public ObservableCollection<string> PollingIntervalOptions { get; } = new() { "500ms", "1s", "2s", "5s" };
@@ -321,8 +435,6 @@ public class MainPageViewModel : BaseSerialViewModel
         }
     }
 
-
-
     // Modbus 프로토콜 관련
     public ObservableCollection<string> ModbusProtocolOptions { get; } = new() { "Modbus RTU", "Modbus ASCII" };
 
@@ -416,21 +528,60 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     // 데이터 설정
+
+
+
     public ObservableCollection<string> LogRetentionOptions { get; } = new() { "1일", "7일", "30일", "90일" };
 
     private string _selectedLogRetention = SerialConstants.DefaultLogRetention;
     public string SelectedLogRetention
     {
         get => _selectedLogRetention;
-        set { _selectedLogRetention = value; OnPropertyChanged(); }
+        set
+        {
+            if (_selectedLogRetention != value)
+            {
+                _selectedLogRetention = value;
+                OnPropertyChanged();
+                ApplyLogRetentionPolicy();
+            }
+        }
+    }
+
+
+    private void ApplyLogRetentionPolicy()
+    {
+        try
+        {
+            var filePath = Path.Combine(FileSystem.AppDataDirectory, "ModbusLogs.txt");
+
+            if (File.Exists(filePath))
+            {
+                var retentionDays = SelectedLogRetention switch
+                {
+                    "1일" => 1,
+                    "7일" => 7,
+                    "30일" => 30,
+                    "90일" => 90,
+                    _ => 30 // 기본값
+                };
+
+                var fileInfo = new FileInfo(filePath);
+                if (fileInfo.LastWriteTime < DateTime.Now.AddDays(-retentionDays))
+                {
+                    File.Delete(filePath);
+                    StatusText = "오래된 로그 파일이 삭제되었습니다.";
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"로그 보관 정책 적용 중 오류 발생: {ex.Message}";
+        }
     }
 
     private bool _isAutoSaveLogsEnabled = true;
-    public bool IsAutoSaveLogsEnabled
-    {
-        get => _isAutoSaveLogsEnabled;
-        set { _isAutoSaveLogsEnabled = value; OnPropertyChanged(); }
-    }
+
 
     private bool _isTimestampDisplayEnabled = true;
     public bool IsTimestampDisplayEnabled
@@ -446,6 +597,37 @@ public class MainPageViewModel : BaseSerialViewModel
         set { _isHexFormatEnabled = value; OnPropertyChanged(); }
     }
 
+    // MainPageViewModel.cs의 Modbus Properties 섹션에 추가
+    public bool IsNormalModeSelected
+    {
+        get => SelectedSerialType == SerialType.Normal;
+        set
+        {
+            if (value)
+            {
+                SelectedSerialType = SerialType.Normal;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsModbusModeSelected));
+            }
+        }
+    }
+
+    public bool IsModbusModeSelected
+    {
+        get => SelectedSerialType == SerialType.Modbus;
+        set
+        {
+            if (value)
+            {
+                SelectedSerialType = SerialType.Modbus;
+                OnPropertyChanged();
+                OnPropertyChanged(nameof(IsNormalModeSelected));
+            }
+        }
+    }
+
+
+
     #endregion
 
     #region Commands
@@ -458,6 +640,8 @@ public class MainPageViewModel : BaseSerialViewModel
     public ICommand DisconnectCommand { get; private set; }
     public ICommand RefreshPortsCommand { get; private set; }
 
+    public ICommand QuickSendCommand { get; private set; } // 추가
+
     // Modbus 빠른 명령어들
     public ICommand ReadMultipleRegistersCommand { get; private set; }
     public ICommand ReadCoilsCommand { get; private set; }
@@ -466,7 +650,7 @@ public class MainPageViewModel : BaseSerialViewModel
     public ICommand ToggleAutoReadCommand { get; private set; }
     public ICommand SelectReadTabCommand { get; private set; }
     public ICommand SelectWriteTabCommand { get; private set; }
-
+    public ICommand ExportToCsvCommand { get; private set; }
     #endregion
 
     public MainPageViewModel(ISerialService serialService) : base(serialService)
@@ -487,10 +671,12 @@ public class MainPageViewModel : BaseSerialViewModel
         SendCommand = new Command(async () => await SendAsync());
         RefreshPortsCommand = new Command(async () => await RefreshPortsAsync());
 
+        //CSV 내보내기 명령어
+        ExportToCsvCommand = new Command(ExportToCsv);
+
         // 시리얼 터미널 명령어들
         ClearMessageCommand = new Command(() => SendText = SerialConstants.EmptyString);
         ClearLogsCommand = new Command(() => ClearLogs());
-        QuickSendCommand = new Command<string>(async (message) => await QuickSendAsync(message));
 
         // Modbus 명령어들
         ModbusReadCommand = new Command(
@@ -506,13 +692,15 @@ public class MainPageViewModel : BaseSerialViewModel
             () => IsConnected && SelectedSerialType == SerialType.Modbus);
 
         // Modbus 전용 명령어들
+        ClearModbusDataCommand = new Command(() => ClearModbusData());
         SelectReadTabCommand = new Command(() => IsReadTabSelected = true);
         SelectWriteTabCommand = new Command(() => IsReadTabSelected = false);
         ToggleAutoReadCommand = new Command(async () => await ToggleAutoReadAsync());
         ReadMultipleRegistersCommand = new Command(async () => await ExecuteWithErrorHandling(ReadMultipleRegistersAsync));
         ReadCoilsCommand = new Command(async () => await ReadCoilsAsync());
-        WriteRegister100Command = new Command(async () => await ExecuteWithErrorHandling(WriteRegister100Async));
+        WriteRegister100Command = new Command(async () => await ExecuteWithErrorHandling(WriteRegisterAsync));
         WriteCoilOnCommand = new Command(async () => await WriteCoilOnAsync());
+        QuickSendCommand = new Command<string>((message) => { /* 사용하지 않음 */ });
     }
 
     #endregion
@@ -648,11 +836,12 @@ public class MainPageViewModel : BaseSerialViewModel
         var logItem = new SerialLogItem
         {
             Timestamp = DateTime.Now,
-            Message = message,
+            Message = IsTimestampDisplayEnabled ? message : message,
             Type = type
         };
         SerialLogItems.Add(logItem);
     }
+
 
     private void ClearLogs()
     {
@@ -661,22 +850,44 @@ public class MainPageViewModel : BaseSerialViewModel
         ReceiveCount = 0;
     }
 
-    private async Task QuickSendAsync(string message)
-    {
-        if (string.IsNullOrEmpty(message)) return;
-
-        var originalText = SendText;
-        SendText = message;
-        await SendAsync();
-        SendText = originalText;
-    }
-
     #endregion
 
     #region Modbus Methods
 
+    private void ExportToCsv()
+    {
+        try
+        {
+            // CSV 파일 경로 설정
+            var filePath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "ModbusData.csv");
+
+            // CSV 데이터 생성
+            var csvBuilder = new StringBuilder();
+            csvBuilder.AppendLine("Id,Timestamp,Address,FunctionCode,Value,HexValue,DataType");
+
+            foreach (var item in ModbusDataItems)
+            {
+                csvBuilder.AppendLine($"{item.Id},{item.Timestamp:yyyy-MM-dd HH:mm:ss},{item.Address},{item.FunctionCode},{item.Value},{item.HexValue},{item.DataType}");
+            }
+
+            // 파일 저장
+            File.WriteAllText(filePath, csvBuilder.ToString());
+
+            // 사용자에게 알림
+            StatusText = $"CSV 파일이 저장되었습니다: {filePath}";
+        }
+        catch (Exception ex)
+        {
+            StatusText = $"CSV 저장 중 오류 발생: {ex.Message}";
+        }
+    }
+
+
     private async Task ModbusReadAsync()
     {
+        // 읽기 실행 전 이전 데이터 클리어
+        ModbusDataItems.Clear();
+
         var result = await _serialService.ModbusReadHoldingRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
         AddModbusDataItems(result, SerialConstants.FunctionCode03);
         ModbusReadCount++;
@@ -685,6 +896,9 @@ public class MainPageViewModel : BaseSerialViewModel
 
     private async Task ModbusReadInputAsync()
     {
+        // 읽기 실행 전 이전 데이터 클리어
+        ModbusDataItems.Clear();
+
         var result = await _serialService.ModbusReadInputRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
         AddModbusDataItems(result, SerialConstants.FunctionCode04);
         ModbusReadCount++;
@@ -693,58 +907,112 @@ public class MainPageViewModel : BaseSerialViewModel
 
     private async Task ModbusWriteAsync()
     {
+        ModbusDataItems.Clear();
+
         await _serialService.ModbusWriteSingleRegisterAsync(ModbusSlaveId, ModbusAddress, WriteValue);
 
-        var dataItem = new ModbusDataItem
-        {
-            Id = ModbusDataItems.Count + 1,
-            Timestamp = DateTime.Now,
-            Address = ModbusAddress.ToString(),
-            FunctionCode = SerialConstants.FunctionCode06,
-            Value = WriteValue
-        };
-        ModbusDataItems.Add(dataItem);
+        var readResult = await _serialService.ModbusReadHoldingRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+
+        AddModbusDataItems(readResult, SerialConstants.FunctionCode03);
 
         ModbusWriteCount++;
-        StatusText = SerialConstants.StatusModbusWriteComplete;
+        ModbusReadCount++; // 쓰기 후 자동 읽기도 카운트
+
+        StatusText = $"쓰기 완료 후 {ModbusQuantity}개 레지스터 읽기 완료";
     }
+
+    public ICommand ClearModbusDataCommand { get; private set; }
 
     private void AddModbusDataItems(ushort[] values, string functionCode)
     {
         for (int i = 0; i < values.Length; i++)
         {
-            var dataItem = new ModbusDataItem
+            var address = (ModbusAddress + i).ToString();
+
+            var existingItem = ModbusDataItems.FirstOrDefault(item => item.Address == address);
+
+            if (existingItem != null)
             {
-                Id = ModbusDataItems.Count + 1,
-                Timestamp = DateTime.Now,
-                Address = (ModbusAddress + i).ToString(),
-                FunctionCode = functionCode,
-                Value = values[i]
-            };
-            ModbusDataItems.Add(dataItem);
+                existingItem.Value = values[i];
+                existingItem.Timestamp = DateTime.Now;
+            }
+            else
+            {
+                var dataItem = new ModbusDataItem
+                {
+                    Id = ModbusDataItems.Count + 1,
+                    Timestamp = DateTime.Now,
+                    Address = address,
+                    FunctionCode = functionCode,
+                    Value = values[i],
+                    HexValue = IsHexFormatEnabled ? $"0x{values[i]:X4}" : values[i].ToString()
+                };
+                ModbusDataItems.Add(dataItem);
+            }
         }
     }
 
+
+
+
     // Modbus 전용 메서드들
+    private void ClearModbusData()
+    {
+        ModbusDataItems.Clear();
+        StatusText = "데이터 테이블이 지워졌습니다.";
+    }
+
     private async Task ToggleAutoReadAsync()
     {
-        StatusText = IsAutoReadEnabled ?
-            SerialConstants.AutoReadStartMessage :
-            SerialConstants.AutoReadStopMessage;
+        if (IsAutoReadEnabled)
+        {
+            // 자동 읽기 시작
+            _readCts = new CancellationTokenSource();
+            StatusText = SerialConstants.AutoReadStartMessage;
+
+            await StartAutoReadAsync(_readCts.Token);
+        }
+        else
+        {
+            // 자동 읽기 중지
+            _readCts?.Cancel();
+            StatusText = SerialConstants.AutoReadStopMessage;
+        }
+    }
+    private async Task StartAutoReadAsync(CancellationToken ct)
+    {
+        while (!ct.IsCancellationRequested)
+        {
+            try
+            {
+                // Modbus 데이터 읽기
+                var result = await _serialService.ModbusReadHoldingRegistersAsync(ModbusSlaveId, ModbusAddress, ModbusQuantity);
+                AddModbusDataItems(result, SerialConstants.FunctionCode03);
+
+                ModbusReadCount++;
+                StatusText = $"마지막 읽기: {DateTime.Now:HH:mm:ss}"; // 읽기 시간 갱신
+            }
+            catch (OperationCanceledException)
+            {
+                break; // 작업이 취소된 경우 루프 종료
+            }
+            catch (Exception ex)
+            {
+                StatusText = string.Format(SerialConstants.StatusModbusReadErrorFormat, ex.Message);
+                ErrorCount++;
+            }
+
+            // 폴링 간격 대기
+            if (int.TryParse(SelectedPollingInterval.Replace("ms", "").Replace("s", "000"), out int delay))
+            {
+                await Task.Delay(delay, ct);
+            }
+        }
     }
 
     private async Task ReadMultipleRegistersAsync()
     {
-        var originalAddress = ModbusAddress;
-        var originalQuantity = ModbusQuantity;
-
-        ModbusAddress = SerialConstants.DefaultModbusStartAddress;
-        ModbusQuantity = SerialConstants.TestMultipleRegisterQuantity;
-
         await ModbusReadAsync();
-
-        ModbusAddress = originalAddress;
-        ModbusQuantity = originalQuantity;
     }
 
     private async Task ReadCoilsAsync()
@@ -752,18 +1020,10 @@ public class MainPageViewModel : BaseSerialViewModel
         StatusText = SerialConstants.CoilReadNotImplementedMessage;
     }
 
-    private async Task WriteRegister100Async()
+    private async Task WriteRegisterAsync()
     {
-        var originalAddress = ModbusAddress;
-        var originalValue = WriteValue;
-
-        ModbusAddress = SerialConstants.DefaultModbusStartAddress;
-        WriteValue = SerialConstants.TestRegisterValue;
-
+        // 현재 사용자가 설정한 값들을 그대로 사용
         await ModbusWriteAsync();
-
-        ModbusAddress = originalAddress;
-        WriteValue = originalValue;
     }
 
     private async Task WriteCoilOnAsync()
@@ -772,6 +1032,7 @@ public class MainPageViewModel : BaseSerialViewModel
     }
 
     #endregion
+
 
     #region Error Handling
 
@@ -815,5 +1076,3 @@ public class MainPageViewModel : BaseSerialViewModel
 
     #endregion
 }
-
-

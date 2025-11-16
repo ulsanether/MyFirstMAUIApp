@@ -12,6 +12,7 @@
             </ResourceDictionary.MergedDictionaries>
             <converters:SerialTypeToBoolConverter x:Key="SerialTypeToBoolConverter" />
             <converters:BoolToConnectionColorConverter x:Key="BoolToConnectionColorConverter" />
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>
