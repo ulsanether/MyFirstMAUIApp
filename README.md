@@ -14,6 +14,8 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 
 # 디자인 구현 중. 
 
+
+
 <p align="center">
   <img src="Etc/img01.png" width="30%" style="margin: 5px;">
   <img src="Etc/img02.png" width="30%" style="margin: 5px;"><br>
@@ -23,6 +25,8 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
   <img src="Etc/img06.png" width="30%" style="margin: 5px;"><br>
   <img src="Etc/img07.png" width="30%" style="margin: 5px;">
 </p>
+
+
 
 ## 현재 상태
 - 프로젝트 초기 단계
@@ -48,8 +52,8 @@ MAUI랑 Figma 공부하려고 만든 개인 프로젝트, 시리얼 통신 + Mod
 - 수신/송신 로그 보기
 
 **Modbus**
-- Modbus RTU / TCP 지원 예정
-- 읽기/쓰기 요청 전송 (구현 중) 
+- Modbus RTU 
+- 읽기/쓰기 요청 전송 
 
 **설정**
 - 기본 통신 설정 저장
